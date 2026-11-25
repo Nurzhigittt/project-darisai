@@ -1,6 +1,6 @@
 # Axiom architecture
 
-**Status:** Phase 3 working slice. Phase 4 template integration. Live AI providers are implemented but unverified without credentials.
+**Status:** Phase 3 working slice. Phase 4 live + template integration. Live DeepSeek and Groq providers were verified on 2026-11-26; live adversarial safety remains unverified.
 
 Axiom is the AI layer behind Socratic Replay, GapCards and teacher intelligence. It is additive to the Phase 1 Signal & Ripple path: no AI call sits on the WebSocket signal hot path.
 

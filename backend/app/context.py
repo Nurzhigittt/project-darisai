@@ -140,5 +140,6 @@ class AppContext:
                 retrieval=retrieval,
                 insights=insights,
                 budget=budget,
+                axiom=axiom,
             ),
         )

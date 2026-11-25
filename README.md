@@ -246,13 +246,13 @@ The 493 ms p95 is only 6.75 ms below the engineering target; p99 is above 500 ms
 
 ## Deliberately not finished
 
-- A verified live LLM or Whisper call (adapters exist; no credentials were available).
-- Live-model safety/quality claims; deterministic guardrails and template mode are what was executed.
+- Live adversarial/jailbreak safety evaluation; functional DeepSeek and Groq calls are verified, but no red-team claim is made.
+- Production deployment and Docker execution.
 - Cohort Memory and the full staged-autonomy workflow.
 - A 90-second judge demo.
 - Cloud deployment and multi-worker evaluator coordination.
 
-LLM and STT providers are optional and disabled by default. The verified offline path uses real E5 embeddings plus transcript-grounded template responses. See `docs/P3_HANDOVER.md` for the exact boundary.
+LLM and STT providers are optional. The verified offline path uses real E5 embeddings plus transcript-grounded template responses; DeepSeek and Groq live calls are verified separately. See `docs/P3_HANDOVER.md` for the exact boundary.
 
 ## Stack
 

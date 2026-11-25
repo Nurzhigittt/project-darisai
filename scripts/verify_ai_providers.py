@@ -15,6 +15,7 @@ import argparse
 import asyncio
 import json
 import sys
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID
@@ -133,6 +134,32 @@ async def _llm_checks() -> dict[str, object]:
         )
     except (LLMError, ValueError, TypeError) as exc:
         results["checks"].append({"name": "gapcards", "error": type(exc).__name__})
+    stats = {
+        "accepted_signals": 0,
+        "unique_participants": 0,
+        "clusters": 1,
+        "concepts_selected": 1,
+    }
+    for kind in ("brief_next", "handoff"):
+        try:
+            insight = await engine.insight(
+                context=context,
+                statistics=stats,
+                kind=kind,
+                language="ru",
+                max_concepts=2,
+            )
+            results["checks"].append(
+                {
+                    "name": kind,
+                    "source": "live" if insight is not None else "template",
+                    "concepts": len(insight[0].concepts) if insight else 0,
+                    "has_task": bool(insight and insight[0].task),
+                    "grounded_score": insight[1].grounded_score if insight else None,
+                }
+            )
+        except (LLMError, ValueError, TypeError) as exc:
+            results["checks"].append({"name": kind, "error": type(exc).__name__})
     try:
         grounded = await GroundednessValidator(llm).validate(
             answer="При сужении трубы скорость растёт, давление падает.", context=context
@@ -146,7 +173,7 @@ async def _llm_checks() -> dict[str, object]:
     return results
 
 
-async def _stt_checks() -> dict[str, object]:
+async def _stt_checks(audio: Path | None) -> dict[str, object]:
     settings = get_settings()
     result: dict[str, object] = {
         "provider": settings.axiom_stt_provider,
@@ -160,22 +187,46 @@ async def _stt_checks() -> dict[str, object]:
             "AXIOM_STT_MODEL",
         ],
     }
-    if build_stt_provider(settings) is None or not settings.axiom_stt_api_key:
+    provider = build_stt_provider(settings)
+    if provider is None or not settings.axiom_stt_api_key:
         return result
-    result["status"] = "configured_but_no_audio_sample"
-    result["note"] = "Pass a short synthetic WAV through the API endpoint to verify transcription."
+    if audio is None:
+        result["status"] = "configured_but_no_audio_sample"
+        result["note"] = "Pass --audio path/to/short.wav to verify transcription."
+        return result
+    started = time.perf_counter()
+    try:
+        transcription = await provider.transcribe(
+            audio=audio.read_bytes(),
+            filename=audio.name,
+            mime_type="audio/wav",
+            language="en",
+        )
+        result.update(
+            {
+                "status": "completed",
+                "latency_ms": round((time.perf_counter() - started) * 1000, 1),
+                "language": transcription.language,
+                "segments": len(transcription.segments),
+                "duration_ms": transcription.duration_ms,
+                "text_preview": transcription.text[:160],
+            }
+        )
+    except Exception as exc:
+        result.update({"status": "failed", "error": type(exc).__name__})
     return result
 
 
 async def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT / "provider-smoke.json")
+    parser.add_argument("--audio", type=Path, default=None)
     args = parser.parse_args()
     payload = {
         "generated_at": datetime.now(UTC).isoformat(),
         "note": "No secret values are written or printed.",
         "llm": await _llm_checks(),
-        "stt": await _stt_checks(),
+        "stt": await _stt_checks(args.audio),
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -103,10 +103,12 @@ class Settings(BaseSettings):
     axiom_llm_base_url: str = "https://api.deepseek.com"
     axiom_llm_api_key: str = ""
     axiom_llm_model: str = "deepseek-flash"
-    axiom_llm_timeout_seconds: float = Field(default=8.0, ge=0.5, le=60)
+    axiom_llm_timeout_seconds: float = Field(default=20.0, ge=0.5, le=60)
     axiom_llm_max_retries: int = Field(default=1, ge=0, le=2)
-    axiom_llm_max_output_tokens: int = Field(default=1_200, ge=64, le=4_000)
+    axiom_llm_max_output_tokens: int = Field(default=2_400, ge=64, le=4_000)
+    axiom_llm_disable_thinking: bool = True
     axiom_llm_concurrency: int = Field(default=2, ge=1, le=16)
+    axiom_use_llm_judges: bool = False
     axiom_daily_generation_budget: int = Field(default=100, ge=0, le=100_000)
 
     axiom_replay_max_turns: int = Field(default=6, ge=1, le=12)

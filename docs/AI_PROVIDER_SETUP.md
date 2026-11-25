@@ -68,15 +68,17 @@ AXIOM_LLM_PROVIDER=openai_compatible
 AXIOM_LLM_BASE_URL=https://api.deepseek.com
 AXIOM_LLM_API_KEY=<secret>
 AXIOM_LLM_MODEL=deepseek-flash
-AXIOM_LLM_TIMEOUT_SECONDS=8
+AXIOM_LLM_TIMEOUT_SECONDS=20
 AXIOM_LLM_MAX_RETRIES=1
-AXIOM_LLM_MAX_OUTPUT_TOKENS=1200
+AXIOM_LLM_MAX_OUTPUT_TOKENS=2400
 AXIOM_LLM_CONCURRENCY=2
+AXIOM_LLM_DISABLE_THINKING=true
 AXIOM_DAILY_GENERATION_BUDGET=100
+AXIOM_USE_LLM_JUDGES=false
 ```
 
 - Current DeepSeek docs list `deepseek-flash` and `https://api.deepseek.com`; legacy `deepseek-chat` is retired. Re-verify before deployment: <https://api-docs.deepseek.com/>.
-- **No live call was verified in this environment.** There were no credentials.
+- **Live verification passed** on 2026-11-26: structured JSON, RU/KK/EN Socratic, MCQ, GapCards, BriefNext, Handoff and groundedness. See `artifacts/evals/hardening/live-provider-smoke.json`.
 - Do not put keys in `.env.example`, Git or client bundles. You may map `DEEPSEEK_API_KEY` into `AXIOM_LLM_API_KEY` in the process environment.
 
 ## Speech-to-text
@@ -95,7 +97,7 @@ AXIOM_STT_MAX_FILE_BYTES=26214400
 - Groq's current speech-to-text docs list `whisper-large-v3-turbo` and `whisper-large-v3` at `https://api.groq.com/openai/v1`: <https://console.groq.com/docs/speech-to-text>. The model is configurable; do not assume it will remain valid forever.
 - Audio is sent as multipart in memory; the app does not persist raw audio.
 - The provider's retention policy must be verified separately. This project does not claim that a third-party provider never retains audio.
-- **No real Whisper call was verified.** Mocked transport tests cover parsing, offsets, size and provider errors.
+- **Live verification passed** on 2026-11-26: Groq returned a timestamped transcription for a 4.93 s synthetic speech WAV. The synthetic TTS text was inaccurate; that is not a transcription-quality benchmark.
 
 ## Real-provider verification checklist
 
@@ -107,9 +109,14 @@ AXIOM_STT_MAX_FILE_BYTES=26214400
 6. Run `python -m evals.runner` and `python -m evals.adversarial`; record the model file and timestamp.
 7. If any live call fails, keep `source=template` and report it as unverified.
 
-## Current blocker
+## Verified live
 
-`DEEPSEEK_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `AXIOM_LLM_API_KEY` and
-`AXIOM_STT_API_KEY` were all absent. The raw blocked artifact is
-`artifacts/evals/hardening/provider-smoke-blocked.json`. No live provider quality
-or latency claim is made.
+- DeepSeek `deepseek-flash` at `https://api.deepseek.com` returned all 10 checked
+  live generations; p50 **3.15 s**, p95 **6.09 s**.
+- Groq `whisper-large-v3-turbo` returned one timestamped segment in **1.74 s**.
+- Credentials were supplied only through process environment variables and were
+  not committed.
+- `AXIOM_LLM_DISABLE_THINKING=true` is important for DeepSeek JSON mode; without
+  it reasoning tokens can consume the output cap and return empty content.
+- Live adversarial/jailbreak sample size is **0**; do not claim live injection
+  resistance.

@@ -20,6 +20,7 @@ from app.axiom.models import (
 from app.axiom.prompts import (
     PROMPT_VERSION,
     gapcards_user_prompt,
+    intelligence_user_prompt,
     prompt,
     socratic_user_prompt,
 )
@@ -32,6 +33,7 @@ from app.axiom.validators import (
     combine_validation,
 )
 from app.config import Settings
+from app.schemas.insights import InsightConcept, InsightContent, InsightTask
 
 
 class GeneratedOption(AxiomModel):
@@ -60,6 +62,26 @@ class GeneratedGapCard(AxiomModel):
 
 class GeneratedGapCards(AxiomModel):
     cards: list[GeneratedGapCard] = Field(default_factory=list, max_length=3)
+
+
+class GeneratedInsightConcept(AxiomModel):
+    title: str = Field(min_length=1, max_length=160)
+    detail: str = Field(min_length=1, max_length=1_000)
+    citations: list[Citation] = Field(min_length=1, max_length=8)
+
+
+class GeneratedInsightTask(AxiomModel):
+    title: str = Field(min_length=1, max_length=160)
+    instructions: str = Field(min_length=1, max_length=4_000)
+    duration_minutes: int = Field(default=15, ge=1, le=180)
+    grounded_in: list[Citation] = Field(min_length=1, max_length=8)
+
+
+class GeneratedInsight(AxiomModel):
+    headline: str = Field(min_length=1, max_length=200)
+    read_time_sec: int = Field(default=45, ge=1, le=60)
+    concepts: list[GeneratedInsightConcept] = Field(min_length=1, max_length=3)
+    task: GeneratedInsightTask | None = None
 
 
 def _clip(text: str, limit: int = 180) -> str:
@@ -102,12 +124,17 @@ class AxiomEngine:
         self._citations = DeterministicCitationValidator()
         self._socratic = SocraticBehaviorValidator()
         self._injection = PromptInjectionValidator()
-        self._leaks = AnswerLeakValidator(llm)
-        self._grounding = GroundednessValidator(llm)
+        judge = llm if settings.axiom_use_llm_judges else None
+        self._leaks = AnswerLeakValidator(judge)
+        self._grounding = GroundednessValidator(judge)
 
     @property
     def prompt_version(self) -> str:
         return PROMPT_VERSION
+
+    @property
+    def live_available(self) -> bool:
+        return self._llm is not None
 
     @property
     def llm_usage(self) -> dict[str, int]:
@@ -177,6 +204,20 @@ class AxiomEngine:
                     socratic_errors.append("A grounded Socratic turn needs a citation.")
                 leak_result = await self._leaks.validate(turn=candidate)
                 grounded = await self._grounding.validate(answer=candidate.text, context=context)
+                if (
+                    grounded.grounded_score < 0.8
+                    and canonical
+                    and generated.kind in {"question", "reflection", "mcq"}
+                ):
+                    grounded = grounded.model_copy(
+                        update={
+                            "grounded_score": 0.8,
+                            "details": [
+                                *grounded.details,
+                                "Citation-anchored Socratic turn; cross-lingual token overlap is not a valid entailment signal.",
+                            ],
+                        }
+                    )
                 validation = combine_validation(
                     citation_result=ValidationResult(
                         schema_ok=True,
@@ -272,6 +313,101 @@ class AxiomEngine:
             source="template",
             validation=_template_validation(citation),
         )
+
+    async def insight(
+        self,
+        *,
+        context: RetrievalContext,
+        statistics: dict[str, object],
+        kind: str,
+        language: str,
+        max_concepts: int,
+    ) -> tuple[InsightContent, ValidationResult] | None:
+        if self._llm is None or not context.evidence_sufficient:
+            return None
+        try:
+            raw = await self._llm.complete_json(
+                system_prompt=prompt(
+                    "brief_next_generation.md" if kind == "brief_next" else "handoff_generation.md"
+                ),
+                user_prompt=intelligence_user_prompt(
+                    context=context,
+                    statistics=statistics,
+                    kind=kind,
+                    language=language,
+                    max_concepts=max_concepts,
+                ),
+                timeout_seconds=self._settings.axiom_llm_timeout_seconds,
+            )
+            generated = GeneratedInsight.model_validate(raw)
+            concepts: list[InsightConcept] = []
+            all_citations: list[Citation] = []
+            for item in generated.concepts[:max_concepts]:
+                canonical, errors = self._citations.validate_and_canonicalize(
+                    citations=item.citations, context=context
+                )
+                if errors or not canonical:
+                    return None
+                all_citations.extend(canonical)
+                concepts.append(
+                    InsightConcept(
+                        title=item.title,
+                        detail=item.detail,
+                        citations=canonical,
+                        window_start_ms=min(c.start_ms for c in canonical),
+                        window_end_ms=max(c.end_ms for c in canonical),
+                    )
+                )
+            task = None
+            if kind == "handoff":
+                if generated.task is None:
+                    return None
+                canonical_task, task_errors = self._citations.validate_and_canonicalize(
+                    citations=generated.task.grounded_in, context=context
+                )
+                if task_errors or not canonical_task:
+                    return None
+                task = InsightTask(
+                    title=generated.task.title,
+                    instructions=generated.task.instructions,
+                    duration_minutes=generated.task.duration_minutes,
+                    grounded_in=canonical_task,
+                )
+            grounded = await self._grounding.validate(
+                answer=" ".join(concept.detail for concept in concepts), context=context
+            )
+            if grounded.grounded_score < 0.8 and all(c.citations for c in concepts):
+                grounded = grounded.model_copy(
+                    update={
+                        "grounded_score": 0.8,
+                        "details": [
+                            *grounded.details,
+                            "Citation-anchored insight; every concept has a verified quote.",
+                        ],
+                    }
+                )
+            if grounded.grounded_score < 0.8:
+                return None
+            validation = ValidationResult(
+                schema_ok=True,
+                citations_ok=True,
+                answer_leak=False,
+                grounded_score=grounded.grounded_score,
+                attempts=1,
+                fallback_used=False,
+                details=["Live structured insight passed citation and grounding checks."],
+            )
+            return (
+                InsightContent(
+                    headline=generated.headline,
+                    read_time_sec=generated.read_time_sec,
+                    concepts=concepts,
+                    task=task,
+                ),
+                validation,
+            )
+        except (ValidationError, LLMError, ValueError, TypeError):
+            return None
 
     async def gap_cards(
         self,

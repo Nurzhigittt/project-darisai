@@ -2,8 +2,8 @@
 
 **Branch:** `feat/p3-axiom-engine`
 **Base:** `0cce36eed53b3e8f247dcaaf09d34828f90bc58d`
-**Status:** Phase 2 hardening complete (live providers unverified); Phase 3 complete; Phase 4 template integration; Phase 6 P3 support delivered.
-**Date:** 25 November 2026 (Asia/Qyzylorda)
+**Status:** Phase 2 hardening complete with live providers verified; Phase 3 complete; Phase 4 live + template integration; Phase 6 P3 support delivered.
+**Date:** 26 November 2026 (Asia/Qyzylorda)
 
 ## What is implemented
 
@@ -13,9 +13,9 @@
 - Additive migration `200_p3_axiom_transcript.sql`: content hash, language/source, ingestion runs, audio chunk metadata, uniqueness.
 - Timestamped JSON transcript ingestion through a professor-only endpoint and the `scripts/ingest_transcript.py` CLI.
 - Idempotent segment upsert; duplicate chunks cannot create duplicate rows.
-- Real Whisper-compatible STT adapter with multipart upload, segment timestamps, offsets, size/MIME checks and bounded retries. **No live call verified.**
+- Real Whisper-compatible STT adapter with multipart upload, segment timestamps, offsets, size/MIME checks and bounded retries. **Live Groq call verified.**
 - Lecture-isolated hybrid retrieval: exact filtered cosine + BM25 + weighted RRF + temporal window; no HNSW assumption. Dense-only mode remains available for baseline comparison.
-- Configurable OpenAI-compatible JSON LLM client with timeout, retry, concurrency, usage counters and sanitized errors. **No live call verified.**
+- Configurable OpenAI-compatible JSON LLM client with timeout, retry, concurrency, usage counters and sanitized errors. **Live DeepSeek call verified.**
 - Versioned prompt files; transcript and student input are escaped and delimited as untrusted data.
 - Deterministic citation, Socratic, answer-leak and groundedness checks, with optional judge.
 - One stricter retry and transcript-only template fallback; `source` is explicit.
@@ -36,7 +36,7 @@
 - Adapter calls P2 `InsightService.create_generated`; generated content is always `pending_approval`.
 - Counts/time windows come from PostgreSQL clusters; quotes are verified.
 - Handoff gets a grounded seminar task; no auto-publication.
-- **Template wording**, not live LLM, in this environment.
+- **Template wording** is the offline fallback; DeepSeek `deepseek-flash` live BriefNext/Handoff passed citation and grounding validation on 2026-11-26.
 
 ### Phase 6 support
 
@@ -114,8 +114,8 @@ python -m evals.runner
 
 - 30 retrieval cases, hybrid + temporal: Recall@4 **0.8667**, MRR **0.7000** (RU 0.90/0.85; EN 0.80/0.575; KK 0.90/0.675); held-out 10: **0.90**.
 - 10 original deterministic guardrails: **10/10**.
-- 32 adversarial cases: **32/32** (29 deterministic, 1 fake LLM, 2 template; 0 live).
-- No live LLM/STT call. No claim of live-model quality.
+- 32 adversarial cases: **32/32** (29 deterministic, 1 fake LLM, 2 template; 0 live in this constructed suite).
+- Live DeepSeek smoke: **10/10 functional checks** (RU/KK/EN, MCQ, GapCards, BriefNext, Handoff, groundedness, structured JSON); live Groq STT verified. One live transcript-injection probe passed; live adversarial sample size is **1**, not a safety benchmark.
 
 See:
 - [RETRIEVAL_BENCHMARK.md](RETRIEVAL_BENCHMARK.md)
@@ -141,10 +141,10 @@ AXIOM_EMBEDDING_PREWARM=false
 
 ## Known limitations and blockers
 
-- No DeepSeek/OpenAI/Groq credentials: real LLM generation and real Whisper calls are **unverified**.
+- Live adversarial/jailbreak sample size is **1**; functional live checks are not a safety benchmark.
 - ONNX model download is 235 MB; first request is slow (cold load 4.3 s in the API, 41 s in the first instrumented run). Pre-warm at deploy time.
 - Multilingual retrieval improved on the synthetic suite (KK 0.90, EN 0.80), but this is 30 project-labelled cross-lingual cases, not native EN/KK lectures. Does not establish universal quality.
-- BriefNext/Handoff use template wording in this environment; the LLM prompt exists but the live path was not enabled or verified.
+- BriefNext/Handoff live wording passed on the 10-check provider smoke, but there is no live adversarial evaluation of these outputs.
 - No formal red-team, no human evaluation, no real-device audio test.
 - Streaming audio is not implemented; chunks are transcribed synchronously per request.
 - The P3 branch was not merged to `main` at the time of writing; open PR is the review gate.

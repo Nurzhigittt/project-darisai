@@ -4,7 +4,8 @@ from uuid import UUID
 
 from app.axiom.concepts import concept_title
 from app.axiom.cost import GenerationBudget
-from app.axiom.models import Citation
+from app.axiom.engine import AxiomEngine
+from app.axiom.models import Citation, RetrievalContext
 from app.axiom.retrieval import TemporalRetriever
 from app.axiom.validators import DeterministicCitationValidator
 from app.config import Settings
@@ -36,8 +37,9 @@ def _clip(text: str, limit: int) -> str:
 class IntelligenceService:
     """Adapter from deterministic Axiom evidence to P2's insight workflow.
 
-    Counts and windows are read from PostgreSQL. Wording is generated from those
-    values and a verified transcript quote; no number is delegated to an LLM.
+    Counts and windows are read from PostgreSQL. Template wording is generated
+    from those values and verified quotes. When a live LLM is configured, its
+    structured output must pass citation and grounding checks before use.
     """
 
     def __init__(
@@ -49,6 +51,7 @@ class IntelligenceService:
         retrieval: TemporalRetriever,
         insights: InsightService,
         budget: GenerationBudget,
+        axiom: AxiomEngine,
     ) -> None:
         self._db = db
         self._settings = settings
@@ -56,6 +59,7 @@ class IntelligenceService:
         self._retrieval = retrieval
         self._insights = insights
         self._budget = budget
+        self._axiom = axiom
         self._citations = DeterministicCitationValidator()
 
     async def generate(
@@ -90,6 +94,8 @@ class IntelligenceService:
         language = str(lecture.get("language") or "en")
         concepts: list[InsightConcept] = []
         first_citations: list[Citation] = []
+        all_segments = []
+        seen_segments: set[str] = set()
         for cluster in clusters:
             if len(concepts) >= max_concepts:
                 break
@@ -101,6 +107,11 @@ class IntelligenceService:
             )
             if not context.temporal_segments:
                 continue
+            for candidate in context.temporal_segments:
+                key = str(candidate.segment_id)
+                if key not in seen_segments:
+                    seen_segments.add(key)
+                    all_segments.append(candidate)
             segment = min(
                 context.temporal_segments,
                 key=lambda item: (abs(item.start_ms - cluster.start_ms), item.start_ms),
@@ -208,7 +219,8 @@ class IntelligenceService:
             concepts=concepts,
             task=task,
         )
-        validation = {
+        source = "template"
+        validation: dict[str, object] = {
             "schema_ok": True,
             "citations_ok": True,
             "answer_leak": False,
@@ -221,16 +233,38 @@ class IntelligenceService:
             ],
             "statistics": stats,
         }
+        if self._axiom.live_available and all_segments:
+            combined = RetrievalContext(
+                lecture_id=lecture_id,
+                focus_offset_ms=all_segments[0].start_ms,
+                window_start_ms=min(segment.start_ms for segment in all_segments),
+                window_end_ms=max(segment.end_ms for segment in all_segments),
+                temporal_segments=all_segments,
+            )
+            live = await self._axiom.insight(
+                context=combined,
+                statistics=stats,
+                kind=kind,
+                language=language,
+                max_concepts=max_concepts,
+            )
+            if live is not None:
+                content, live_validation = live
+                source = "live"
+                validation = {
+                    **live_validation.model_dump(),
+                    "statistics": stats,
+                }
         insight = await self._insights.create_generated(
             lecture_id=lecture_id,
             professor_id=professor_id,
             kind=kind,
             content=content,
-            source="template",
+            source=source,
             validation=validation,
         )
         return IntelligenceGenerateResponse(
             insight=insight,
             selection=f"persisted_clusters={len(clusters)}; selected={len(concepts)}",
-            source="template",
+            source=source,
         )

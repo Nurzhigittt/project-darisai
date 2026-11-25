@@ -170,7 +170,7 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - `pytest -q`: **108 passed**; Ruff and mypy clean.
 - Frontend: ESLint, TypeScript, Vitest 11/11 and production build passed; contracts regenerated and stable.
 - AI evaluation: 30 retrieval cases, Recall@4 **0.600**, MRR **0.4819**; 10/10 deterministic guardrails. Raw result `artifacts/evals/eval-20261125T180048Z.json`.
-- No live LLM or Whisper call was made. No deployment or Docker run was performed.
+- The earlier baseline made no live LLM/Whisper call; the hardening pass later verified live DeepSeek and Groq calls. No deployment or Docker run was performed.
 - PR #2 GitHub Actions at `e19ffef`: backend, frontend, contract drift, secret scanning and E2E all passed.
 
 ## P3 AI hardening (commit `a8eeac2`)
@@ -178,9 +178,9 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - Hybrid retrieval added: exact filtered cosine + BM25 + weighted RRF + temporal RRF; dense-only mode retained.
 - Corrected off-by-one relevance labels in the 30-case suite before reporting the new benchmark.
 - Retrieval: overall Recall@4 **0.8667**, MRR **0.7000**; RU 0.90, EN 0.80, KK 0.90; held-out Recall@4 **0.90**.
-- Adversarial suite: **32/32** constructed cases (29 deterministic, 1 fake LLM, 2 template). Live LLM sample size: **0**.
-- Provider smoke: **blocked** — no DeepSeek/Groq/OpenAI credentials. Raw artifact `artifacts/evals/hardening/provider-smoke-blocked.json`.
+- Adversarial suite: **32/32** constructed cases (29 deterministic, 1 fake LLM, 2 template). Live adversarial sample size: **0**.
+- Live provider smoke: **10/10 functional checks** with DeepSeek `deepseek-flash`; Groq `whisper-large-v3-turbo` returned a timestamped transcription. Raw artifacts `artifacts/evals/hardening/live-provider-smoke.json` and `provider-smoke.json`.
 - Added per-Replay-Token request cap, single-use state nonce, model prewarm and status readiness.
 - Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
 - Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
-- No live provider, Docker or deployment was claimed.
+- No Docker or cloud deployment was performed. Live provider functional checks passed, but no live adversarial safety benchmark was run.

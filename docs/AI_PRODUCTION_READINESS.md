@@ -1,6 +1,6 @@
 # AI production readiness
 
-**Date:** 25 November 2026
+**Date:** 26 November 2026
 **Scope:** P3 Axiom embedding/retrieval/generation runtime.
 **Deployment status:** not deployed. Docker was unavailable; this document records local production-shape measurements and the required deployment controls.
 
@@ -10,8 +10,8 @@
 | --- | --- |
 | Embedding runtime | **Ready** — real ONNX E5, 384-d, cached |
 | Hybrid retrieval | **Ready** — dense + BM25 + RRF + temporal; see benchmark |
-| LLM provider adapter | **Implemented, unverified live** — no credentials |
-| Whisper STT adapter | **Implemented, unverified live** — no credentials |
+| LLM provider adapter | **Verified live** — DeepSeek `deepseek-flash` |
+| Whisper STT adapter | **Verified live** — Groq `whisper-large-v3-turbo` |
 | Template fallback | **Ready** — offline demo path |
 | Model prewarm | **Implemented** — `AXIOM_EMBEDDING_PREWARM=true` |
 | Abuse/cost controls | **Implemented locally** — Redis token limit, single-use state, daily budget |
@@ -48,9 +48,10 @@ AXIOM_LLM_PROVIDER=openai_compatible
 AXIOM_LLM_BASE_URL=https://api.deepseek.com
 AXIOM_LLM_API_KEY=<secret>
 AXIOM_LLM_MODEL=deepseek-flash
-AXIOM_LLM_TIMEOUT_SECONDS=8
+AXIOM_LLM_TIMEOUT_SECONDS=20
 AXIOM_LLM_MAX_RETRIES=1
 AXIOM_LLM_CONCURRENCY=2
+AXIOM_LLM_DISABLE_THINKING=true
 
 AXIOM_STT_PROVIDER=openai_compatible
 AXIOM_STT_BASE_URL=https://api.groq.com/openai/v1
@@ -60,12 +61,13 @@ AXIOM_STT_TIMEOUT_SECONDS=90
 AXIOM_STT_MAX_FILE_BYTES=26214400
 
 AXIOM_DAILY_GENERATION_BUDGET=100
+AXIOM_USE_LLM_JUDGES=false
 AXIOM_REPLAY_REQUESTS_PER_TOKEN=40
 AXIOM_STATE_SINGLE_USE=true
 AXIOM_REPLAY_MAX_TURNS=6
 ```
 
-DeepSeek model/base identifiers were checked against the current [DeepSeek API docs](https://api-docs.deepseek.com/): `deepseek-flash` and `https://api.deepseek.com`. Groq STT model/endpoint were checked against the [Groq speech-to-text docs](https://console.groq.com/docs/speech-to-text): `whisper-large-v3-turbo` and `https://api.groq.com/openai/v1`. Neither provider was called live because no API key was present.
+DeepSeek model/base identifiers were checked against the current [DeepSeek API docs](https://api-docs.deepseek.com/): `deepseek-flash` and `https://api.deepseek.com`. Groq STT model/endpoint were checked against the [Groq speech-to-text docs](https://console.groq.com/docs/speech-to-text): `whisper-large-v3-turbo` and `https://api.groq.com/openai/v1`. Both providers were called live on 2026-11-26; the smoke artifact is `artifacts/evals/hardening/live-provider-smoke.json`.
 
 ## Model cache and prewarm
 
@@ -91,7 +93,8 @@ Local Windows CPU, one Uvicorn worker, model cached:
 | 30-client ack p95 | 9.99 ms |
 | AI workload errors | 0 |
 | API working set after model load | ~694 MB |
-| LLM / STT latency | **unverified** |
+| LLM latency | p50 3.15 s / p95 6.09 s |
+| STT latency | 1.74 s |
 
 The realtime path was not modified. The 300-client Phase 1 baseline (493.25 ms p95) and the 30-client run under AI load (491.84 ms p95) are close; this is a spot check, not proof of no regression under all conditions.
 
@@ -104,7 +107,7 @@ Raw measurement: `artifacts/evals/hardening/performance.json`.
 - `AXIOM_STATE_SINGLE_USE=true` — signed state nonce is atomically consumed in Redis; a replay returns `REPLAY_STATE_REPLAYED`.
 - LLM concurrency, embedding concurrency, history/input/context/output limits, audio size/MIME limits.
 - LLM token usage is exposed as `axiom_llm_usage` in `/api/v1/status`; this is usage accounting, not billed cost.
-- **No monetary cost estimate is reported.** No live provider usage or verified pricing was collected.
+- **No monetary cost estimate is reported.** The smoke run recorded 12,246 input and 3,265 output tokens across 10 LLM calls, but no provider pricing was configured or billed. This is usage accounting, not a cost estimate.
 
 ## Degraded behavior
 
@@ -130,8 +133,8 @@ Raw measurement: `artifacts/evals/hardening/performance.json`.
 
 ## Known blockers
 
-- No DeepSeek/Groq/OpenAI credentials in this environment; **live LLM/STT verification is blocked**, not passed.
 - No Docker/cloud deployment test.
+- Live adversarial/jailbreak sample size is one; it is not a safety benchmark.
 - Model is 235 MB; cold start/prewarm is operationally significant.
 - `deepseek-flash` is the current documented model at the time of writing; provider model names can change. Re-verify at deployment.
 - Public demo still needs a per-token/lecture budget review by P2/P4 before exposure.

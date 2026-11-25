@@ -60,7 +60,7 @@ class OpenAICompatibleLLMClient:
         if not self._settings.axiom_llm_api_key:
             raise LLMError("LLM_NOT_CONFIGURED", "The language model is not configured.")
         url = self._settings.axiom_llm_base_url.rstrip("/") + "/chat/completions"
-        body = {
+        body: dict[str, object] = {
             "model": self._settings.axiom_llm_model,
             "messages": [
                 {"role": "system", "content": system_prompt},
@@ -70,6 +70,13 @@ class OpenAICompatibleLLMClient:
             "max_tokens": self._settings.axiom_llm_max_output_tokens,
             "response_format": {"type": "json_object"},
         }
+        if (
+            self._settings.axiom_llm_disable_thinking
+            and "deepseek" in self._settings.axiom_llm_base_url.lower()
+        ):
+            # DeepSeek reasoning tokens otherwise consume max_tokens and can
+            # return an empty JSON body. This flag is provider-specific.
+            body["thinking"] = {"type": "disabled"}
         headers = {
             "Authorization": f"Bearer {self._settings.axiom_llm_api_key}",
             "Content-Type": "application/json",
@@ -131,7 +138,13 @@ class OpenAICompatibleLLMClient:
         if cleaned.startswith("```"):
             cleaned = cleaned.removeprefix("```json").removeprefix("```")
             cleaned = cleaned.rsplit("```", 1)[0].strip()
-        parsed = json.loads(cleaned)
+        # Some providers prepend a short explanation even when JSON mode is
+        # requested. Extract the first object rather than accepting prose.
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+        if start == -1 or end <= start:
+            raise ValueError("LLM response contains no JSON object")
+        parsed = json.loads(cleaned[start : end + 1])
         if not isinstance(parsed, dict):
             raise ValueError("LLM response is not a JSON object")
         return parsed
