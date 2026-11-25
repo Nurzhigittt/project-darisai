@@ -1,0 +1,33 @@
+"use client";
+
+import Link from "next/link";
+
+import { Logo } from "@/components/ui/logo";
+import { useI18n } from "@/lib/i18n";
+
+export function OfflineContent() {
+  const { t } = useI18n();
+  return (
+    <div className="grid min-h-dvh place-items-center bg-background p-6">
+      <div className="max-w-md text-center">
+        <div className="flex justify-center">
+          <Logo />
+        </div>
+        <div
+          aria-hidden
+          className="mx-auto mt-8 grid size-24 place-items-center rounded-full border border-border bg-surface"
+        >
+          <span className="size-12 rounded-full border-4 border-dashed border-accent/70" />
+        </div>
+        <h1 className="mt-7 text-3xl font-extrabold">{t("pwa.offline")}</h1>
+        <p className="mt-3 leading-7 text-muted">{t("pwa.offlineBody")}</p>
+        <Link
+          href="/"
+          className="mt-7 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-white"
+        >
+          {t("common.back")}
+        </Link>
+      </div>
+    </div>
+  );
+}
