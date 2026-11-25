@@ -69,7 +69,7 @@ def settings() -> Settings:
     return make_settings()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def reset_infrastructure(settings: Settings) -> Iterator[None]:
     asyncio.run(_reset_database())
 
@@ -85,7 +85,9 @@ def reset_infrastructure(settings: Settings) -> Iterator[None]:
 
 
 @pytest.fixture(scope="session")
-def client(settings: Settings, reset_infrastructure: None) -> Iterator[TestClient]:
+def client(
+    settings: Settings, reset_infrastructure: None
+) -> Iterator[TestClient]:
     app = create_app(settings)
     with TestClient(app) as test_client:
         yield test_client

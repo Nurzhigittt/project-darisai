@@ -37,7 +37,7 @@ class AuthService:
         token, expires_in, _ = self._codec.issue_professor_access(professor_id)
         self._logger.info(
             "professor_login",
-            extra={"event": "professor_login", "professor_id": str(professor_id)},
+            extra={"event": "professor_login"},
         )
         return ProfessorLoginResponse(
             access_token=token,

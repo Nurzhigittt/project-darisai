@@ -18,6 +18,7 @@ class LiveConnection:
     websocket: WebSocket
     role: Literal["student", "professor"]
     lecture_id: UUID
+    auth_expires_at: int
     token_hash: str | None = None
     professor_id: UUID | None = None
     connected_at: float = field(default_factory=time.monotonic)
@@ -26,6 +27,10 @@ class LiveConnection:
     rate_tokens: float = 20.0
     rate_last: float = field(default_factory=time.monotonic)
     closed: bool = False
+
+    @property
+    def authorization_expired(self) -> bool:
+        return int(time.time()) >= self.auth_expires_at
 
     def take_rate_token(self, rate_per_second: int, burst: int) -> bool:
         now = time.monotonic()

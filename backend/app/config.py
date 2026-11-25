@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from typing import Literal
+from urllib.parse import urlsplit
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -43,6 +44,7 @@ class Settings(BaseSettings):
     professor_jwt_ttl_minutes: int = 720
     signal_token_ttl_minutes: int = 240
     replay_token_ttl_minutes: int = 1440
+    handoff_link_ttl_hours: int = Field(default=168, ge=1, le=720)
 
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     ws_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
@@ -85,6 +87,27 @@ class Settings(BaseSettings):
                 raise ValueError(f"{field_name.upper()} must be a strong production secret")
         if self.auto_seed:
             raise ValueError("AUTO_SEED must be false in production")
+        if not self.ws_require_origin_in_production:
+            raise ValueError("WS_REQUIRE_ORIGIN_IN_PRODUCTION must be true in production")
+        for setting_name, origins in (
+            ("CORS_ORIGINS", self.cors_origin_list),
+            ("WS_ALLOWED_ORIGINS", self.ws_allowed_origin_list),
+        ):
+            if not origins:
+                raise ValueError(f"{setting_name} must contain explicit HTTPS origins")
+            for origin in origins:
+                parsed = urlsplit(origin)
+                if (
+                    origin == "*"
+                    or parsed.scheme != "https"
+                    or not parsed.netloc
+                    or parsed.path
+                    or parsed.query
+                    or parsed.fragment
+                    or parsed.username
+                    or parsed.password
+                ):
+                    raise ValueError(f"{setting_name} must contain explicit HTTPS origins")
         return self
 
     @property

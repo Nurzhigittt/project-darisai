@@ -167,6 +167,8 @@ class TokenCodec:
             )
         except Exception as exc:
             raise TokenError("malformed") from exc
+        if claims.scope != scope:
+            raise TokenError("scope_mismatch")
         now = int(time.time())
         if claims.expires_at <= now:
             raise TokenError("expired")

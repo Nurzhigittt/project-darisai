@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import base64
+import hashlib
+import hmac
+import json
+import time
 from uuid import uuid4
 
 import pytest
@@ -44,6 +49,29 @@ def test_expired_token_is_rejected() -> None:
     token = codec.issue(scope="replay", lecture_id=uuid4(), ttl_seconds=-10)
     with pytest.raises(TokenError, match="expired"):
         codec.verify(token.raw_token)
+
+
+def test_signed_scope_prefix_must_match_scope_claim() -> None:
+    settings = make_settings()
+    codec = TokenCodec(settings)
+    payload = {
+        "scp": "replay",
+        "lid": str(uuid4()),
+        "iat": int(time.time()),
+        "exp": int(time.time()) + 600,
+        "jti": "fixture",
+    }
+    payload_b64 = base64.urlsafe_b64encode(
+        json.dumps(payload, separators=(",", ":"), sort_keys=True).encode()
+    ).rstrip(b"=").decode()
+    signed = f"daris1.signal.{payload_b64}"
+    signature = hmac.new(
+        settings.token_signing_secret.encode(), signed.encode("ascii"), hashlib.sha256
+    ).digest()
+    signature_b64 = base64.urlsafe_b64encode(signature).rstrip(b"=").decode()
+
+    with pytest.raises(TokenError, match="scope_mismatch"):
+        codec.verify(f"{signed}.{signature_b64}", expected_scope="signal")
 
 
 def test_tampered_signature_is_rejected() -> None:

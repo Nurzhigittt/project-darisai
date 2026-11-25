@@ -130,11 +130,13 @@ class WebSocketGateway:
             lecture = await self._ctx.lectures.get_by_id(lecture_id)
             token_hash: str | None = None
             professor_id: UUID | None = None
+            auth_expires_at: int
             if hello.role == "student":
                 student_claims = await self._ctx.student_tokens.validate_signal_token(
                     hello.signal_token, lecture_id
                 )
                 token_hash = student_claims.token_hash
+                auth_expires_at = student_claims.expires_at
                 if lecture["status"] == "ended":
                     await _send_error(
                         websocket,
@@ -147,6 +149,7 @@ class WebSocketGateway:
             else:
                 professor_claims = self._ctx.codec.verify_professor_access(hello.access_token)
                 professor_id = professor_claims.professor_id
+                auth_expires_at = professor_claims.expires_at
                 lecture = await self._ctx.lectures.get_owned(lecture_id, professor_id)
                 if lecture["status"] == "ended":
                     await _send_error(
@@ -162,6 +165,7 @@ class WebSocketGateway:
                 websocket=websocket,
                 role=hello.role,
                 lecture_id=lecture_id,
+                auth_expires_at=auth_expires_at,
                 token_hash=token_hash,
                 professor_id=professor_id,
                 rate_tokens=float(settings.ws_rate_burst),
@@ -233,6 +237,17 @@ class WebSocketGateway:
             except WebSocketDisconnect:
                 raise
             except RuntimeError:
+                break
+            if connection.authorization_expired:
+                await _send_error(
+                    connection.websocket,
+                    connection.lecture_id,
+                    "UNAUTHORIZED",
+                    "The session expired. Reconnect to continue.",
+                )
+                await connection.websocket.close(
+                    code=CLOSE_UNAUTHORIZED, reason="session expired"
+                )
                 break
             if len(raw.encode("utf-8")) > settings.ws_max_message_bytes:
                 await _send_error(
@@ -407,6 +422,11 @@ class WebSocketGateway:
             while True:
                 await asyncio.sleep(settings.ws_heartbeat_seconds)
                 if connection.closed:
+                    return
+                if connection.authorization_expired:
+                    await connection.websocket.close(
+                        code=CLOSE_UNAUTHORIZED, reason="session expired"
+                    )
                     return
                 if time.monotonic() - connection.last_seen > settings.ws_idle_timeout_seconds:
                     await connection.websocket.close(code=1001, reason="heartbeat timeout")

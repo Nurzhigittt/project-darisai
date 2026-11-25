@@ -47,3 +47,34 @@ def test_production_rejects_http_and_seed() -> None:
             token_signing_secret=strong,
             rate_limit_secret=strong,
         )
+
+
+def test_production_requires_explicit_https_origins() -> None:
+    strong = "x" * 64
+    with pytest.raises(ValidationError, match="CORS_ORIGINS"):
+        Settings(
+            environment="production",
+            app_base_url="https://daris.example",
+            auto_seed=False,
+            jwt_secret=strong,
+            token_signing_secret=strong,
+            rate_limit_secret=strong,
+            cors_origins="*",
+            ws_allowed_origins="https://daris.example",
+        )
+
+
+def test_production_requires_websocket_origin_validation() -> None:
+    strong = "x" * 64
+    with pytest.raises(ValidationError, match="WS_REQUIRE_ORIGIN_IN_PRODUCTION"):
+        Settings(
+            environment="production",
+            app_base_url="https://daris.example",
+            auto_seed=False,
+            jwt_secret=strong,
+            token_signing_secret=strong,
+            rate_limit_secret=strong,
+            cors_origins="https://daris.example",
+            ws_allowed_origins="https://daris.example",
+            ws_require_origin_in_production=False,
+        )

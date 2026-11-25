@@ -13,6 +13,9 @@ from app.redis_client import RedisClient
 from app.security import TokenCodec
 from app.services.analytics import AnalyticsService
 from app.services.auth import AuthService
+from app.services.autonomy import ConceptAutonomyService
+from app.services.cohort import CohortMemoryService
+from app.services.insights import InsightService
 from app.services.lectures import CourseService, LectureService
 from app.services.rate_limit import RateLimiter
 from app.services.tokens import StudentTokenService
@@ -29,9 +32,12 @@ class AppContext:
     courses: CourseService
     lectures: LectureService
     student_tokens: StudentTokenService
+    insights: InsightService
     rate_limiter: RateLimiter
     signals: SignalProcessor
     analytics: AnalyticsService
+    autonomy: ConceptAutonomyService
+    cohort_memory: CohortMemoryService
     connections: ConnectionManager
     event_bus: LectureEventBus
     ripple: RippleRuntime
@@ -57,9 +63,12 @@ class AppContext:
             courses=CourseService(db),
             lectures=LectureService(db, settings),
             student_tokens=StudentTokenService(redis_client, codec, settings),
+            insights=InsightService(db, settings),
             rate_limiter=RateLimiter(redis_client, settings),
             signals=signals,
             analytics=analytics,
+            autonomy=ConceptAutonomyService(db),
+            cohort_memory=CohortMemoryService(db),
             connections=manager,
             event_bus=event_bus,
             ripple=ripple,
