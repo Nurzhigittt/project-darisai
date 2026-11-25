@@ -14,6 +14,7 @@
 | Hardening adversarial | 32 | 32/32 | 29 deterministic + 1 fake LLM + 2 template |
 | Live LLM functional checks | **10** | **10/10 live source** | DeepSeek `deepseek-flash` |
 | Live Whisper | **1** | provider call succeeded | Groq `whisper-large-v3-turbo` |
+| Live P2 API BriefNext | **1** | `source=live`, `pending_approval` | DeepSeek via FastAPI |
 | Live adversarial safety | **1** | **1/1 transcript injection** | not a safety benchmark |
 
 The 32/32 adversarial result is **not** evidence of live-model prompt-injection
@@ -39,6 +40,7 @@ Raw result: `artifacts/evals/hardening/live-provider-smoke.json`.
 | Handoff | pass, 2 concepts + task, grounded 1.0 | live |
 | Groundedness judge | score 1.0 | live |
 | Timestamped Groq STT | pass, 1 segment, 4.93 s audio | live |
+| P2 API BriefNext | pass, 2 concepts, `pending_approval` | live |
 
 Live LLM latency: p50 **3.15 s**, p95 **6.09 s**. STT latency: **1.74 s**.
 One transient failure occurred across 10 LLM calls; the retry/fallback policy

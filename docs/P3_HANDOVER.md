@@ -37,6 +37,7 @@
 - Counts/time windows come from PostgreSQL clusters; quotes are verified.
 - Handoff gets a grounded seminar task; no auto-publication.
 - **Template wording** is the offline fallback; DeepSeek `deepseek-flash` live BriefNext/Handoff passed citation and grounding validation on 2026-11-26.
+- Live P2 API check returned `source=live` and `status=pending_approval` for BriefNext; approval workflow was not auto-bypassed.
 
 ### Phase 6 support
 

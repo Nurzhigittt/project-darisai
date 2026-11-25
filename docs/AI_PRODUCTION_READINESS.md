@@ -16,6 +16,7 @@
 | Model prewarm | **Implemented** — `AXIOM_EMBEDDING_PREWARM=true` |
 | Abuse/cost controls | **Implemented locally** — Redis token limit, single-use state, daily budget |
 | Observability | `/api/v1/status` shows embedding readiness and LLM usage counters |
+| P2 insight approval | **Verified live** — `source=live`, `pending_approval` |
 | Production deployment | **Not verified** |
 
 ## Required environment

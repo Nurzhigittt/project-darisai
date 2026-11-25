@@ -179,7 +179,7 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - Corrected off-by-one relevance labels in the 30-case suite before reporting the new benchmark.
 - Retrieval: overall Recall@4 **0.8667**, MRR **0.7000**; RU 0.90, EN 0.80, KK 0.90; held-out Recall@4 **0.90**.
 - Adversarial suite: **32/32** constructed cases (29 deterministic, 1 fake LLM, 2 template). Live adversarial sample size: **0**.
-- Live provider smoke: **10/10 functional checks** with DeepSeek `deepseek-flash`; Groq `whisper-large-v3-turbo` returned a timestamped transcription. Raw artifacts `artifacts/evals/hardening/live-provider-smoke.json` and `provider-smoke.json`.
+- Live provider smoke: **10/10 functional checks** with DeepSeek `deepseek-flash`; Groq `whisper-large-v3-turbo` returned a timestamped transcription. Live P2 API BriefNext returned `source=live` and `pending_approval`. Raw artifacts `artifacts/evals/hardening/live-provider-smoke.json`, `provider-smoke.json` and `live-api-insight.json`.
 - Added per-Replay-Token request cap, single-use state nonce, model prewarm and status readiness.
 - Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
 - Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
