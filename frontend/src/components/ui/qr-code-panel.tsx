@@ -55,7 +55,7 @@ export function QRCodePanel({
           size={size}
           level="M"
           bgColor="#FFFFFF"
-          fgColor="#26233A"
+          fgColor="#122C34"
           marginSize={2}
           aria-label={`QR code joining ${title}`}
           role="img"

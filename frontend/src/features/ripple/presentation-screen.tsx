@@ -57,7 +57,7 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
 
   if (loading) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-[#121212]">
+      <div data-theme="dark" className="grid min-h-dvh place-items-center bg-background">
         <Skeleton className="h-96 w-96" />
       </div>
     );
@@ -80,7 +80,7 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#121212] text-[#F4F2F7]">
+    <div data-theme="dark" className="flex min-h-dvh flex-col bg-background text-foreground">
       <header className="flex items-center justify-between px-6 py-5">
         <Link
           href={`/p/${lectureId}`}
@@ -118,7 +118,7 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
             size={340}
             level="M"
             bgColor="#FFFFFF"
-            fgColor="#26233A"
+            fgColor="#122C34"
             marginSize={2}
             aria-label={`QR code joining ${lecture.title}`}
             role="img"

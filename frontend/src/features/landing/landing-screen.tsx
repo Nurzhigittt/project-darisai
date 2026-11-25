@@ -97,7 +97,7 @@ export function LandingScreen() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="#join"
-                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-lift transition-colors hover:bg-primary-strong"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lift transition-colors hover:bg-primary-strong"
                 >
                   {t("landing.join.cta")}
                   <ArrowRight aria-hidden className="size-4" />

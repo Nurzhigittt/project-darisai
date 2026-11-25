@@ -28,13 +28,13 @@ const stateClasses: Record<SignalVisualState, string> = {
   connecting: "border-border bg-surface text-muted",
   ready:
     "border-ripple-low/35 bg-ripple-low text-[#0d2b1d] shadow-[0_0_70px_-18px_var(--ripple-low)] hover:brightness-105",
-  sending: "border-primary/30 bg-primary text-white",
+  sending: "border-primary/30 bg-primary text-primary-foreground",
   accepted: "border-positive/40 bg-positive text-[#102a1e]",
   cooldown: "border-border bg-surface-raised text-foreground",
   offline: "border-border bg-surface text-muted",
-  paused: "border-accent/40 bg-accent/20 text-[#5f3d15]",
+  paused: "border-ripple-attention/40 bg-ripple-attention/20 text-foreground",
   ended: "border-border bg-surface text-muted",
-  error: "border-ripple-warm/40 bg-ripple-warm/10 text-[#7b3216]",
+  error: "border-ripple-warm/40 bg-ripple-warm/10 text-foreground",
 };
 
 export function SignalButton({

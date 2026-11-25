@@ -7,9 +7,9 @@ type Tone = "neutral" | "primary" | "positive" | "attention" | "danger";
 const tones: Record<Tone, string> = {
   neutral: "bg-primary-soft/70 text-foreground",
   primary: "bg-primary-soft text-primary-strong",
-  positive: "bg-positive/15 text-[#2f6b51]",
-  attention: "bg-accent/25 text-[#7c4b16]",
-  danger: "bg-ripple-warm/15 text-[#8a3516]",
+  positive: "bg-positive/15 text-foreground",
+  attention: "bg-ripple-attention/25 text-foreground",
+  danger: "bg-ripple-warm/15 text-foreground",
 };
 
 export function Badge({

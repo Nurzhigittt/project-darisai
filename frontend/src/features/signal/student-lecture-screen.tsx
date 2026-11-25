@@ -315,7 +315,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
             action={
               <Link
                 href="/#join"
-                className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-white"
+                className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
               >
                 {t("join.cta")}
               </Link>
@@ -438,7 +438,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
                 </Button>
                 <Link
                   href={session.joinCode ? `/join/${session.joinCode}` : "/#join"}
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
                 >
                   {t("student.rejoin")}
                 </Link>

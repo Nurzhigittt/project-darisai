@@ -1,5 +1,5 @@
 /* DärisAI app-shell service worker. API responses and credentials are never cached. */
-const CACHE = "daris-shell-v3";
+const CACHE = "daris-shell-v4";
 const SHELL = [
   "/",
   "/offline",

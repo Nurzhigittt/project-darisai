@@ -157,7 +157,7 @@ export function JoinScreen({ code }: { code: string }) {
                   action={
                     <Link
                       href="/#join"
-                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-white"
+                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
                     >
                       {t("common.retry")}
                     </Link>
@@ -174,7 +174,7 @@ export function JoinScreen({ code }: { code: string }) {
                   action={
                     <Link
                       href="/"
-                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-white"
+                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
                     >
                       {t("common.back")}
                     </Link>

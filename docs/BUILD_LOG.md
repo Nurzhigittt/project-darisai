@@ -181,3 +181,11 @@ Actual local verification:
 This is a locally implemented frontend slice, not verified end-to-end delivery. See `docs/handover/P1.md` for the integration checklist and deferred scope. No push, PR or deployment was performed.
 
 Implementation commit: `283fae3c99f6842f5e30e3cf83cca4a709ca16f3` — `feat(frontend): add BriefNext review and public Handoff`, on `feat/p1-frontend-experience`.
+
+## User-supplied design tokens — 2026-11-26
+
+Applied the supplied light/dark background, primary, foreground, secondary, accent and surface values exactly. Updated their paired RGB variables for Tailwind opacity utilities and derived hover, soft, muted, border and focus tones. Added a primary-foreground token so pink buttons use dark text in dark mode. Warning states use the existing semantic attention color. Updated browser/PWA colors, the app-shell cache version, presentation background and QR foreground.
+
+Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. A one-off calculation checked the exact supplied values and every paired RGB value; sampled body, muted, primary-button and badge text/background combinations exceeded 4.5:1. Primary-button text contrast is 7.65:1 in light mode and 5.66:1 in dark mode. This is not a complete WCAG audit.
+
+Inspected the login screen in the built-in browser at desktop and 390×844 in both themes, confirmed computed colors, and found no horizontal overflow. Saved light/dark screenshots as session deliverables. Existing full-backend/E2E limitations above remain unchanged; no push or deployment was performed.

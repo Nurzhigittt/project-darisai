@@ -23,7 +23,7 @@ export function OfflineContent() {
         <p className="mt-3 leading-7 text-muted">{t("pwa.offlineBody")}</p>
         <Link
           href="/"
-          className="mt-7 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-white"
+          className="mt-7 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground"
         >
           {t("common.back")}
         </Link>

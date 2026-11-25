@@ -93,7 +93,7 @@ export function PrivacyScreen() {
               action={
                 <a
                   href={`${API_URL}/api/v1/privacy/manifest`}
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-white"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground"
                 >
                   {t("common.retry")}
                 </a>
