@@ -171,3 +171,4 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - Frontend: ESLint, TypeScript, Vitest 11/11 and production build passed; contracts regenerated and stable.
 - AI evaluation: 30 retrieval cases, Recall@4 **0.600**, MRR **0.4819**; 10/10 deterministic guardrails. Raw result `artifacts/evals/eval-20261125T180048Z.json`.
 - No live LLM or Whisper call was made. No deployment or Docker run was performed.
+- PR #2 GitHub Actions at `e19ffef`: backend, frontend, contract drift, secret scanning and E2E all passed.

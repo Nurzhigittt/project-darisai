@@ -147,5 +147,6 @@ AXIOM_DAILY_GENERATION_BUDGET=100
 | `eaa6a40` | Embeddings, transcript ingestion, STT adapter, temporal retrieval |
 | `789e74d` | Guardrails, Socratic Replay, GapCards, teacher intelligence, tests |
 | `4b06410` | Evaluation suite, demo fixtures, contracts and P3 documentation |
+| `e19ffef` | Scrub synthetic fixture tokens and fix the secret-scanning false positive |
 
-Final branch HEAD is recorded in the PR and the execution report. No force-push or history rewrite was used.
+Final branch HEAD is the latest commit on PR #2. At `e19ffef`, GitHub Actions passed backend, frontend, contract drift, secret scanning and E2E. No force-push or history rewrite was used.
