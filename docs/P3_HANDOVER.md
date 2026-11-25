@@ -2,7 +2,7 @@
 
 **Branch:** `feat/p3-axiom-engine`  
 **Base:** `0cce36eed53b3e8f247dcaaf09d34828f90bc58d`  
-**Status:** Phase 2 working vertical slice; Phase 3 working; Phase 4 template integration; live providers unverified.  
+**Status:** Phase 2 hardening complete (live providers unverified); Phase 3 complete; Phase 4 template integration; Phase 6 P3 support delivered.  
 **Date:** 25 November 2026 (Asia/Qyzylorda)
 
 ## What is implemented
@@ -14,17 +14,19 @@
 - Timestamped JSON transcript ingestion through a professor-only endpoint and the `scripts/ingest_transcript.py` CLI.
 - Idempotent segment upsert; duplicate chunks cannot create duplicate rows.
 - Real Whisper-compatible STT adapter with multipart upload, segment timestamps, offsets, size/MIME checks and bounded retries. **No live call verified.**
-- Lecture-isolated temporal + exact filtered cosine retrieval; no HNSW assumption.
+- Lecture-isolated hybrid retrieval: exact filtered cosine + BM25 + weighted RRF + temporal window; no HNSW assumption. Dense-only mode remains available for baseline comparison.
 - Configurable OpenAI-compatible JSON LLM client with timeout, retry, concurrency, usage counters and sanitized errors. **No live call verified.**
 - Versioned prompt files; transcript and student input are escaped and delimited as untrusted data.
 - Deterministic citation, Socratic, answer-leak and groundedness checks, with optional judge.
 - One stricter retry and transcript-only template fallback; `source` is explicit.
-- Daily Redis generation budget per lecture.
+- Daily Redis generation budget per lecture; per-Replay-Token request cap; single-use signed state nonce.
+- Controlled embedding prewarm with persistent model-cache mount.
 
 ### Phase 3
 
+- MCQ shape and validation are implemented; the live/fake-LLM path can return MCQ. The offline template fallback deliberately returns a question or reflection rather than fabricating a correct-answer key.
 - `POST /api/v1/replay/start`: 1-20 offsets, 20-second deduplication, signed moments, verified recap citations.
-- `POST /api/v1/replay/turn`: Replay Token authorization, signed state, stage/turn transitions, bounded history, MCQ/question/reflection/refusal.
+- `POST /api/v1/replay/turn`: Replay Token authorization, signed state, stage/turn transitions, bounded history, MCQ/question/reflection/refusal, single-use state nonce and per-token request cap.
 - `POST /api/v1/gapcards/generate`: signed moments, verified quotes/citations, duplicate prevention, template fallback.
 - No student conversation table; no individual card history server-side.
 
@@ -102,7 +104,7 @@ mypy app
 pytest -q
 ```
 
-Current result: **108 tests passed** (including existing Phase 1/2 tests), Ruff clean, mypy clean. Frontend lint, typecheck, unit tests, production build and contracts passed on the P3 branch.
+Current result: **114 tests passed** (including existing Phase 1/2 tests), Ruff clean, mypy clean. Frontend lint, typecheck, unit tests, production build and contracts passed on the P3 branch.
 
 AI evaluation:
 
@@ -110,11 +112,16 @@ AI evaluation:
 python -m evals.runner
 ```
 
-- 30 retrieval cases: Recall@4 **0.600**, MRR **0.4819** (RU 0.900/0.8091; EN 0.600/0.3815; KK 0.300/0.2550).
-- 10 deterministic guardrail cases: **10/10**.
+- 30 retrieval cases, hybrid + temporal: Recall@4 **0.8667**, MRR **0.7000** (RU 0.90/0.85; EN 0.80/0.575; KK 0.90/0.675); held-out 10: **0.90**.
+- 10 original deterministic guardrails: **10/10**.
+- 32 adversarial cases: **32/32** (29 deterministic, 1 fake LLM, 2 template; 0 live).
 - No live LLM/STT call. No claim of live-model quality.
 
-See [GUARDRAILS_REPORT.md](GUARDRAILS_REPORT.md).
+See:
+- [RETRIEVAL_BENCHMARK.md](RETRIEVAL_BENCHMARK.md)
+- [GUARDRAILS_REPORT.md](GUARDRAILS_REPORT.md)
+- [AI_PRODUCTION_READINESS.md](AI_PRODUCTION_READINESS.md)
+- [AI_PROVIDER_SETUP.md](AI_PROVIDER_SETUP.md)
 
 ## Environment
 
@@ -127,13 +134,16 @@ AXIOM_EMBEDDING_CACHE_DIR=.model_cache
 AXIOM_LLM_PROVIDER=disabled
 AXIOM_STT_PROVIDER=disabled
 AXIOM_DAILY_GENERATION_BUDGET=100
+AXIOM_REPLAY_REQUESTS_PER_TOKEN=40
+AXIOM_STATE_SINGLE_USE=true
+AXIOM_EMBEDDING_PREWARM=false
 ```
 
 ## Known limitations and blockers
 
 - No DeepSeek/OpenAI/Groq credentials: real LLM generation and real Whisper calls are **unverified**.
 - ONNX model download is 235 MB; first request is slow (cold load 4.3 s in the API, 41 s in the first instrumented run). Pre-warm at deploy time.
-- Multilingual retrieval is uneven, especially Kazakh; the 0.95 guardrail target is not achieved for retrieval.
+- Multilingual retrieval improved on the synthetic suite (KK 0.90, EN 0.80), but this is 30 project-labelled cross-lingual cases, not native EN/KK lectures. Does not establish universal quality.
 - BriefNext/Handoff use template wording in this environment; the LLM prompt exists but the live path was not enabled or verified.
 - No formal red-team, no human evaluation, no real-device audio test.
 - Streaming audio is not implemented; chunks are transcribed synchronously per request.

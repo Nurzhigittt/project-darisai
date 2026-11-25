@@ -58,6 +58,13 @@ class OnnxE5EmbeddingProvider:
         self._cache_dir = Path(settings.axiom_embedding_cache_dir)
         self._cache_dir.mkdir(parents=True, exist_ok=True)
 
+    @property
+    def ready(self) -> bool:
+        return self._session is not None
+
+    async def warmup(self) -> None:
+        await self._ensure_loaded()
+
     async def _ensure_loaded(self) -> None:
         if self._session is not None:
             return
@@ -180,6 +187,13 @@ class FakeEmbeddingProvider:
         self.dimension = dimension
         self.model_identifier = "fake/test-embedding"
         self.model_version = "fake/test-embedding/v1"
+
+    @property
+    def ready(self) -> bool:
+        return True
+
+    async def warmup(self) -> None:
+        return None
 
     def _vector(self, text: str) -> list[float]:
         vector = [0.0] * self.dimension

@@ -41,6 +41,15 @@ async def status(ctx: ContextDep) -> StatusResponse:
                 else "Pub/Sub fan-out is unavailable while Redis is down."
             ),
         ),
+        ComponentState(
+            name="Axiom embedding",
+            status="available" if ctx.embeddings.ready else "degraded",
+            detail=(
+                f"{ctx.embeddings.model_identifier}; loaded"
+                if ctx.embeddings.ready
+                else f"{ctx.embeddings.model_identifier}; lazy, not loaded"
+            ),
+        ),
     ]
     if not db_ok:
         overall = "unavailable"
@@ -64,6 +73,11 @@ async def status(ctx: ContextDep) -> StatusResponse:
             "ripple_broadcast_max_hz": 2,
             "ws_max_message_bytes": ctx.settings.ws_max_message_bytes,
             "signal_bucket_ms": ctx.settings.signal_bucket_ms,
+            "axiom_retrieval_mode": ctx.settings.axiom_retrieval_mode,
+            "axiom_daily_generation_budget": ctx.settings.axiom_daily_generation_budget,
+            "axiom_replay_requests_per_token": ctx.settings.axiom_replay_requests_per_token,
+            "axiom_llm_provider": ctx.settings.axiom_llm_provider,
+            "axiom_llm_usage": ctx.axiom.llm_usage,
         },
     )
 

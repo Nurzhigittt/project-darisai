@@ -84,16 +84,25 @@ class Settings(BaseSettings):
     axiom_embedding_batch_size: int = Field(default=16, ge=1, le=128)
     axiom_embedding_concurrency: int = Field(default=2, ge=1, le=16)
     axiom_embedding_max_tokens: int = Field(default=512, ge=32, le=512)
+    axiom_embedding_prewarm: bool = False
+    axiom_retrieval_mode: Literal["hybrid", "dense"] = "hybrid"
     axiom_retrieval_top_k: int = Field(default=4, ge=1, le=8)
+    axiom_dense_candidates: int = Field(default=16, ge=4, le=64)
+    axiom_lexical_candidates: int = Field(default=16, ge=4, le=64)
+    axiom_rrf_k: int = Field(default=60, ge=1, le=200)
+    axiom_dense_weight: float = Field(default=1.0, ge=0, le=5)
+    axiom_lexical_weight: float = Field(default=1.0, ge=0, le=5)
+    axiom_temporal_weight: float = Field(default=0.35, ge=0, le=5)
+    axiom_query_expansion: bool = True
     axiom_before_ms: int = Field(default=90_000, ge=0)
     axiom_after_ms: int = Field(default=10_000, ge=0)
     axiom_similarity_floor: float = Field(default=0.78, ge=-1, le=1)
     axiom_max_context_chars: int = Field(default=12_000, ge=1_000, le=50_000)
 
     axiom_llm_provider: Literal["disabled", "openai_compatible", "fake"] = "disabled"
-    axiom_llm_base_url: str = "https://api.deepseek.com/v1"
+    axiom_llm_base_url: str = "https://api.deepseek.com"
     axiom_llm_api_key: str = ""
-    axiom_llm_model: str = "deepseek-chat"
+    axiom_llm_model: str = "deepseek-flash"
     axiom_llm_timeout_seconds: float = Field(default=8.0, ge=0.5, le=60)
     axiom_llm_max_retries: int = Field(default=1, ge=0, le=2)
     axiom_llm_max_output_tokens: int = Field(default=1_200, ge=64, le=4_000)
@@ -101,6 +110,8 @@ class Settings(BaseSettings):
     axiom_daily_generation_budget: int = Field(default=100, ge=0, le=100_000)
 
     axiom_replay_max_turns: int = Field(default=6, ge=1, le=12)
+    axiom_replay_requests_per_token: int = Field(default=40, ge=1, le=1_000)
+    axiom_state_single_use: bool = True
     axiom_replay_max_history: int = Field(default=12, ge=0, le=30)
     axiom_replay_max_history_chars: int = Field(default=4_000, ge=0, le=20_000)
     axiom_state_ttl_minutes: int = Field(default=30, ge=1, le=180)

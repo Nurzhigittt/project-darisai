@@ -17,6 +17,7 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 from app.axiom.embeddings import OnnxE5EmbeddingProvider
+from app.axiom.lexical import BM25Index, rank_hybrid
 from app.axiom.models import RetrievalContext, SocraticTurn, TranscriptSegment
 from app.axiom.prompts import serialize_context
 from app.axiom.validators import (
@@ -26,6 +27,7 @@ from app.axiom.validators import (
     SocraticBehaviorValidator,
 )
 from app.config import get_settings
+
 from evals.scoring import mean, recall_at_k, reciprocal_rank
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,52 +58,145 @@ async def _retrieval() -> dict[str, object]:
     passages = await provider.embed_passages([segment.text for segment in segments])
     cases = json.loads(CASES.read_text(encoding="utf-8"))["cases"]
     queries = [await provider.embed_query(str(case["query"])) for case in cases]
-    rows = []
-    recalls: list[float] = []
-    reciprocal_ranks: list[float] = []
+    rows: list[dict[str, object]] = []
     for case, query_vector in zip(cases, queries, strict=True):
-        scores = [
-            sum(query_value * passage_value for query_value, passage_value in zip(query_vector, passage, strict=True))
+        dense_scores = [
+            sum(
+                query_value * passage_value
+                for query_value, passage_value in zip(query_vector, passage, strict=True)
+            )
             for passage in passages
         ]
-        ranked = sorted(range(len(scores)), key=lambda index: scores[index], reverse=True)
-        recall = recall_at_k(ranked, case["relevant"], 4)
-        rr = reciprocal_rank(ranked, case["relevant"])
-        recalls.append(recall)
-        reciprocal_ranks.append(rr)
-        rows.append(
-            {
-                "id": case["id"],
-                "language": case["language"],
-                "query": case["query"],
-                "relevant": case["relevant"],
-                "top4": ranked[:4],
-                "top_scores": [round(scores[index], 4) for index in ranked[:4]],
-                "recall@4": recall,
-                "mrr": round(rr, 4),
-            }
+        dense = sorted(range(len(dense_scores)), key=lambda index: (-dense_scores[index], index))[:4]
+        lexical = [
+            candidate.index
+            for candidate in BM25Index([segment.text for segment in segments]).search(
+                str(case["query"]), 4
+            )
+        ]
+        hybrid = rank_hybrid(
+            segments=segments,
+            dense_scores=dense_scores,
+            query=str(case["query"]),
+            focus_ms=int(case.get("focus_ms", 0)),
+            before_ms=settings.axiom_before_ms,
+            after_ms=settings.axiom_after_ms,
+            top_k=4,
+            dense_candidates=settings.axiom_dense_candidates,
+            lexical_candidates=settings.axiom_lexical_candidates,
+            rrf_k=settings.axiom_rrf_k,
+            dense_weight=settings.axiom_dense_weight,
+            lexical_weight=settings.axiom_lexical_weight,
+            temporal_weight=settings.axiom_temporal_weight,
+            dense_floor=-1.0,
+            use_temporal=False,
+            use_expansion=True,
         )
-    by_language: dict[str, dict[str, float]] = {}
-    for language in ("ru", "en", "kk"):
-        subset = [row for row in rows if row["language"] == language]
-        by_language[language] = {
-            "cases": float(len(subset)),
-            "recall@4": round(mean([row["recall@4"] for row in subset]), 4),
-            "mrr": round(mean([row["mrr"] for row in subset]), 4),
+        hybrid_no_expansion = rank_hybrid(
+            segments=segments,
+            dense_scores=dense_scores,
+            query=str(case["query"]),
+            focus_ms=int(case.get("focus_ms", 0)),
+            before_ms=settings.axiom_before_ms,
+            after_ms=settings.axiom_after_ms,
+            top_k=4,
+            dense_candidates=settings.axiom_dense_candidates,
+            lexical_candidates=settings.axiom_lexical_candidates,
+            rrf_k=settings.axiom_rrf_k,
+            dense_weight=settings.axiom_dense_weight,
+            lexical_weight=settings.axiom_lexical_weight,
+            temporal_weight=settings.axiom_temporal_weight,
+            dense_floor=-1.0,
+            use_temporal=False,
+            use_expansion=False,
+        )
+        hybrid_temporal = rank_hybrid(
+            segments=segments,
+            dense_scores=dense_scores,
+            query=str(case["query"]),
+            focus_ms=int(case.get("focus_ms", 0)),
+            before_ms=settings.axiom_before_ms,
+            after_ms=settings.axiom_after_ms,
+            top_k=4,
+            dense_candidates=settings.axiom_dense_candidates,
+            lexical_candidates=settings.axiom_lexical_candidates,
+            rrf_k=settings.axiom_rrf_k,
+            dense_weight=settings.axiom_dense_weight,
+            lexical_weight=settings.axiom_lexical_weight,
+            temporal_weight=settings.axiom_temporal_weight,
+            dense_floor=-1.0,
+            use_temporal=True,
+            use_expansion=True,
+        )
+        methods = {
+            "dense": dense,
+            "lexical": lexical,
+            "hybrid": hybrid,
+            "hybrid_no_expansion": hybrid_no_expansion,
+            "hybrid_temporal": hybrid_temporal,
         }
+        row: dict[str, object] = {
+            "id": case["id"],
+            "language": case["language"],
+            "query": case["query"],
+            "relevant": case["relevant"],
+            "focus_ms": case.get("focus_ms"),
+            "split": case.get("split", "tune"),
+            "top4": methods,
+            "dense_scores": [round(dense_scores[index], 4) for index in dense],
+        }
+        for method, ranked in methods.items():
+            row[f"{method}_recall@4"] = recall_at_k(ranked, case["relevant"], 4)
+            row[f"{method}_mrr"] = round(reciprocal_rank(ranked, case["relevant"]), 4)
+        rows.append(row)
+
+    def summarize(method: str, subset: list[dict[str, object]]) -> dict[str, float]:
+        return {
+            "cases": float(len(subset)),
+            "recall@4": round(mean([float(row[f"{method}_recall@4"]) for row in subset]), 4),
+            "mrr": round(mean([float(row[f"{method}_mrr"]) for row in subset]), 4),
+        }
+
+    methods = ["dense", "lexical", "hybrid", "hybrid_no_expansion", "hybrid_temporal"]
+    summary = {method: summarize(method, rows) for method in methods}
+    by_language = {
+        method: {
+            language: summarize(method, [row for row in rows if row["language"] == language])
+            for language in ("ru", "en", "kk")
+        }
+        for method in methods
+    }
+    by_split = {
+        method: {
+            split: summarize(method, [row for row in rows if row["split"] == split])
+            for split in ("tune", "holdout")
+        }
+        for method in methods
+    }
+    best_method = max(methods, key=lambda method: (summary[method]["recall@4"], summary[method]["mrr"]))
     return {
-        "suite": "retrieval",
+        "suite": "retrieval_hardening",
         "model": settings.axiom_embedding_model,
         "dimension": settings.embedding_dimension,
         "corpus": "bernoulli_ru",
-        "method": "exact cosine, no temporal filter, top-4",
+        "method": "dense / BM25 / weighted RRF / temporal RRF",
         "cases": len(rows),
-        "recall@4": round(mean(recalls), 4),
-        "mrr": round(mean(reciprocal_ranks), 4),
+        "summary": summary,
         "by_language": by_language,
+        "by_split": by_split,
+        "best_method": best_method,
+        "parameters": {
+            "dense_candidates": settings.axiom_dense_candidates,
+            "lexical_candidates": settings.axiom_lexical_candidates,
+            "rrf_k": settings.axiom_rrf_k,
+            "dense_weight": settings.axiom_dense_weight,
+            "lexical_weight": settings.axiom_lexical_weight,
+            "temporal_weight": settings.axiom_temporal_weight,
+            "before_ms": settings.axiom_before_ms,
+            "after_ms": settings.axiom_after_ms,
+        },
         "rows": rows,
     }
-
 
 def _context(segments: list[TranscriptSegment]) -> RetrievalContext:
     return RetrievalContext(
@@ -279,12 +374,15 @@ async def main() -> None:
     payload["guardrails"] = await _guardrails()
     OUT.mkdir(parents=True, exist_ok=True)
     target = args.output or OUT / f"eval-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if "retrieval" in payload:
         retrieval = payload["retrieval"]
+        best = retrieval["best_method"]
+        stats = retrieval["summary"][best]
         print(
-            f"retrieval cases={retrieval['cases']} recall@4={retrieval['recall@4']} "
-            f"mrr={retrieval['mrr']}"
+            f"retrieval cases={retrieval['cases']} best={best} "
+            f"recall@4={stats['recall@4']} mrr={stats['mrr']}"
         )
         print(json.dumps(retrieval["by_language"], ensure_ascii=False))
     guard = payload["guardrails"]

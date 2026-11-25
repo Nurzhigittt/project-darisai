@@ -1,0 +1,120 @@
+{
+  "_comment": "P1 integration fixtures. Tokens and IDs are placeholders, not usable credentials.",
+  "loading": {
+    "replay_start_pending": {
+      "status": "processing",
+      "message": "The transcript is being prepared."
+    },
+    "transcript_status_partial": {
+      "lecture_id": "11111111-1111-4111-8111-111111111111",
+      "latest_run": {
+        "status": "degraded",
+        "segment_count": 40,
+        "embedded_count": 0,
+        "error_code": "EMBEDDING_DEGRADED"
+      }
+    }
+  },
+  "errors": {
+    "LECTURE_NOT_ENDED": {
+      "status": 409,
+      "error": {
+        "code": "LECTURE_NOT_ENDED",
+        "message": "Replay becomes available after the lecture ends."
+      }
+    },
+    "TRANSCRIPT_REQUIRED": {
+      "status": 409,
+      "error": {
+        "code": "TRANSCRIPT_REQUIRED",
+        "message": "The professor has not made a transcript available for this lecture."
+      }
+    },
+    "REPLAY_STATE_INVALID": {
+      "status": 400,
+      "error": {
+        "code": "REPLAY_STATE_INVALID",
+        "message": "The replay state is invalid or expired. Start again."
+      }
+    },
+    "REPLAY_STATE_REPLAYED": {
+      "status": 409,
+      "error": {
+        "code": "REPLAY_STATE_REPLAYED",
+        "message": "This replay state has already been used. Start a new turn."
+      }
+    },
+    "AI_RATE_LIMITED": {
+      "status": 429,
+      "error": {
+        "code": "AI_RATE_LIMITED",
+        "message": "This replay credential has reached its request limit."
+      }
+    },
+    "AI_BUDGET_EXHAUSTED": {
+      "status": 429,
+      "error": {
+        "code": "AI_BUDGET_EXHAUSTED",
+        "message": "The daily AI generation budget for this lecture is exhausted."
+      }
+    },
+    "STT_NOT_CONFIGURED": {
+      "status": 503,
+      "error": {
+        "code": "STT_NOT_CONFIGURED",
+        "message": "Speech-to-text is not configured."
+      }
+    },
+    "INSUFFICIENT_EVIDENCE": {
+      "status": 409,
+      "error": {
+        "code": "INSUFFICIENT_EVIDENCE",
+        "message": "No persisted confusion cluster is available for this lecture."
+      }
+    }
+  },
+  "fallbacks": {
+    "llm_timeout": {
+      "turn": {
+        "kind": "question",
+        "text": "At 04:12–04:21, the lecturer said: “...”. How would you explain this in your own words?",
+        "citations": [
+          {
+            "segment_id": "33333333-3333-4333-8333-333333333333",
+            "start_ms": 252000,
+            "end_ms": 261000,
+            "quote": "..."
+          }
+        ],
+        "options": [],
+        "stage_complete": false,
+        "state_token": "sst1.example-state-token",
+        "validation": {
+          "schema_ok": true,
+          "citations_ok": true,
+          "answer_leak": false,
+          "grounded_score": 1.0,
+          "attempts": 1,
+          "fallback_used": true,
+          "details": [
+            "Validated live output was unavailable; transcript fallback used."
+          ]
+        },
+        "source": "template"
+      },
+      "state_token": "sst1.example-state-token",
+      "turn_number": 1,
+      "stage": "socratic"
+    },
+    "insufficient_context": {
+      "turn": {
+        "kind": "refusal",
+        "text": "There is not enough verified lecture evidence to answer.",
+        "citations": [],
+        "options": [],
+        "stage_complete": true,
+        "source": "template"
+      }
+    }
+  }
+}

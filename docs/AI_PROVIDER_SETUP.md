@@ -39,9 +39,25 @@ AXIOM_EMBEDDING_CACHE_DIR=.model_cache
 AXIOM_EMBEDDING_BATCH_SIZE=16
 AXIOM_EMBEDDING_CONCURRENCY=2
 AXIOM_EMBEDDING_MAX_TOKENS=512
+AXIOM_EMBEDDING_PREWARM=false
 ```
 
-The provider validates exactly 384 finite values and rejects zero-norm vectors. Model loading is lazy and runs in a worker thread; inference is bounded by a semaphore.
+The provider validates exactly 384 finite values and rejects zero-norm vectors. Model loading is lazy by default; set prewarm true in deployment. Inference runs in a worker thread and is bounded by a semaphore. The cache is ignored by Git.
+
+## Hybrid retrieval
+
+`AXIOM_RETRIEVAL_MODE=hybrid` is the default. It combines exact filtered cosine,
+BM25 with a language-neutral prefix stemmer and lecture-grounded multilingual
+aliases, weighted RRF and a temporal preference. Dense mode remains available for
+baseline comparison. See [RETRIEVAL_BENCHMARK.md](RETRIEVAL_BENCHMARK.md).
+
+```dotenv
+AXIOM_RETRIEVAL_MODE=hybrid
+AXIOM_DENSE_CANDIDATES=16
+AXIOM_LEXICAL_CANDIDATES=16
+AXIOM_RRF_K=60
+AXIOM_QUERY_EXPANSION=true
+```
 
 ## LLM
 
@@ -49,9 +65,9 @@ The adapter is OpenAI-compatible and has no tools/web access.
 
 ```dotenv
 AXIOM_LLM_PROVIDER=openai_compatible
-AXIOM_LLM_BASE_URL=https://api.deepseek.com/v1
+AXIOM_LLM_BASE_URL=https://api.deepseek.com
 AXIOM_LLM_API_KEY=<secret>
-AXIOM_LLM_MODEL=deepseek-chat
+AXIOM_LLM_MODEL=deepseek-flash
 AXIOM_LLM_TIMEOUT_SECONDS=8
 AXIOM_LLM_MAX_RETRIES=1
 AXIOM_LLM_MAX_OUTPUT_TOKENS=1200
@@ -59,9 +75,9 @@ AXIOM_LLM_CONCURRENCY=2
 AXIOM_DAILY_GENERATION_BUDGET=100
 ```
 
-- Endpoint and model must be verified against the provider's current documentation before deployment.
+- Current DeepSeek docs list `deepseek-flash` and `https://api.deepseek.com`; legacy `deepseek-chat` is retired. Re-verify before deployment: <https://api-docs.deepseek.com/>.
 - **No live call was verified in this environment.** There were no credentials.
-- Do not put keys in `.env.example`, Git or client bundles.
+- Do not put keys in `.env.example`, Git or client bundles. You may map `DEEPSEEK_API_KEY` into `AXIOM_LLM_API_KEY` in the process environment.
 
 ## Speech-to-text
 
@@ -69,13 +85,14 @@ The adapter targets a Whisper-compatible `/audio/transcriptions` endpoint with `
 
 ```dotenv
 AXIOM_STT_PROVIDER=openai_compatible
-AXIOM_STT_BASE_URL=https://api.openai.com/v1
+AXIOM_STT_BASE_URL=https://api.groq.com/openai/v1
 AXIOM_STT_API_KEY=<secret>
-AXIOM_STT_MODEL=whisper-1
+AXIOM_STT_MODEL=whisper-large-v3-turbo
 AXIOM_STT_TIMEOUT_SECONDS=90
 AXIOM_STT_MAX_FILE_BYTES=26214400
 ```
 
+- Groq's current speech-to-text docs list `whisper-large-v3-turbo` and `whisper-large-v3` at `https://api.groq.com/openai/v1`: <https://console.groq.com/docs/speech-to-text>. The model is configurable; do not assume it will remain valid forever.
 - Audio is sent as multipart in memory; the app does not persist raw audio.
 - The provider's retention policy must be verified separately. This project does not claim that a third-party provider never retains audio.
 - **No real Whisper call was verified.** Mocked transport tests cover parsing, offsets, size and provider errors.
@@ -86,5 +103,13 @@ AXIOM_STT_MAX_FILE_BYTES=26214400
 2. Start the API and call `POST /api/v1/lectures/{id}/transcript/import` with the Bernoulli fixture.
 3. Confirm `embedded_count=40` and `status=completed`.
 4. Call Replay start/turn; confirm `source=live` only when the LLM actually ran.
-5. Run `python -m evals.runner`; record the model file and timestamp.
-6. If any live call fails, keep `source=template` and report it as unverified.
+5. Run `python scripts/verify_ai_providers.py`; it writes a blocked/completed artifact without printing secrets.
+6. Run `python -m evals.runner` and `python -m evals.adversarial`; record the model file and timestamp.
+7. If any live call fails, keep `source=template` and report it as unverified.
+
+## Current blocker
+
+`DEEPSEEK_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `AXIOM_LLM_API_KEY` and
+`AXIOM_STT_API_KEY` were all absent. The raw blocked artifact is
+`artifacts/evals/hardening/provider-smoke-blocked.json`. No live provider quality
+or latency claim is made.

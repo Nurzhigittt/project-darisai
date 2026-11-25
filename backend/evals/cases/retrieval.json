@@ -10,7 +10,9 @@
       "relevant": [
         0,
         18
-      ]
+      ],
+      "focus_ms": 5000,
+      "split": "tune"
     },
     {
       "id": "ret-02",
@@ -19,16 +21,21 @@
       "relevant": [
         1,
         2
-      ]
+      ],
+      "focus_ms": 14000,
+      "split": "tune"
     },
     {
       "id": "ret-03",
       "language": "ru",
       "query": "Как связаны площадь сечения и скорость потока?",
       "relevant": [
+        6,
         7,
         8
-      ]
+      ],
+      "focus_ms": 59000,
+      "split": "tune"
     },
     {
       "id": "ret-04",
@@ -37,8 +44,13 @@
       "relevant": [
         10,
         11,
-        37
-      ]
+        15,
+        29,
+        36,
+        38
+      ],
+      "focus_ms": 95000,
+      "split": "tune"
     },
     {
       "id": "ret-05",
@@ -46,8 +58,11 @@
       "query": "Какие допущения используются в уравнении Бернулли?",
       "relevant": [
         12,
-        13
-      ]
+        13,
+        37
+      ],
+      "focus_ms": 113000,
+      "split": "tune"
     },
     {
       "id": "ret-06",
@@ -56,7 +71,9 @@
       "relevant": [
         14,
         15
-      ]
+      ],
+      "focus_ms": 131000,
+      "split": "tune"
     },
     {
       "id": "ret-07",
@@ -66,7 +83,9 @@
         17,
         19,
         20
-      ]
+      ],
+      "focus_ms": 158000,
+      "split": "tune"
     },
     {
       "id": "ret-08",
@@ -75,25 +94,32 @@
       "relevant": [
         25,
         26
-      ]
+      ],
+      "focus_ms": 230000,
+      "split": "tune"
     },
     {
       "id": "ret-09",
       "language": "ru",
       "query": "Как измеряют давление в потоке?",
       "relevant": [
-        34
-      ]
+        33
+      ],
+      "focus_ms": 302000,
+      "split": "tune"
     },
     {
       "id": "ret-10",
       "language": "ru",
       "query": "Где уравнение Бернулли ограничено?",
       "relevant": [
+        13,
         27,
         29,
         39
-      ]
+      ],
+      "focus_ms": 122000,
+      "split": "tune"
     },
     {
       "id": "ret-11",
@@ -102,7 +128,9 @@
       "relevant": [
         0,
         18
-      ]
+      ],
+      "focus_ms": 5000,
+      "split": "tune"
     },
     {
       "id": "ret-12",
@@ -111,7 +139,9 @@
       "relevant": [
         2,
         20
-      ]
+      ],
+      "focus_ms": 23000,
+      "split": "tune"
     },
     {
       "id": "ret-13",
@@ -120,17 +150,22 @@
       "relevant": [
         6,
         8
-      ]
+      ],
+      "focus_ms": 59000,
+      "split": "tune"
     },
     {
       "id": "ret-14",
       "language": "en",
       "query": "why pressure drops in a narrowing pipe",
       "relevant": [
+        7,
         10,
         11,
         15
-      ]
+      ],
+      "focus_ms": 68000,
+      "split": "tune"
     },
     {
       "id": "ret-15",
@@ -138,8 +173,11 @@
       "query": "assumptions of the Bernoulli equation",
       "relevant": [
         12,
-        13
-      ]
+        13,
+        37
+      ],
+      "focus_ms": 113000,
+      "split": "tune"
     },
     {
       "id": "ret-16",
@@ -147,9 +185,12 @@
       "query": "Venturi effect applications",
       "relevant": [
         14,
+        30,
         31,
         32
-      ]
+      ],
+      "focus_ms": 131000,
+      "split": "tune"
     },
     {
       "id": "ret-17",
@@ -159,7 +200,9 @@
         17,
         19,
         20
-      ]
+      ],
+      "focus_ms": 158000,
+      "split": "tune"
     },
     {
       "id": "ret-18",
@@ -168,7 +211,9 @@
       "relevant": [
         25,
         26
-      ]
+      ],
+      "focus_ms": 230000,
+      "split": "tune"
     },
     {
       "id": "ret-19",
@@ -176,17 +221,23 @@
       "query": "lift from downwash and circulation",
       "relevant": [
         24,
-        26
-      ]
+        26,
+        27
+      ],
+      "focus_ms": 221000,
+      "split": "tune"
     },
     {
       "id": "ret-20",
       "language": "en",
       "query": "limitations for viscous and compressible flow",
       "relevant": [
+        13,
         29,
         39
-      ]
+      ],
+      "focus_ms": 122000,
+      "split": "tune"
     },
     {
       "id": "ret-21",
@@ -195,8 +246,12 @@
       "relevant": [
         10,
         11,
-        15
-      ]
+        15,
+        29,
+        36
+      ],
+      "focus_ms": 95000,
+      "split": "holdout"
     },
     {
       "id": "ret-22",
@@ -204,8 +259,11 @@
       "query": "Бернулли теңдеуінің шарттары",
       "relevant": [
         12,
-        13
-      ]
+        13,
+        37
+      ],
+      "focus_ms": 113000,
+      "split": "holdout"
     },
     {
       "id": "ret-23",
@@ -214,7 +272,9 @@
       "relevant": [
         6,
         8
-      ]
+      ],
+      "focus_ms": 59000,
+      "split": "holdout"
     },
     {
       "id": "ret-24",
@@ -223,7 +283,9 @@
       "relevant": [
         14,
         15
-      ]
+      ],
+      "focus_ms": 131000,
+      "split": "holdout"
     },
     {
       "id": "ret-25",
@@ -232,8 +294,11 @@
       "relevant": [
         24,
         26,
+        27,
         29
-      ]
+      ],
+      "focus_ms": 221000,
+      "split": "holdout"
     },
     {
       "id": "ret-26",
@@ -242,42 +307,57 @@
       "relevant": [
         2,
         20
-      ]
+      ],
+      "focus_ms": 23000,
+      "split": "holdout"
     },
     {
       "id": "ret-27",
       "language": "kk",
       "query": "сорғыш құбыр",
       "relevant": [
+        31,
         32,
         33
-      ]
+      ],
+      "focus_ms": 284000,
+      "split": "holdout"
     },
     {
       "id": "ret-28",
       "language": "kk",
       "query": "Пито түтігі",
       "relevant": [
-        34
-      ]
+        33
+      ],
+      "focus_ms": 302000,
+      "split": "holdout"
     },
     {
       "id": "ret-29",
       "language": "kk",
       "query": "тұтқырлық әсері",
       "relevant": [
+        13,
         29,
+        36,
         39
-      ]
+      ],
+      "focus_ms": 122000,
+      "split": "holdout"
     },
     {
       "id": "ret-30",
       "language": "kk",
       "query": "Бернулли қорытындысы",
       "relevant": [
+        36,
         37,
-        38
-      ]
+        38,
+        39
+      ],
+      "focus_ms": 329000,
+      "split": "holdout"
     }
   ]
 }

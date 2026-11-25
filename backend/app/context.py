@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 
+from app.axiom.abuse import ReplayAbuseGuard
 from app.axiom.cost import GenerationBudget
 from app.axiom.embeddings import build_embedding_provider
 from app.axiom.engine import AxiomEngine
@@ -54,6 +56,7 @@ class AppContext:
     ripple: RippleRuntime
     embeddings: EmbeddingProvider
     budget: GenerationBudget
+    replay_guard: ReplayAbuseGuard
     retrieval: TemporalRetriever
     axiom_state: AxiomTokenCodec
     axiom: AxiomEngine
@@ -75,12 +78,13 @@ class AppContext:
         ripple = RippleRuntime(db, redis_client, settings, signals, analytics, event_bus)
         student_tokens = StudentTokenService(redis_client, codec, settings)
         insights = InsightService(db, settings)
-        embeddings = build_embedding_provider(settings)
+        embeddings = cast(EmbeddingProvider, build_embedding_provider(settings))
         retrieval = TemporalRetriever(db, settings, embeddings)
         axiom = AxiomEngine(settings, build_llm_client(settings))
         axiom_state = AxiomTokenCodec(settings)
         transcripts = TranscriptService(db, settings, embeddings, build_stt_provider(settings))
         budget = GenerationBudget(redis_client, settings)
+        replay_guard = ReplayAbuseGuard(redis_client, settings)
         replay = ReplayService(
             db=db,
             settings=settings,
@@ -89,6 +93,7 @@ class AppContext:
             state=axiom_state,
             student_tokens=student_tokens,
             budget=budget,
+            guard=replay_guard,
         )
         gapcards = GapCardService(
             db=db,
@@ -98,6 +103,7 @@ class AppContext:
             state=axiom_state,
             student_tokens=student_tokens,
             budget=budget,
+            guard=replay_guard,
         )
         return cls(
             settings=settings,
@@ -120,6 +126,7 @@ class AppContext:
             ripple=ripple,
             embeddings=embeddings,
             budget=budget,
+            replay_guard=replay_guard,
             retrieval=retrieval,
             axiom_state=axiom_state,
             axiom=axiom,

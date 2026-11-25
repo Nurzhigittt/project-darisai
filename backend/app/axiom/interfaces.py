@@ -34,8 +34,12 @@ class LLMClient(Protocol):
 
 class EmbeddingProvider(Protocol):
     dimension: int
+    model_identifier: str
+    ready: bool
 
     async def embed(self, texts: Sequence[str]) -> list[list[float]]: ...
+
+    async def warmup(self) -> None: ...
 
 
 class TranscriptProvider(Protocol):

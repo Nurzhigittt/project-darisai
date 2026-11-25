@@ -10,6 +10,8 @@ live-model outputs. `_comment` fields are explanatory and are not sent.
 | `replay-turn.json` | `POST /api/v1/replay/turn` | `X-Replay-Token` |
 | `gapcards.json` | `POST /api/v1/gapcards/generate` | `X-Replay-Token` |
 | `intelligence.json` | `POST /api/v1/lectures/{lecture_id}/insights/generate` | Professor Bearer |
+| `failures.json` | Loading, error and template-fallback shapes for P1 | mixed |
+| `mcq.json` | Stable MCQ turn shape | `X-Replay-Token` |
 
 The actual OpenAPI contract is `docs/contracts/openapi.json`. The generated
 TypeScript types are `frontend/src/lib/api/types.gen.ts`.

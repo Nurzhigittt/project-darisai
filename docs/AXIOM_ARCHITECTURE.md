@@ -17,7 +17,7 @@ flowchart TB
   Ingest --> Chunks[("audio_chunks metadata")]
 
   Signal["Signal offset"] --> Replay[ReplayService]
-  PG --> Retriever["TemporalRetriever<br/>time window + exact cosine"]
+  PG --> Retriever["TemporalRetriever<br/>temporal + dense + BM25 + RRF"]
   Retriever --> Context[RetrievalContext]
   Context --> Engine["AxiomEngine"]
   Engine --> LLM["Optional OpenAI-compatible LLM"]
@@ -42,7 +42,7 @@ flowchart TB
 4. Upsert into `transcript_segments` on `(lecture_id, content_hash)`, so re-uploading the same segment does not duplicate it.
 5. If embeddings fail, persist text with `embedding NULL` and mark the run `degraded`. Retrieval then falls back to temporal-only mode; it never substitutes fake vectors in production.
 
-The ONNX model is `intfloat/multilingual-e5-small`, 384 dimensions, cosine distance, `vector_cosine_ops`. The model file is `onnx/model_O4.onnx` (quantized; full FP32 produced identical evaluation metrics). It is lazily downloaded into the ignored `.model_cache/` directory and loaded once, off the event loop.
+The ONNX model is `intfloat/multilingual-e5-small`, 384 dimensions, cosine distance, `vector_cosine_ops`. The model file is `onnx/model_O4.onnx` (quantized; full FP32 produced identical evaluation metrics). It is lazily downloaded into the ignored `.model_cache/` directory and loaded once, off the event loop. `AXIOM_EMBEDDING_PREWARM=true` loads it during startup and reports failure without killing lexical/temporal retrieval.
 
 ## Temporal RAG
 
@@ -54,11 +54,13 @@ window_end   = T + 10_000
 ```
 
 - Temporal candidates: segments overlapping this window, restricted by `lecture_id`.
-- Semantic candidates: exact filtered cosine search over the same lecture, `ORDER BY embedding <=> :query`, top-k 4.
+- Dense candidates: exact filtered cosine search over the same lecture, top 16.
+- Lexical candidates: BM25 over lecture text with a language-neutral prefix stemmer and a lecture-grounded multilingual alias vocabulary, top 16.
+- Fusion: weighted Reciprocal Rank Fusion (k=60) plus a temporal-window RRF term; final top-k 4.
 - Deduplicate by segment UUID, preserve canonical timestamps and text, and bound the context by characters.
 - `evidence_sufficient=false` returns an explicit refusal; the LLM is not called unnecessarily.
 
-The corpus is small, so exact filtered cosine search is used instead of assuming a global HNSW scan will return four relevant results after lecture filtering.
+The corpus is small, so exact filtered cosine search is used instead of assuming a global HNSW scan will return four relevant results after lecture filtering. `AXIOM_RETRIEVAL_MODE=dense` preserves the previous baseline.
 
 ## Validation pipeline
 
@@ -103,5 +105,7 @@ BriefNext/Handoff are generated from persisted confusion clusters, deterministic
 | LLM timeout or invalid JSON | One stricter retry if configured, then template fallback |
 | Fabricated citation or unsupported claim | Rejected; fallback, never returned as live |
 | Budget exhausted | HTTP 429 `AI_BUDGET_EXHAUSTED` |
+| Per-token request limit | HTTP 429 `AI_RATE_LIMITED` |
+| Reused signed state | HTTP 409 `REPLAY_STATE_REPLAYED` |
 | Replay Token from another lecture | HTTP 401 |
 | Tampered/expired state | HTTP 400 `REPLAY_STATE_INVALID` / `REPLAY_STATE_EXPIRED` |

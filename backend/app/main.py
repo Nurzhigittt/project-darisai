@@ -53,6 +53,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if resolved.auto_seed:
             await seed_development_data(ctx.db, resolved)
         app.state.ctx = ctx
+        if resolved.axiom_embedding_prewarm:
+            try:
+                await ctx.embeddings.warmup()
+                logger.info(
+                    "embedding model prewarmed",
+                    extra={"event": "embedding_prewarm", "component": "axiom"},
+                )
+            except Exception:
+                logger.warning(
+                    "embedding prewarm failed; lexical/temporal retrieval remains available",
+                    extra={"event": "embedding_prewarm_failed", "component": "axiom"},
+                )
         await ctx.event_bus.start()
         await ctx.ripple.start()
         try:

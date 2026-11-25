@@ -146,6 +146,21 @@ def test_transcript_replay_and_gapcards_are_lecture_scoped(client: TestClient) -
     assert second.status_code == 200, second.text
     assert second.json()["turn_number"] == 2
 
+    replayed_state = client.post(
+        "/api/v1/replay/turn",
+        headers=headers,
+        json={
+            "lecture_id": lecture["lecture_id"],
+            "moment_id": moment["moment_id"],
+            "stage": "socratic",
+            "history": [],
+            "input": {"text": "A retry."},
+            "state_token": state_token,
+        },
+    )
+    assert replayed_state.status_code == 409
+    assert replayed_state.json()["error"]["code"] == "REPLAY_STATE_REPLAYED"
+
     cards = client.post(
         "/api/v1/gapcards/generate",
         headers=headers,
@@ -165,6 +180,52 @@ def test_transcript_replay_and_gapcards_are_lecture_scoped(client: TestClient) -
         json={"lecture_id": other["lecture_id"], "flagged_offsets_ms": [1_000]},
     )
     assert cross.status_code == 401
+
+
+def test_replay_completes_with_reflection_then_gapcards(client: TestClient) -> None:
+    professor = _login(client)
+    lecture, replay_token = _ready_lecture(client, professor)
+    headers = {"X-Replay-Token": replay_token}
+    start = client.post(
+        "/api/v1/replay/start",
+        headers=headers,
+        json={"lecture_id": lecture["lecture_id"], "flagged_offsets_ms": [1_000]},
+    )
+    assert start.status_code == 200, start.text
+    moment = start.json()["moments"][0]["moment_id"]
+    state_token = None
+    final = None
+    for turn_index in range(6):
+        body = {
+            "lecture_id": lecture["lecture_id"],
+            "moment_id": moment,
+            "stage": "mcq" if turn_index == 0 else "socratic",
+            "history": [],
+            "input": None if turn_index == 0 else {"text": "I am reasoning."},
+        }
+        if state_token:
+            body["state_token"] = state_token
+        response = client.post("/api/v1/replay/turn", headers=headers, json=body)
+        assert response.status_code == 200, response.text
+        payload = response.json()
+        state_token = payload["state_token"]
+        final = payload
+        if payload["stage"] == "complete":
+            break
+    assert final is not None
+    assert final["stage"] == "complete"
+    assert final["turn"]["kind"] in {"reflection", "refusal"}
+    assert final["turn"]["validation"] is not None
+    cards = client.post(
+        "/api/v1/gapcards/generate",
+        headers=headers,
+        json={
+            "lecture_id": lecture["lecture_id"],
+            "moments": [{"moment_id": moment, "outcome": "unclear"}],
+        },
+    )
+    assert cards.status_code == 200, cards.text
+    assert cards.json()["cards"]
 
 
 def test_teacher_intelligence_enters_pending_approval(client: TestClient) -> None:

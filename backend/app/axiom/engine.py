@@ -27,6 +27,7 @@ from app.axiom.validators import (
     AnswerLeakValidator,
     DeterministicCitationValidator,
     GroundednessValidator,
+    PromptInjectionValidator,
     SocraticBehaviorValidator,
     combine_validation,
 )
@@ -100,12 +101,18 @@ class AxiomEngine:
         self._llm = llm
         self._citations = DeterministicCitationValidator()
         self._socratic = SocraticBehaviorValidator()
+        self._injection = PromptInjectionValidator()
         self._leaks = AnswerLeakValidator(llm)
         self._grounding = GroundednessValidator(llm)
 
     @property
     def prompt_version(self) -> str:
         return PROMPT_VERSION
+
+    @property
+    def llm_usage(self) -> dict[str, int]:
+        usage = getattr(self._llm, "usage", None)
+        return usage.as_dict() if usage is not None else {}
 
     async def turn(
         self,
@@ -118,6 +125,13 @@ class AxiomEngine:
         language: str,
         turn_number: int,
     ) -> SocraticTurn:
+        untrusted = [str(value) for value in (student_input or {}).values()]
+        untrusted.extend(str(item.get("text", "")) for item in history)
+        if any(self._injection.check(text) for text in untrusted):
+            return self._refusal(
+                language,
+                details=["Student-controlled text contained an instruction-manipulation pattern."],
+            )
         if not context.evidence_sufficient:
             return self._refusal(language)
         if self._llm is None:
@@ -200,7 +214,7 @@ class AxiomEngine:
         )
         return fallback
 
-    def _refusal(self, language: str) -> SocraticTurn:
+    def _refusal(self, language: str, details: list[str] | None = None) -> SocraticTurn:
         text = {
             "ru": "В этой лекции недостаточно проверяемых фрагментов, чтобы ответить. Попросите преподавателя загрузить транскрипт.",
             "kk": "Бұл дәрісте жауап беруге жеткілікті тексерілген үзінді жоқ. Оқытушыдан транскрипт жүктеуді сұраңыз.",
@@ -218,7 +232,7 @@ class AxiomEngine:
                 grounded_score=0.0,
                 attempts=1,
                 fallback_used=True,
-                details=["No retrieved transcript evidence."],
+                details=details or ["No retrieved transcript evidence."],
             ),
         )
 

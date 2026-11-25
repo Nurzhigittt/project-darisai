@@ -1,0 +1,45 @@
+{
+  "_comment": "Stable MCQ turn shape. Correct-answer ids are never sent to the student client. Template mode returns a question/reflection instead of inventing an answer key.",
+  "request": {
+    "lecture_id": "11111111-1111-4111-8111-111111111111",
+    "moment_id": "mom1.example-moment-token",
+    "stage": "mcq",
+    "history": [],
+    "input": null,
+    "state_token": null
+  },
+  "response_200": {
+    "turn": {
+      "kind": "mcq",
+      "text": "Which relationship is described at this moment?",
+      "citations": [
+        {
+          "segment_id": "33333333-3333-4333-8333-333333333333",
+          "start_ms": 252000,
+          "end_ms": 261000,
+          "quote": "Когда мы говорим «давление падает», мы не имеем в виду, что среда притягивает предмет."
+        }
+      ],
+      "options": [
+        {"id": "a", "text": "Pressure and flow speed"},
+        {"id": "b", "text": "Only temperature"},
+        {"id": "c", "text": "Colour of the fluid"}
+      ],
+      "stage_complete": false,
+      "state_token": "sst1.example-state-token",
+      "validation": {
+        "schema_ok": true,
+        "citations_ok": true,
+        "answer_leak": false,
+        "grounded_score": 1.0,
+        "attempts": 1,
+        "fallback_used": false,
+        "details": []
+      },
+      "source": "live"
+    },
+    "state_token": "sst1.example-state-token",
+    "turn_number": 1,
+    "stage": "socratic"
+  }
+}

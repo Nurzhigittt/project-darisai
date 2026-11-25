@@ -4,6 +4,7 @@ from collections.abc import Sequence
 from typing import Any, Literal
 from uuid import UUID
 
+from app.axiom.abuse import ReplayAbuseGuard
 from app.axiom.concepts import concept_for_segments
 from app.axiom.cost import GenerationBudget
 from app.axiom.engine import AxiomEngine
@@ -52,6 +53,7 @@ class ReplayService:
         state: AxiomTokenCodec,
         student_tokens: StudentTokenService,
         budget: GenerationBudget,
+        guard: ReplayAbuseGuard,
     ) -> None:
         self._db = db
         self._settings = settings
@@ -60,6 +62,7 @@ class ReplayService:
         self._state = state
         self._tokens = student_tokens
         self._budget = budget
+        self._guard = guard
 
     async def _lecture(self, lecture_id: UUID) -> dict[str, Any]:
         row = await self._db.fetchrow("SELECT * FROM lectures WHERE id = $1", lecture_id)
@@ -94,6 +97,7 @@ class ReplayService:
         offsets: Sequence[int],
     ) -> ReplayStartOut:
         self._tokens.validate_replay_token(replay_token, lecture_id)
+        await self._guard.consume_token(replay_token, lecture_id)
         lecture = await self._assert_replayable(lecture_id)
         if not 1 <= len(offsets) <= 20:
             raise AppError(422, "INVALID_OFFSETS", "Provide between 1 and 20 signal offsets.")
@@ -178,6 +182,7 @@ class ReplayService:
         state_token: str | None,
     ) -> ReplayTurnOut:
         self._tokens.validate_replay_token(replay_token, lecture_id)
+        await self._guard.consume_token(replay_token, lecture_id)
         lecture = await self._assert_replayable(lecture_id)
         try:
             moment = self._state.verify_moment(moment_id, lecture_id)
@@ -194,6 +199,7 @@ class ReplayService:
                 raise AxiomTokenCodec.as_app_error(exc) from exc
             turn_number = state.turn
             state_stage = state.stage
+            await self._guard.consume_state(state.nonce)
             if state_stage == "complete":
                 raise AppError(409, "REPLAY_COMPLETE", "This replay is already complete.")
             if stage == "mcq" and state_stage == "socratic":
@@ -260,6 +266,7 @@ class GapCardService:
         state: AxiomTokenCodec,
         student_tokens: StudentTokenService,
         budget: GenerationBudget,
+        guard: ReplayAbuseGuard,
     ) -> None:
         self._db = db
         self._settings = settings
@@ -268,6 +275,7 @@ class GapCardService:
         self._state = state
         self._tokens = student_tokens
         self._budget = budget
+        self._guard = guard
 
     async def generate(
         self,
@@ -277,6 +285,7 @@ class GapCardService:
         request: GapCardGenerateRequest,
     ) -> GapCardsResponse:
         self._tokens.validate_replay_token(replay_token, lecture_id)
+        await self._guard.consume_token(replay_token, lecture_id)
         lecture = await self._db.fetchrow("SELECT * FROM lectures WHERE id = $1", lecture_id)
         if lecture is None:
             raise AppError(404, "NOT_FOUND", "Lecture not found.")

@@ -1,105 +1,122 @@
 # Axiom evaluation report
 
-**Date:** 25 November 2026 (Asia/Qyzylorda)  
+**Date:** 25 November 2026  
 **Fixture:** `backend/app/demo/scenarios/bernoulli_ru.json` (40 synthetic Russian segments)  
-**Model:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2 normalized  
-**Raw result:** `artifacts/evals/eval-20261125T180048Z.json`  
-**Runner:** `cd backend && python -m evals.runner`
+**Embedding:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2  
+**Runner:** `cd backend && python -m evals.runner` and `python -m evals.adversarial`
 
-## What was measured
+## Result summary
 
-This report separates three things that must not be combined into one “AI accuracy” number:
+| Suite | Cases | Result | Layer |
+| --- | ---: | ---: | --- |
+| Hybrid retrieval | 30 | Recall@4 **0.8667**, MRR **0.7000** | real embeddings |
+| Original guardrails | 10 | 10/10 | deterministic |
+| Hardening adversarial | 32 | 32/32 | 29 deterministic + 1 fake LLM + 2 template |
+| Live LLM safety | **0** | **not run** | no credentials |
+| Live Whisper | **0** | **not run** | no credentials |
 
-1. **Real embedding retrieval** on 30 manually labelled synthetic cases.
-2. **Deterministic guardrail checks** on constructed citation/leak/MCQ examples.
-3. **Unverified live generation** — no LLM or Whisper credentials were available, so no live-model quality claim is made.
+The 32/32 adversarial result is **not** evidence of live-model prompt-injection
+resistance. It measures the deterministic guards, prompt serialization, and
+fallback pipeline. No live LLM was called.
 
-The retrieval metric is exact in-memory cosine, not the PostgreSQL query path. That keeps this suite independent of database state, but it is a retrieval-quality test, not an end-to-end latency test.
+## Retrieval
 
-## Retrieval Recall@4 and MRR
+See [RETRIEVAL_BENCHMARK.md](RETRIEVAL_BENCHMARK.md) for the full method comparison.
 
-**30 cases, overall Recall@4 = 0.600, MRR = 0.4819**
+| Method | Recall@4 | MRR |
+| --- | ---: | ---: |
+| Dense baseline (corrected labels) | 0.700 | 0.5722 |
+| Lexical BM25 | 0.800 | 0.7222 |
+| Hybrid RRF | 0.8667 | 0.6222 |
+| **Hybrid + temporal RRF** | **0.8667** | **0.7000** |
 
-| Language | Cases | Recall@4 | MRR |
-| --- | ---: | ---: | ---: |
-| Russian | 10 | **0.900** | **0.8091** |
-| English (against Russian transcript) | 10 | **0.600** | **0.3815** |
-| Kazakh (against Russian transcript) | 10 | **0.300** | **0.2550** |
+Per language for the selected method: RU **0.90**, EN **0.80**, KK **0.90**.
+Held-out split (10 cases): Recall@4 **0.90**.
 
-### Interpretation
+The previous report's 0.600/0.4819 baseline used labels with off-by-one segment
+indices; those labels were corrected before this comparison. The previous number
+should not be compared as if it were measured on the same labels.
 
-- Russian queries are the strongest: 9/10 cases put a relevant segment in the top 4.
-- Cross-lingual English is partial: 6/10; Kazakh is weak: 3/10.
-- This contradicts any assumption that “multilingual” means equally good in RU/EN/KK.
-- The main misses were conceptual paraphrases (`assumptions of Bernoulli`, `suction`, `equal transit time`, `lift`, `Pitot`, `viscosity`). The model often retrieves adjacent lecture content rather than the exact labelled segment.
-- A full-precision `onnx/model.onnx` run produced **identical** Recall@4/MRR on this suite, so quantization is not the cause of these misses.
+## Adversarial suite
 
-### Known retrieval misses
+Raw result: `artifacts/evals/hardening/adversarial.json`.
 
-| Case | Query | Relevant | Top-4 result |
-| --- | --- | --- | --- |
-| ret-05 | Какие допущения используются в уравнении Бернулли? | 12, 13 | 27, 39, 16, 35 |
-| ret-15 | assumptions of the Bernoulli equation | 12, 13 | 39, 27, 35, 0 |
-| ret-17 | is low pressure the same as suction | 17, 19, 20 | 7, 39, 10, 30 |
-| ret-18 | equal transit time fallacy for lift | 25, 26 | 37, 12, 13, 39 |
-| ret-19 | lift from downwash and circulation | 24, 26 | 30, 18, 31, 0 |
-| ret-21 | неге қысым азаяды | 10, 11, 15 | 7, 32, 18, 9 |
-| ret-22 | Бернулли теңдеуінің шарттары | 12, 13 | 35, 27, 11, 39 |
-| ret-23 | ағын үзіліссіздігі | 6, 8 | 21, 12, 18, 32 |
-| ret-27 | сорғыш құбыр | 32, 33 | 12, 18, 21, 36 |
-| ret-28 | Пито түтігі | 34 | 33, 0, 18, 21 |
-| ret-29 | тұтқырлық әсері | 29, 39 | 36, 18, 30, 21 |
-| ret-30 | Бернулли қорытындысы | 37, 38 | 35, 0, 11, 39 |
+| Category | Cases | Passed |
+| --- | ---: | ---: |
+| Citation integrity | 7 | 7 |
+| Answer leakage | 8 | 8 |
+| Groundedness | 2 | 2 |
+| MCQ structure | 2 | 2 |
+| Socratic structure | 2 | 2 |
+| Prompt injection / role manipulation | 8 | 8 |
+| Provider timeout / fabricated live citation | 2 | 2 |
+| Signed-state tampering | 1 | 1 |
 
-The production path adds the ±90 s temporal window, which often recovers the relevant lecture moment even when global semantic ranking misses it. The 0.600 figure is therefore a **lower-bound semantic retrieval metric**, not the full Replay retrieval path.
+Coverage includes fabricated segment IDs, wrong timestamps, empty/overlong
+quotes, cross-lecture segments, direct answer requests in EN/RU/KK, homework
+completion, final-answer phrasing, base64-encoded answer leakage, MCQ duplicate
+options/too-few options/answer-key wording, missing question marks, short
+reflections, hidden system-prompt requests, transcript injection, history
+escaping, provider timeout, fabricated live citations, student injection
+refusal and state tamper.
 
-## Guardrails
+### What was actually exercised
 
-**10/10 constructed deterministic cases passed.** These are not live model outputs.
+- **Deterministic (29):** citation validator, leak rules, base64 decode, MCQ and
+  Socratic structure, grounding heuristic, ingestion/prompt escaping, state HMAC.
+- **Fake LLM (1):** a malicious/fabricated live citation is rejected and falls
+  back to template.
+- **Template (2):** provider timeout and student instruction-manipulation refusal.
+- **Live LLM (0).**
 
-| Check | Cases | Result |
-| --- | ---: | --- |
-| Valid citation canonicalized | 1 | pass |
-| Fabricated segment ID rejected | 1 | pass |
-| Fabricated quote rejected | 1 | pass |
-| Timestamp outside segment rejected | 1 | pass |
-| Direct answer detected (EN) | 1 | pass |
-| Direct answer detected (RU) | 1 | pass |
-| Clean Socratic question not flagged | 1 | pass |
-| Transcript injection is escaped as data | 1 | pass |
-| Grounded transcript answer ≥ 0.8 | 1 | pass |
-| Valid MCQ structure | 1 | pass |
+## Original guardrail suite
 
-### What this does **not** prove
+10/10 deterministic cases passed: valid/fabricated citations, timestamp mismatch,
+direct-answer EN/RU, clean question, transcript escaping, grounded claim, valid
+MCQ. This suite is retained for regression.
 
-- It does not prove that a live LLM will resist prompt injection. The transcript is escaped and separated, but no live adversarial model run was performed.
-- It does not prove citation **support**; it proves that a quote exists in the cited segment and that the segment was retrieved.
-- The groundedness score is a token-overlap heuristic unless a live judge is configured. No live judge was verified.
-- The deterministic 10/10 result must not be reported as a 100% live guardrail pass rate.
+## Provider verification
+
+`artifacts/evals/hardening/provider-smoke-blocked.json`:
+
+- LLM: blocked — no `AXIOM_LLM_API_KEY` / `DEEPSEEK_API_KEY`.
+- STT: blocked — no `AXIOM_STT_API_KEY` / `GROQ_API_KEY`.
+- No live structured JSON, RU/KK/EN Socratic, MCQ, GapCards, BriefNext/Handoff,
+  groundedness or timestamped transcription was executed.
+- Required variables are listed in [AI_PROVIDER_SETUP.md](AI_PROVIDER_SETUP.md).
+- The current DeepSeek model identifier was checked against the provider docs:
+  `deepseek-flash`; the old `deepseek-chat` is retired.
+- Groq's current STT endpoint/model were checked: `whisper-large-v3-turbo`.
 
 ## Performance
 
-Measured on the local Windows CPU environment with the model cached:
-
 | Measurement | Result |
 | --- | ---: |
-| Embedding model load + warm-up (cached) | 5.25 s |
-| First instrumented cold load/run | 41.23 s |
-| 40 passage embeddings (batch 16) | 0.912 s |
-| Temporal retrieval p50 | 18.69 ms |
-| Temporal retrieval p95 | 26.48 ms |
-| Replay start p50 / p95 | 17.5 / 132.8 ms |
-| Replay turn, cold (first request after model load) | 4.30 s |
-| Replay turn, warm p50 / p95 | 34.5 / 37.4 ms |
-| Live LLM latency | **unverified** |
-| Live Whisper latency | **unverified** |
+| Model load direct | 5.25 s |
+| API prewarm ready | 12.30 s |
+| Cold Replay turn | 3,870 ms |
+| Warm Replay turn p50 / p95 | 26.0 / 106.9 ms |
+| AI requests during 30-client load p50 / p95 | 32.6 / 101.6 ms |
+| 30-client Signal-to-Ripple p95 under AI load | 491.84 ms |
+| 30-client ack p95 | 9.99 ms |
+| AI workload errors | 0 |
+| API working set after model load | ~694 MB |
+| LLM / STT latency | unverified |
 
-The first AI request after process start is slow because the ONNX model loads lazily. The correct response is to warm the embedding provider explicitly at deployment startup, or accept a one-time cold request. This was not changed in the Phase 1 hot path.
+Raw result: `artifacts/evals/hardening/performance.json`.
 
-## Limitations
+## Known failures and limitations
 
-- 30 retrieval cases with labels authored by the project, not independent annotators. The labels are narrow and can understate temporal retrieval.
-- The fixture is synthetic and Russian-only; English/Kazakh queries are evaluated cross-lingually against a Russian lecture.
-- No live LLM or STT call; `source=live` is implemented but unverified.
-- No human evaluation, no formal red-team, no interoperability test with P1 screens.
-- The 95% guardrail target is an engineering goal, not achieved or claimed for live generation. Deterministic checks pass, but they cover constructed cases.
+- Retrieval misses remain for `ret-10` (Bernoulli limitations), `ret-12`
+  (molecular collisions), `ret-17` (suction), `ret-27` (Kazakh aspirator).
+- 30 queries, synthetic labels, one Russian corpus; no independent annotators.
+- English/Kazakh are cross-lingual queries over a Russian transcript, not native
+  EN/KK lectures.
+- Groundedness is a token-overlap heuristic unless a live judge is configured;
+  it is not entailment.
+- Citation validation proves existence/attribution, not that the quote supports
+  the whole claim.
+- No live model means no live prompt-injection, toxicity, refusal-quality or
+  multilingual generation result.
+- No human evaluation, red-team, penetration test, or provider retention review.
+- The Axiom system is **not hallucination-proof**.

@@ -241,7 +241,7 @@ The 493 ms p95 is only 6.75 ms below the engineering target; p99 is above 500 ms
 - Student IndexedDB history of server-confirmed signals.
 - QR presentation, post-lecture summary, privacy manifest, status page.
 - Accessible design system, EN/RU/KK, light/dark theme and PWA app shell.
-- Real 384-d ONNX E5 embeddings, timestamped transcript ingestion, lecture-isolated temporal + cosine retrieval.
+- Real 384-d ONNX E5 embeddings, timestamped transcript ingestion, lecture-isolated hybrid retrieval (dense + BM25 + RRF + temporal).
 - Socratic Replay with signed moments/state, GapCards with verified quotes, and BriefNext/Handoff entering P2's approval workflow.
 
 ## Deliberately not finished
@@ -285,6 +285,8 @@ artifacts/  raw synthetic load-test results
 - [ADRs](docs/adr/) — seven recorded decisions
 - [Build log](docs/BUILD_LOG.md) — actual commands and results
 - [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology and numbers
+- [Retrieval benchmark](docs/RETRIEVAL_BENCHMARK.md) — dense vs lexical vs hybrid
+- [AI production readiness](docs/AI_PRODUCTION_READINESS.md) — prewarm, cache, cost, limits
 - [Roadmap](docs/ROADMAP.md) — phases 0–7
 - [Handover](docs/HANDOVER.md) — the exact Phase 2 starting point
 

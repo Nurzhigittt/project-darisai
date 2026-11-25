@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import binascii
 import re
 import unicodedata
 from collections.abc import Sequence
@@ -30,6 +32,19 @@ LEAK_PATTERNS = (
     r"\bжауабы\s*:",
     r"\bcompleted homework\b",
     r"\bhere is your homework\b",
+)
+INJECTION_PATTERNS = (
+    r"\bignore (all |the )?(previous|prior|above) (instructions|rules)\b",
+    r"\bforget (all |the )?(previous|prior|above) (instructions|rules)\b",
+    r"\b(system|developer) (prompt|message|instructions)\b",
+    r"\b(reveal|show|print|repeat) (your |the )?(system|developer) (prompt|instructions)\b",
+    r"\bact as (a |an )?(system|developer|administrator|teacher who gives answers)\b",
+    r"\bjailbreak\b",
+    r"\b(игнорируй|забудь) (все |предыдущие )?(инструкции|правила)\b",
+    r"\bсистемн(ый|ые) (промпт|инструкции)\b",
+    r"\b(покажи|выведи|повтори) (свои |системные )?(инструкции|промпт)\b",
+    r"\b(елеме|ұмыт) (алдыңғы )?(нұсқаулық|ереже)\b",
+    r"алдыңғы нұсқаулықтарды елеме",
 )
 GENERIC_LEAK_COMPLETION = re.compile(
     r"\b(?:therefore|hence|so),?\s+(?:the\s+)?(?:value|result|answer)\s*(?:is|=)",
@@ -168,6 +183,18 @@ class SocraticBehaviorValidator:
         return errors
 
 
+class PromptInjectionValidator:
+    """Screens student-controlled text for explicit instruction manipulation."""
+
+    def check(self, text: str) -> list[str]:
+        lowered = normalize_text(text)
+        return [
+            pattern
+            for pattern in INJECTION_PATTERNS
+            if re.search(pattern, lowered, re.IGNORECASE)
+        ]
+
+
 class AnswerLeakValidator:
     def __init__(self, llm: LLMClient | None = None) -> None:
         self._llm = llm
@@ -178,6 +205,15 @@ class AnswerLeakValidator:
         for pattern in LEAK_PATTERNS:
             if re.search(pattern, text, re.IGNORECASE):
                 reasons.append(f"Matched leak pattern: {pattern}")
+        for token in re.findall(r"[A-Za-z0-9+/=_-]{16,}", text):
+            try:
+                decoded = base64.urlsafe_b64decode(token + "=" * (-len(token) % 4)).decode(
+                    "utf-8", errors="ignore"
+                )
+            except (binascii.Error, ValueError):
+                continue
+            if any(re.search(pattern, decoded, re.IGNORECASE) for pattern in LEAK_PATTERNS):
+                reasons.append("Encoded text decodes to an answer-leak pattern.")
         if GENERIC_LEAK_COMPLETION.search(text):
             reasons.append("The response completes the answer deterministically.")
         if turn.kind == "mcq" and any(

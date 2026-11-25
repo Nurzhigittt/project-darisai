@@ -17,4 +17,5 @@ paths = [
   '''\.hypothesis''',
   '''\.pip-tools-cache''',
   '''docs/contracts/fixtures/axiom''',
+  '''artifacts/evals/hardening''',
 ]
