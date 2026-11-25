@@ -1,0 +1,52 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+.pip-tools-cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+coverage/
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+
+# Local runtime data and artifacts
+.pgdata/
+runtime/
+artifacts/*
+!artifacts/loadtest/
+artifacts/loadtest/*
+!artifacts/loadtest/*.json
+logs/
+*.log
+redis.zip
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

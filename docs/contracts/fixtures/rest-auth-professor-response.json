@@ -1,0 +1,9 @@
+{
+  "access_token": "<fixture-professor-jwt-not-a-real-secret>",
+  "token_type": "bearer",
+  "expires_in": 43200,
+  "professor": {
+    "id": "2f2b49e9-4e93-48c6-8e57-5497038a04b2",
+    "name": "Professor Fixture"
+  }
+}

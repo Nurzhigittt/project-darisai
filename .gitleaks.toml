@@ -1,0 +1,19 @@
+title = "DärisAI secret scanning"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore local build output, dependency trees, virtualenvs and test artifacts. These are never committed and may contain framework-generated local keys."
+paths = [
+  '''node_modules''',
+  '''\.next''',
+  '''\.venv''',
+  '''playwright-report''',
+  '''test-results''',
+  '''\.pytest_cache''',
+  '''\.mypy_cache''',
+  '''\.ruff_cache''',
+  '''\.hypothesis''',
+  '''\.pip-tools-cache''',
+]

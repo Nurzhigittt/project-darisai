@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "type": "hello_ok",
+  "msg_id": "6b1f0c3e-8a52-4d0e-9d57-2f0b7c1a9e11",
+  "ts": "2026-11-25T16:24:11.123Z",
+  "lecture_id": "c2a7e1d4-5b0f-4e63-a1c9-7d3f2b8e4a50",
+  "payload": {
+    "offset_ms": 251340,
+    "lecture_status": "live",
+    "signal_cooldown_ms": 15000,
+    "connecting_role": "student",
+    "replay_scope_available": true,
+    "server_time": "2026-11-25T16:24:11.127Z"
+  }
+}

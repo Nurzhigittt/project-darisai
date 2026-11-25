@@ -1,0 +1,24 @@
+{
+  "v": 1,
+  "type": "ripple_update",
+  "msg_id": "6b1f0c3e-8a52-4d0e-9d57-2f0b7c1a9e11",
+  "ts": "2026-11-25T16:24:11.123Z",
+  "lecture_id": "c2a7e1d4-5b0f-4e63-a1c9-7d3f2b8e4a50",
+  "payload": {
+    "ripple_seq": 142,
+    "offset_ms": 251340,
+    "intensity": 0.86,
+    "state": "cluster",
+    "availability": "ok",
+    "status_label": "clarification_may_be_helpful",
+    "cluster": {
+      "cluster_id": "a91d2c40-7e55-4f1b-b3a8-0c6d9e2f1a47",
+      "started_offset_ms": 243000,
+      "peak_intensity": 0.91
+    },
+    "active_participants": 40,
+    "unique_in_window": 14,
+    "threshold": 6,
+    "window_ms": 20000
+  }
+}

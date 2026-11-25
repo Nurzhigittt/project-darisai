@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "type": "signal_ack",
+  "msg_id": "6b1f0c3e-8a52-4d0e-9d57-2f0b7c1a9e11",
+  "ts": "2026-11-25T16:24:11.123Z",
+  "lecture_id": "c2a7e1d4-5b0f-4e63-a1c9-7d3f2b8e4a50",
+  "payload": {
+    "client_seq": 3,
+    "accepted": true,
+    "offset_ms": 251340,
+    "reason": null,
+    "retry_after_ms": null,
+    "duplicate": false
+  }
+}

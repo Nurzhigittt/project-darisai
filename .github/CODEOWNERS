@@ -1,0 +1,8 @@
+# Default owner for the competition repository. Update to the actual team
+# handles once the organization membership is confirmed.
+* @smrbruh
+
+/frontend/ @smrbruh
+/backend/ @smrbruh
+/docs/ @smrbruh
+/.github/ @smrbruh

@@ -1,0 +1,470 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DärisAI WebSocket protocol v1",
+  "description": "One lecture-scoped envelope per message. Credentials travel inside the hello payload, never in the WebSocket URL.",
+  "envelope": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "v",
+      "type",
+      "msg_id",
+      "ts",
+      "lecture_id",
+      "payload"
+    ],
+    "properties": {
+      "v": {
+        "const": 1
+      },
+      "type": {
+        "type": "string"
+      },
+      "msg_id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "ts": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lecture_id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "payload": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {
+    "error": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Request Id"
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "WsErrorPayload",
+      "type": "object"
+    },
+    "hello": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "const": "student",
+          "title": "Role",
+          "type": "string"
+        },
+        "signal_token": {
+          "maxLength": 2048,
+          "minLength": 20,
+          "title": "Signal Token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "signal_token"
+      ],
+      "title": "StudentHello",
+      "type": "object"
+    },
+    "hello_ok": {
+      "additionalProperties": false,
+      "properties": {
+        "offset_ms": {
+          "minimum": 0,
+          "title": "Offset Ms",
+          "type": "integer"
+        },
+        "lecture_status": {
+          "enum": [
+            "scheduled",
+            "live",
+            "paused",
+            "ended"
+          ],
+          "title": "Lecture Status",
+          "type": "string"
+        },
+        "signal_cooldown_ms": {
+          "title": "Signal Cooldown Ms",
+          "type": "integer"
+        },
+        "connecting_role": {
+          "enum": [
+            "student",
+            "professor"
+          ],
+          "title": "Connecting Role",
+          "type": "string"
+        },
+        "replay_scope_available": {
+          "title": "Replay Scope Available",
+          "type": "boolean"
+        },
+        "server_time": {
+          "format": "date-time",
+          "title": "Server Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "offset_ms",
+        "lecture_status",
+        "signal_cooldown_ms",
+        "connecting_role",
+        "replay_scope_available",
+        "server_time"
+      ],
+      "title": "HelloOkPayload",
+      "type": "object"
+    },
+    "lecture_control": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "start",
+            "pause",
+            "resume",
+            "end"
+          ],
+          "title": "Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "LectureControlPayload",
+      "type": "object"
+    },
+    "lecture_state": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "live",
+            "paused",
+            "ended"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "offset_ms": {
+          "minimum": 0,
+          "title": "Offset Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "status",
+        "offset_ms"
+      ],
+      "title": "LectureStatePayload",
+      "type": "object"
+    },
+    "ping": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "EmptyPayload",
+      "type": "object"
+    },
+    "pong": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "EmptyPayload",
+      "type": "object"
+    },
+    "ripple_update": {
+      "$defs": {
+        "RippleCluster": {
+          "additionalProperties": false,
+          "properties": {
+            "cluster_id": {
+              "format": "uuid",
+              "title": "Cluster Id",
+              "type": "string"
+            },
+            "started_offset_ms": {
+              "title": "Started Offset Ms",
+              "type": "integer"
+            },
+            "peak_intensity": {
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Peak Intensity",
+              "type": "number"
+            }
+          },
+          "required": [
+            "cluster_id",
+            "started_offset_ms",
+            "peak_intensity"
+          ],
+          "title": "RippleCluster",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "ripple_seq": {
+          "minimum": 0,
+          "title": "Ripple Seq",
+          "type": "integer"
+        },
+        "offset_ms": {
+          "minimum": 0,
+          "title": "Offset Ms",
+          "type": "integer"
+        },
+        "intensity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "state": {
+          "enum": [
+            "connected",
+            "rising",
+            "cluster",
+            "recovering"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "availability": {
+          "default": "ok",
+          "enum": [
+            "ok",
+            "insufficient_participation",
+            "connection_unavailable"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "status_label": {
+          "default": "few_signals",
+          "enum": [
+            "few_signals",
+            "signals_increasing",
+            "clarification_may_be_helpful",
+            "signals_decreasing",
+            "insufficient_participation",
+            "connection_unavailable"
+          ],
+          "title": "Status Label",
+          "type": "string"
+        },
+        "cluster": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RippleCluster"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "active_participants": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Active Participants",
+          "type": "integer"
+        },
+        "unique_in_window": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Unique In Window",
+          "type": "integer"
+        },
+        "threshold": {
+          "default": 3,
+          "minimum": 1,
+          "title": "Threshold",
+          "type": "integer"
+        },
+        "window_ms": {
+          "default": 20000,
+          "minimum": 1,
+          "title": "Window Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ripple_seq",
+        "offset_ms",
+        "intensity",
+        "state"
+      ],
+      "title": "RippleUpdatePayload",
+      "type": "object"
+    },
+    "signal_ack": {
+      "additionalProperties": false,
+      "properties": {
+        "client_seq": {
+          "title": "Client Seq",
+          "type": "integer"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "offset_ms": {
+          "title": "Offset Ms",
+          "type": "integer"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "cooldown",
+                "not_live",
+                "rate_limited",
+                "duplicate",
+                "stale_signal",
+                "invalid_token",
+                "lecture_ended",
+                "invalid_payload"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "retry_after_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retry After Ms"
+        },
+        "duplicate": {
+          "default": false,
+          "title": "Duplicate",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "client_seq",
+        "accepted",
+        "offset_ms"
+      ],
+      "title": "SignalAckPayload",
+      "type": "object"
+    },
+    "student_signal": {
+      "additionalProperties": false,
+      "properties": {
+        "client_seq": {
+          "minimum": 0,
+          "title": "Client Seq",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "lost",
+          "default": "lost",
+          "title": "Kind",
+          "type": "string"
+        },
+        "client_ts_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Ts Ms"
+        }
+      },
+      "required": [
+        "client_seq"
+      ],
+      "title": "StudentSignalPayload",
+      "type": "object"
+    }
+  },
+  "direction": {
+    "client_to_server": [
+      "hello",
+      "student_signal",
+      "lecture_control",
+      "ping",
+      "pong"
+    ],
+    "server_to_client": [
+      "hello_ok",
+      "signal_ack",
+      "ripple_update",
+      "lecture_state",
+      "ping",
+      "pong",
+      "error"
+    ]
+  },
+  "close_codes": {
+    "4401": "unauthorized",
+    "4403": "origin not allowed",
+    "4408": "hello timeout",
+    "4409": "lecture ended",
+    "4429": "rate limit"
+  },
+  "error_codes": [
+    "UNAUTHORIZED",
+    "HELLO_REQUIRED",
+    "HELLO_TIMEOUT",
+    "INVALID_MESSAGE",
+    "INVALID_HELLO",
+    "ROLE_FORBIDDEN",
+    "CROSS_LECTURE_DENIED",
+    "MESSAGE_TOO_LARGE",
+    "RATE_LIMITED",
+    "LECTURE_ENDED",
+    "SIGNAL_PROCESSING_FAILED",
+    "INTERNAL"
+  ]
+}
