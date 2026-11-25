@@ -55,6 +55,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/lectures/{lecture_id}/concept-autonomy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Concept Autonomy */
+        get: operations["list_concept_autonomy_api_v1_lectures__lecture_id__concept_autonomy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/concept-autonomy/{concept_canonical_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Concept Autonomy */
+        put: operations["update_concept_autonomy_api_v1_lectures__lecture_id__concept_autonomy__concept_canonical_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/courses/{course_id}/cohort-memory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Cohort Memory */
+        get: operations["cohort_memory_api_v1_courses__course_id__cohort_memory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/courses": {
         parameters: {
             query?: never;
@@ -193,6 +244,109 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/lectures/{lecture_id}/insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Insights */
+        get: operations["list_insights_api_v1_lectures__lecture_id__insights_get"];
+        put?: never;
+        /** Create Insight */
+        post: operations["create_insight_api_v1_lectures__lecture_id__insights_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve Insight */
+        post: operations["approve_insight_api_v1_lectures__lecture_id__insights__insight_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/edit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Edit Insight */
+        post: operations["edit_insight_api_v1_lectures__lecture_id__insights__insight_id__edit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject Insight */
+        post: operations["reject_insight_api_v1_lectures__lecture_id__insights__insight_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Handoff */
+        post: operations["publish_handoff_api_v1_lectures__lecture_id__insights__insight_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/handoff/redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Redeem Handoff */
+        post: operations["redeem_handoff_api_v1_handoff_redeem_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/privacy/manifest": {
         parameters: {
             query?: never;
@@ -248,6 +402,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AutonomyOut */
+        AutonomyOut: {
+            /**
+             * Lecture Id
+             * Format: uuid
+             */
+            lecture_id: string;
+            /**
+             * Course Id
+             * Format: uuid
+             */
+            course_id: string;
+            /**
+             * Concept Canonical Id
+             * Format: uuid
+             */
+            concept_canonical_id: string;
+            /** Concept Title */
+            concept_title: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "locked" | "whitelisted";
+            /** Approvals */
+            approvals: number;
+            /** Rejections */
+            rejections: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** AutonomyUpdate */
+        AutonomyUpdate: {
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "locked" | "whitelisted";
+        };
         /** ClusterOut */
         ClusterOut: {
             /**
@@ -263,6 +456,51 @@ export interface components {
             peak_intensity: number;
             /** Unique Tokens */
             unique_tokens: number;
+        };
+        /** CohortConceptMetric */
+        CohortConceptMetric: {
+            /**
+             * Concept Canonical Id
+             * Format: uuid
+             */
+            concept_canonical_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "insufficient_history";
+            /** Observed Lectures */
+            observed_lectures?: number | null;
+            /** Mean Signal Events Per Lecture */
+            mean_signal_events_per_lecture?: number | null;
+            /** Signal Observed Lecture Share */
+            signal_observed_lecture_share?: number | null;
+            /** Cluster Observed Lecture Share */
+            cluster_observed_lecture_share?: number | null;
+            /** Mean Cluster Peak Intensity */
+            mean_cluster_peak_intensity?: number | null;
+        };
+        /** CohortMemoryOut */
+        CohortMemoryOut: {
+            /**
+             * Minimum Lectures Required
+             * @default 5
+             */
+            minimum_lectures_required: number;
+            /**
+             * Minimum Participants Per Lecture
+             * @default 3
+             */
+            minimum_participants_per_lecture: number;
+            /** Concepts */
+            concepts: components["schemas"]["CohortConceptMetric"][];
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Interpretation Note */
+            interpretation_note: string;
         };
         /** ColumnManifest */
         ColumnManifest: {
@@ -339,6 +577,48 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** HandoffLinkOut */
+        HandoffLinkOut: {
+            /**
+             * Insight Id
+             * Format: uuid
+             */
+            insight_id: string;
+            /** Handoff Url */
+            handoff_url: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** HandoffPublicOut */
+        HandoffPublicOut: {
+            /** Headline */
+            headline: string;
+            /** Read Time Sec */
+            read_time_sec: number;
+            /** Concepts */
+            concepts: components["schemas"]["InsightConcept"][];
+            task: components["schemas"]["InsightTask"];
+            /** Lecture Title */
+            lecture_title: string;
+            /**
+             * Language
+             * @enum {string}
+             */
+            language: "ru" | "kk" | "en";
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** HandoffRedeemRequest */
+        HandoffRedeemRequest: {
+            /** Token */
+            token: string;
+        };
         /** HealthResponse */
         HealthResponse: {
             /**
@@ -407,6 +687,100 @@ export interface components {
              * @default Signal counts are measured events. They are not a comprehension rate and low activity does not prove understanding.
              */
             note: string;
+        };
+        /** InsightConcept */
+        InsightConcept: {
+            /** Title */
+            title: string;
+            /** Detail */
+            detail: string;
+        };
+        /** InsightContent */
+        InsightContent: {
+            /** Headline */
+            headline: string;
+            /** Read Time Sec */
+            read_time_sec: number;
+            /** Concepts */
+            concepts?: components["schemas"]["InsightConcept"][];
+            task?: components["schemas"]["InsightTask"] | null;
+        };
+        /** InsightCreate */
+        InsightCreate: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "brief_next" | "handoff";
+            content: components["schemas"]["InsightContent"];
+        };
+        /** InsightEdit */
+        InsightEdit: {
+            /** Reason */
+            reason: string;
+            content: components["schemas"]["InsightContent"];
+        };
+        /** InsightOut */
+        InsightOut: {
+            /**
+             * Insight Id
+             * Format: uuid
+             */
+            insight_id: string;
+            /**
+             * Lecture Id
+             * Format: uuid
+             */
+            lecture_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "brief_next" | "handoff";
+            /**
+             * Audience
+             * @enum {string}
+             */
+            audience: "professor" | "seminar_leader";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending_approval" | "approved" | "rejected" | "edited" | "published";
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "live" | "prebaked" | "template" | "manual";
+            content: components["schemas"]["InsightContent"];
+            /** Decision Reason */
+            decision_reason?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Decided At */
+            decided_at?: string | null;
+        };
+        /** InsightReject */
+        InsightReject: {
+            /** Reason */
+            reason: string;
+        };
+        /** InsightTask */
+        InsightTask: {
+            /** Title */
+            title: string;
+            /** Instructions */
+            instructions: string;
+            /** Duration Minutes */
+            duration_minutes?: number | null;
         };
         /** JoinPreview */
         JoinPreview: {
@@ -783,6 +1157,112 @@ export interface operations {
             };
         };
     };
+    list_concept_autonomy_api_v1_lectures__lecture_id__concept_autonomy_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutonomyOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_concept_autonomy_api_v1_lectures__lecture_id__concept_autonomy__concept_canonical_id__put: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                concept_canonical_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutonomyUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutonomyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cohort_memory_api_v1_courses__course_id__cohort_memory_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                course_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CohortMemoryOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_courses_api_v1_courses_get: {
         parameters: {
             query?: never;
@@ -1104,6 +1584,257 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LectureSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_insights_api_v1_lectures__lecture_id__insights_get: {
+        parameters: {
+            query?: {
+                kind?: ("brief_next" | "handoff") | null;
+                status?: ("pending_approval" | "approved" | "rejected" | "edited" | "published") | null;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_insight_api_v1_lectures__lecture_id__insights_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InsightCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_insight_api_v1_lectures__lecture_id__insights__insight_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_insight_api_v1_lectures__lecture_id__insights__insight_id__edit_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InsightEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_insight_api_v1_lectures__lecture_id__insights__insight_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InsightReject"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_handoff_api_v1_lectures__lecture_id__insights__insight_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffLinkOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    redeem_handoff_api_v1_handoff_redeem_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HandoffRedeemRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffPublicOut"];
                 };
             };
             /** @description Validation Error */
