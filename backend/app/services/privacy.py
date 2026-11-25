@@ -43,7 +43,8 @@ TABLE_PURPOSES = {
     "signal_buckets": "Aggregated 10-second signal counts; no token identifiers.",
     "lecture_minutes": "Aggregated minute-level signal counts for the heatmap; no token identifiers.",
     "confusion_clusters": "Aggregated confusion windows with no individual histories.",
-    "insights": "Future approved post-lecture intelligence; JSON only.",
+    "insights": "Structured BriefNext and Handoff content with professor review decisions.",
+    "handoff_links": "Expiring Handoff capabilities stored as SHA-256 hashes; raw link tokens are not stored.",
     "concept_autonomy": "Professor-controlled autonomy settings per concept.",
     "cohort_stats": "Synthetic cohort aggregates, explicitly marked synthetic.",
     "demo_fixtures": "Synthetic development/demo fixtures, explicitly marked synthetic.",
@@ -106,7 +107,7 @@ class PrivacyService:
             for name, columns in sorted(by_table.items())
         ]
         return PrivacyManifest(
-            version="2026-11-25.1",
+            version="2026-11-25.2",
             generated_at=datetime.now(UTC),
             summary=(
                 "DärisAI stores aggregated lecture participation data and professor "
@@ -149,11 +150,25 @@ class PrivacyService:
                     storage="Browser storage; the server validates signature, audience and expiry.",
                     notes="Professor identity is the only persistent personal data in the system.",
                 ),
+                TokenPolicy(
+                    name="Handoff capability",
+                    scopes=["redeem one published Handoff item"],
+                    lifetime="168 hours by default; configurable from 1 to 720 hours",
+                    storage=(
+                        "The raw capability is returned in a URL fragment and submitted in a JSON body; "
+                        "PostgreSQL stores only its SHA-256 hash."
+                    ),
+                    notes=(
+                        "Cannot authorize professor actions, signals, Replay, or another lecture. "
+                        "Editing or rejecting the Handoff revokes active links."
+                    ),
+                ),
             ],
             retention=[
                 "Signal token hashes: Redis TTL equal to the token lifetime (4 hours by default).",
                 "Active-participant and sliding-window keys: at most 10 minutes, then Redis expiry.",
                 "Idempotency keys: 1 hour, then Redis expiry.",
+                "Handoff capability hashes remain until the parent insight is deleted; expiry/revocation denies use but does not currently purge rows.",
                 "Signal buckets, minute aggregates and clusters: retained for future Axiom/RAG context.",
                 "Transcript text and embeddings: no production STT is enabled in Phase 1.",
                 "Local student history: retained in the student's browser until they clear site data.",

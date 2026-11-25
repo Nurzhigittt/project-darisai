@@ -31,10 +31,7 @@ class JsonFormatter(logging.Formatter):
         "error_code",
         "error_type",
         "event",
-        "lecture_id",
-        "professor_id",
         "connection_count",
-        "reason",
         "duration_ms",
         "component",
     }
@@ -44,14 +41,33 @@ class JsonFormatter(logging.Formatter):
             "ts": datetime.now(UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
+            "message": (
+                record.msg
+                if record.name.startswith(("daris.", "app.")) and isinstance(record.msg, str)
+                else "external log event"
+            ),
             "request_id": getattr(record, "request_id", request_id_var.get()),
         }
         for key in self.allowed_extras:
             if hasattr(record, key):
-                payload[key] = getattr(record, key)
+                value = getattr(record, key)
+                if key == "event" and (
+                    not isinstance(value, str)
+                    or value
+                    not in {
+                        "startup",
+                        "migrations",
+                        "shutdown",
+                        "professor_login",
+                        "lecture_state",
+                    }
+                ):
+                    continue
+                payload[key] = value
         if record.exc_info:
-            payload["exception"] = self.formatException(record.exc_info)
+            exception_type = record.exc_info[0]
+            if exception_type is not None:
+                payload["error_type"] = exception_type.__name__
         return json.dumps(payload, default=str, separators=(",", ":"))
 
 
@@ -121,13 +137,7 @@ class OperationalCounters:
 
 
 async def observability_middleware(request: Request, call_next):  # type: ignore[no-untyped-def]
-    request_id = request.headers.get("x-request-id", "")
-    if (
-        not request_id
-        or len(request_id) > 64
-        or not all(char.isalnum() or char in "-_." for char in request_id)
-    ):
-        request_id = str(uuid.uuid4())
+    request_id = str(uuid.uuid4())
     request.state.request_id = request_id
     token = request_id_var.set(request_id)
     start = time.perf_counter()

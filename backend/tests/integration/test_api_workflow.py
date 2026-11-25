@@ -121,6 +121,7 @@ def test_ws_signal_ack_duplicate_and_cooldown(client: TestClient) -> None:
         assert ack["type"] == "signal_ack"
         assert ack["payload"]["accepted"] is True
 
+        message["msg_id"] = str(uuid.uuid4())
         ws.send_json(message)
         duplicate = ws.receive_json()
         assert duplicate["payload"]["accepted"] is False
@@ -128,6 +129,13 @@ def test_ws_signal_ack_duplicate_and_cooldown(client: TestClient) -> None:
 
         message["msg_id"] = str(uuid.uuid4())
         message["payload"]["client_seq"] = 2
+        message["payload"]["client_ts_ms"] = int(time.time() * 1000) - 31_000
+        ws.send_json(message)
+        stale = ws.receive_json()
+        assert stale["payload"]["reason"] == "stale_signal"
+
+        message["msg_id"] = str(uuid.uuid4())
+        message["payload"].pop("client_ts_ms")
         ws.send_json(message)
         cooldown = ws.receive_json()
         assert cooldown["payload"]["accepted"] is False

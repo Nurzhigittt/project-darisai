@@ -146,7 +146,7 @@ class SignalProcessor:
         bucket_start = self._bucket_start(offset_ms, self._settings.signal_bucket_ms)
         minute_start = self._bucket_start(offset_ms, 60_000)
         lecture_key = str(lecture_id)
-        token_key = token_hash[:16]
+        token_key = token_hash
         keys = [
             f"daris:idem:{lecture_key}:{token_key}:{payload.client_seq}",
             f"daris:cd:{lecture_key}:{token_key}",
@@ -171,7 +171,7 @@ class SignalProcessor:
                 self._settings.signal_cooldown_ms,
                 bucket_start,
                 minute_start,
-                3600,
+                self._settings.signal_token_ttl_seconds,
                 7200,
                 86400,
             ],

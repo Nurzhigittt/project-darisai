@@ -66,8 +66,12 @@ class StudentTokenService:
             metadata = json.loads(stored)
         except json.JSONDecodeError as exc:
             raise AppError(401, "UNAUTHORIZED", "The participation token is not valid.") from exc
-        if metadata.get("lecture_id") != str(lecture_id):
-            raise AppError(401, "UNAUTHORIZED", "The participation token is for another lecture.")
+        if (
+            metadata.get("scope") != "signal"
+            or metadata.get("lecture_id") != str(lecture_id)
+            or metadata.get("expires_at") != claims.expires_at
+        ):
+            raise AppError(401, "UNAUTHORIZED", "The participation token is not valid.")
         return claims
 
     def validate_replay_token(self, raw_token: str, lecture_id: UUID) -> TokenClaims:
