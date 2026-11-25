@@ -50,3 +50,8 @@ redis.zip
 Thumbs.db
 .idea/
 .vscode/
+.model_cache/
+backend/.model_cache/
+.pip-tools-cache/
+!artifacts/evals/
+!artifacts/evals/*.json

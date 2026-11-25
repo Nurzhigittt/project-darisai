@@ -20,27 +20,57 @@ certifi==2026.11.20
     #   httpcore
     #   httpx
 click==8.5.1
-    # via uvicorn
+    # via
+    #   huggingface-hub
+    #   uvicorn
 colorama==0.4.6
-    # via uvicorn
+    # via
+    #   tqdm
+    #   uvicorn
 fastapi==0.136.1
     # via daris-ai-backend (pyproject.toml)
+filelock==4.3.1
+    # via huggingface-hub
+flatbuffers==25.12.19
+    # via onnxruntime
+fsspec==2026.9.0
+    # via huggingface-hub
 h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
+hf-xet==1.8.0
+    # via huggingface-hub
 httpcore==1.0.9
     # via httpx
 httptools==0.9.0
     # via uvicorn
 httpx==0.28.1
-    # via daris-ai-backend (pyproject.toml)
+    # via
+    #   daris-ai-backend (pyproject.toml)
+    #   huggingface-hub
+huggingface-hub==1.33.0
+    # via
+    #   daris-ai-backend (pyproject.toml)
+    #   tokenizers
 idna==3.20
     # via
     #   anyio
     #   httpx
+numpy==2.5.5
+    # via
+    #   daris-ai-backend (pyproject.toml)
+    #   onnxruntime
+onnxruntime==1.32.0
+    # via daris-ai-backend (pyproject.toml)
+packaging==26.4
+    # via
+    #   huggingface-hub
+    #   onnxruntime
 prometheus-client==0.24.1
     # via daris-ai-backend (pyproject.toml)
+protobuf==7.36.2
+    # via onnxruntime
 pydantic==2.13.4
     # via
     #   daris-ai-backend (pyproject.toml)
@@ -59,15 +89,22 @@ python-dotenv==1.2.4
 python-multipart==0.0.20
     # via daris-ai-backend (pyproject.toml)
 pyyaml==6.0.4
-    # via uvicorn
+    # via
+    #   huggingface-hub
+    #   uvicorn
 redis==6.4.0
     # via daris-ai-backend (pyproject.toml)
 starlette==1.10.0
     # via fastapi
+tokenizers==0.23.3
+    # via daris-ai-backend (pyproject.toml)
+tqdm==4.70.1
+    # via huggingface-hub
 typing-extensions==4.16.0
     # via
     #   anyio
     #   fastapi
+    #   huggingface-hub
     #   pydantic
     #   pydantic-core
     #   typing-inspection
