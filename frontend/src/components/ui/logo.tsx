@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -12,27 +13,18 @@ export function Logo({
   className?: string;
 }) {
   const mark = (
-    <span className="inline-flex items-center gap-3">
-      <span
-        aria-hidden
+    <span className="inline-flex items-center gap-2.5">
+      <Image
+        src="/icons/icon-192.png"
+        alt=""
+        width={36}
+        height={36}
         className={cn(
-          "relative grid size-9 place-items-center rounded-full border",
-          light ? "border-white/25 bg-white/10" : "border-primary/20 bg-primary-soft",
+          "size-9 rounded-[10px] shadow-[0_4px_12px_-6px_rgba(38,35,58,0.6)]",
+          light && "ring-1 ring-white/25",
         )}
-      >
-        <span
-          className={cn(
-            "absolute size-6 rounded-full border",
-            light ? "border-white/45" : "border-primary/45",
-          )}
-        />
-        <span
-          className={cn(
-            "absolute size-3.5 rounded-full",
-            light ? "bg-accent" : "bg-primary",
-          )}
-        />
-      </span>
+        priority
+      />
       <span
         className={cn(
           "text-lg font-extrabold tracking-[-0.04em]",

@@ -3,7 +3,7 @@
 **Last updated:** 25 November 2026.
 **Branch:** `feat/phase-0-1-foundation-realtime`
 **Base:** `fd9e564b734d41c6e5b05a41c270c0e8fe353f16`
-**Target:** `https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai`
+**Target:** `https://github.com/Nurzhigittt/project-darisai`
 
 ## Verified commits
 
@@ -15,7 +15,7 @@
 | `2f0e799b1548cdfdbaa7e0fa8eeed631db2d7086` | Contracts, CI, smoke/load tooling, raw load reports |
 | `5063876c2e8c5f15fdcf9c14c87163b481cf2426` | Audit, ADRs, performance, build log, handover, screenshots |
 
-**Pull request:** <https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai/pull/1>
+**Pull request:** <https://github.com/Nurzhigittt/project-darisai/pull/1>
 **Verified remote SHA at push:** `5063876c2e8c5f15fdcf9c14c87163b481cf2426`.
 
 The final branch HEAD after this link-only documentation commit is reported in the execution report. Verify with `git log --oneline --decorate` and `git ls-remote origin`.
@@ -180,3 +180,4 @@ Start by reading:
 5. `docs/ROADMAP.md` Phase 2
 
 Definition of done for that slice: a deterministic retrieval test with a fixture transcript, citation substring checks, lecture isolation, no external API key required, and no fabricated LLM output.
+

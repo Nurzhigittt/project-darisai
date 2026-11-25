@@ -1,68 +1,164 @@
+<div align="center">
+
+<img src="docs/assets/app-icon.png" width="82" alt="DärisAI app icon" />
+
 # DärisAI
 
-**Make understanding visible.**
+### Make understanding visible.
 
-DärisAI is a quiet, anonymous lecture feedback system. Students join with a six-character code, press one large **I don't understand** button when they lose the thread, and the professor sees a calm, real-time Ripple instead of a leaderboard or a chat feed.
+A quieter way for students to speak up, and for professors to notice the moment a room loses the thread.
 
-This repository is the working **Phase 0 foundation + Phase 1 Signal & Ripple vertical slice**. It runs through real PostgreSQL, Redis, REST, WebSockets and browser persistence. The post-lecture AI ecosystem is deliberately **not** presented as finished.
+**No student accounts · No interruption · Real-time Ripple**
 
-![The professor's live Ripple view](docs/screenshots/professor-live.png)
+[English](README.md) · [Русский](README.ru.md)
 
-## What is real
+[![CI](https://img.shields.io/github/actions/workflow/status/Nurzhigittt/project-darisai/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/Nurzhigittt/project-darisai/actions)
+[![E2E](https://img.shields.io/github/actions/workflow/status/Nurzhigittt/project-darisai/e2e.yml?branch=main&label=E2E&style=flat-square)](https://github.com/Nurzhigittt/project-darisai/actions)
+![Python](https://img.shields.io/badge/Python-3.12%2B-26233A?style=flat-square&logo=python&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-16-26233A?style=flat-square&logo=nextdotjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-7053C6?style=flat-square&logo=postgresql&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-82B69A?style=flat-square)
+![Phase](https://img.shields.io/badge/Phase_1-Signal_%26_Ripple-F2AC69?style=flat-square&labelColor=26233A)
 
-- Real FastAPI application with typed settings, request IDs, structured logs, readiness probes, CORS and security headers.
-- Real PostgreSQL schema with `pgvector`, UUID keys, raw SQL migrations, aggregates and privacy checks.
-- Real Redis keys for temporary credentials, cooldowns, idempotency, sliding windows, active participants and Pub/Sub.
-- Real anonymous student join with separately scoped **Signal** and **Replay** tokens.
-- Real authenticated WebSocket gateway with hello timeout, role checks, lecture isolation, heartbeats, rate limits and close codes.
-- Real atomic signal processing (Lua) with cooldown and duplicate rejection.
-- Real deterministic Ripple algorithm (20 s window, active-participant threshold, EWMA α = 0.4, hysteresis and 2 Hz broadcast cap).
-- Real confusion clusters persisted in PostgreSQL.
-- Real IndexedDB student history containing only signals confirmed by the server.
-- Real professor controls, QR presentation mode, factual heatmap/summary and PWA shell.
-- Real automated tests and an end-to-end Playwright workflow.
+</div>
 
-## What is intentionally not finished
+<img src="docs/assets/hero-imac.png" alt="DärisAI professor live view inside an all-in-one desktop display" width="100%" />
 
-- Production speech-to-text.
-- Temporal RAG, Axiom LLM calls, Socratic Replay, GapCards, BriefNext, Handoff, Cohort Memory and Staged Autonomy.
-- A 90-second judge demo simulator.
-- Cloud deployment. Local Compose is provided but was not executed in the build environment (Docker was unavailable); see [the handover](docs/HANDOVER.md).
+<div align="center">
+  <sub>An actual production-build screenshot from the working app, set in an original desktop composition.</sub>
+</div>
 
-No paid provider credentials are required. The application has no LLM dependency in Phase 1.
+---
 
-## Screens
+## Why it feels different
 
-| Landing | Student Signal | Student summary/history |
-| --- | --- | --- |
-| ![Landing](docs/screenshots/landing.png) | ![Student Signal](docs/screenshots/student-signal-mobile.png) | ![Summary](docs/screenshots/summary.png) |
+Most classroom tools ask for attention. DärisAI asks for a single tap.
 
-More screenshots: [privacy](docs/screenshots/privacy.png), [status](docs/screenshots/status.png).
+<table>
+<tr>
+<td width="33%" valign="top">
 
-## Stack
+### For students
 
-**Frontend:** Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS, Lucide, IndexedDB (`idb`), native WebSocket, PWA service worker, Vitest and Playwright.
+Open a link. Enter six characters. Press **I don’t understand** when the thread disappears.
 
-**Backend:** Python 3.12+, FastAPI, Pydantic v2, Pydantic Settings, asyncpg, redis-py asyncio, native WebSockets, pytest, Hypothesis, Ruff and mypy.
+No account. No app install. No microphone. No name attached.
 
-**Infrastructure:** PostgreSQL 16+ with pgvector, Redis 7 (Redis 5 compatible commands are used), Docker Compose, GitHub Actions.
+</td>
+<td width="33%" valign="top">
 
-## Architecture at a glance
+### For professors
+
+A calm Ripple in the corner of the room — not a leaderboard, a chat feed, or another dashboard to manage.
+
+Pause, resume or end the lecture without leaving the screen.
+
+</td>
+<td width="33%" valign="top">
+
+### For privacy
+
+There is no student table. Temporary credentials are lecture-scoped and pseudonymous. Confirmed moments stay in the student’s browser.
+
+Professor identity is the only persistent personal data.
+
+</td>
+</tr>
+</table>
+
+## What it looks like
+
+<table>
+<tr>
+<td width="58%">
+  <img src="docs/screenshots/professor-live.png" alt="Professor live Ripple showing clarification may be helpful" />
+  <br />
+  <sub><strong>Professor view</strong> — a cluster is visible as a warm Ripple, with no individual histories.</sub>
+</td>
+<td width="42%">
+  <img src="docs/screenshots/student-signal-mobile.png" alt="Student Signal screen on a phone" />
+  <br />
+  <sub><strong>Student view</strong> — one dominant action, readable status, no account.</sub>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="50%">
+  <img src="docs/screenshots/summary.png" alt="Factual post-lecture summary" />
+  <br />
+  <sub><strong>After the lecture</strong> — factual aggregate signals and cluster timestamps, not inferred learning outcomes.</sub>
+</td>
+<td width="50%">
+  <img src="docs/screenshots/presentation.png" alt="Large QR presentation mode" />
+  <br />
+  <sub><strong>QR presentation</strong> — a projector-friendly join surface with the real configured origin.</sub>
+</td>
+</tr>
+</table>
+
+<details>
+<summary><strong>More screens</strong></summary>
+<br />
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/landing.png" alt="DärisAI landing page" /></td>
+<td width="50%"><img src="docs/screenshots/privacy.png" alt="Live privacy manifest page" /></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/join-mobile.png" alt="Student join screen" /></td>
+<td><img src="docs/screenshots/status.png" alt="Factual component status page" /></td>
+</tr>
+</table>
+</details>
+
+## The loop
+
+```text
+Professor starts a lecture
+        ↓
+Student joins with a 6-character code — no account
+        ↓
+Student presses Signal
+        ↓
+FastAPI validates token, lecture, schema, rate, cooldown and duplicate
+        ↓
+Redis Lua updates an atomic 20-second window
+        ↓
+Deterministic Ripple evaluation (EWMA + hysteresis, ≤ 2 updates/sec)
+        ↓
+Professor sees a calm state: rising · cluster · recovering
+        ↓
+Clusters are persisted; ending the lecture freezes the aggregate
+```
+
+The student’s confirmed moments live in **IndexedDB on their device**. The server never receives an individual student signal history.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-  Student["Student PWA"] -->|REST /join| API["FastAPI modular monolith"]
+  Student["Student PWA<br/>Next.js + IndexedDB"] -->|REST join| API["FastAPI modular monolith"]
+  Student <-->|WSS /ws| API
   Professor["Professor UI"] -->|REST control| API
-  Student <-->|WSS /ws hello + signal| API
-  Professor <-->|WSS /ws ripple| API
+  Professor <-->|WSS ripple| API
   API --> PG[("PostgreSQL + pgvector")]
-  API <--> Redis[("Redis<br/>tokens, cooldowns,<br/>windows, Pub/Sub")]
-  API --> Axiom["Axiom interfaces<br/>(not implemented)"]
+  API <--> Redis[("Redis<br/>tokens · windows · Pub/Sub")]
+  API --> Axiom["Axiom interfaces<br/>(Phase 2, not implemented)"]
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for sequence diagrams and data boundaries.
+- **Signal Token** — short-lived, lecture-scoped, live participation only.
+- **Replay Token** — longer-lived, signed, future replay only; never authorizes live signals.
+- **Redis** — hashes, cooldowns, idempotency and sliding windows, all TTL-scoped.
+- **PostgreSQL** — aggregate buckets, clusters and professor identity; no student rows.
+- **One API worker** is the supported Phase 1 shape. This is stated plainly in the handover.
 
-## Quick start with Docker
+[Full architecture and sequence diagrams →](ARCHITECTURE.md)
+
+## Quick start
+
+### Docker
 
 ```bash
 cp .env.example .env
@@ -74,29 +170,24 @@ docker compose up --build
 - API docs: <http://localhost:8000/docs>
 - Readiness: <http://localhost:8000/ready>
 
-The development professor invite code is `DARIS-TEACH-2026` unless you change `SEED_PROFESSOR_INVITE_CODE` in `.env`. It is a development fixture, not a production credential.
+> [!NOTE]
+> Docker was not available in the environment where this slice was verified. The Compose files are committed, but the Docker path is **not claimed as locally tested**. See the [handover](docs/HANDOVER.md).
 
-> Docker was not available in the execution environment used to build this repository. The Compose files are provided and reviewed, but the clean-clone Docker path remains **unverified locally**; see `docs/BUILD_LOG.md`.
+### Local — verified
 
-## Quick start without Docker (verified locally)
-
-Prerequisites: Python 3.12+, Node 24, pnpm, PostgreSQL 18 with pgvector, Redis 5+.
+Requirements: Python 3.12+, Node 24, pnpm, PostgreSQL 16+ with `pgvector`, Redis 5+.
 
 ```bash
 cp .env.example .env
-# Point DATABASE_URL and REDIS_URL at your local services.
-# The example defaults are port 55432 for PostgreSQL and 6379 for Redis.
 
 cd backend
 python -m venv .venv
-./.venv/Scripts/python -m pip install -e ".[dev]"   # Windows PowerShell
-# source .venv/bin/activate && pip install -e ".[dev]"  # Unix
+# Windows: .\.venv\Scripts\python -m pip install -e ".[dev]"
+# Unix:    source .venv/bin/activate && pip install -e ".[dev]"
 python -m app.migrate
 python -m app.seed
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
-
-In a second terminal:
 
 ```bash
 cd frontend
@@ -104,152 +195,116 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-The local verification used PostgreSQL on `127.0.0.1:55432` and Redis on `127.0.0.1:6379`. These ports are examples; set your own URLs.
+## Create your first lecture
 
-## Environment
+1. Open **`/login`**.
+2. Use the development invite code **`DARIS-TEACH-2026`**  
+   (from `SEED_PROFESSOR_INVITE_CODE`; development only).
+3. Choose a course, lecture title and language.
+4. DärisAI generates the **six-character join code** and QR URL.
+5. Students open the URL or enter the code. No student account is created.
 
-All configuration is environment-driven. Never commit `.env`.
+The professor does **not** invent the join code. The QR uses `APP_BASE_URL`, so set that to the real application origin before creating a lecture in any deployment.
 
-| Variable | Purpose |
-| --- | --- |
-| `ENVIRONMENT` | `development`, `test` or `production`. Production rejects example secrets and requires HTTPS. |
-| `APP_BASE_URL` | Public frontend origin used to build QR/join links. |
-| `PUBLIC_WS_URL` | WebSocket URL returned by `POST /join`. |
-| `DATABASE_URL` / `TEST_DATABASE_URL` | PostgreSQL DSNs. |
-| `REDIS_URL` | Redis DSN. |
-| `JWT_SECRET` | HS256 professor access-token signing key. |
-| `TOKEN_SIGNING_SECRET` | HMAC key for student Signal/Replay tokens and invite hashes. |
-| `RATE_LIMIT_SECRET` | Key for pseudonymous IP rate-limit counters. |
-| `AUTO_SEED` | Development-only professor/course seeding. Must be false in production. |
-| `SEED_PROFESSOR_INVITE_CODE` | Development fixture invite code. |
-| `NEXT_PUBLIC_API_URL` | Browser-visible REST base URL. |
-| `NEXT_PUBLIC_WS_URL` | Browser-visible WebSocket URL. |
-| `NEXT_PUBLIC_APP_URL` | Frontend metadata origin. |
-
-Generate production secrets with `openssl rand -hex 32`.
-
-## Developer commands
-
-Windows users without `make` can run the equivalent commands in the table.
-
-| Command | Equivalent |
-| --- | --- |
-| `make up` | `docker compose up --build` |
-| `make down` | `docker compose down` |
-| `make logs` | `docker compose logs -f --tail=200` |
-| `make migrate` | `cd backend && python -m app.migrate` |
-| `make seed` | `cd backend && python -m app.seed` |
-| `make test` | `cd backend && python -m pytest -q` then `cd frontend && pnpm test` |
-| `make lint` | `cd backend && ruff check app tests` then `cd frontend && pnpm lint` |
-| `make typecheck` | `cd backend && mypy app` then `cd frontend && pnpm typecheck` |
-| `make contracts` | `python scripts/export_schemas.py` then `cd frontend && pnpm contracts` |
-| `make e2e` | `cd frontend && pnpm e2e` |
-| `make smoke` | `cd backend && python ../scripts/smoke.py` |
-| `make loadtest` | `cd backend && python ../scripts/loadtest.py --students 30 --duration 20` |
-
-## How the workflow works
-
-1. A professor authenticates with an invite code and creates a lecture under a course.
-2. The server allocates a unique six-character Crockford base32 join code and returns a join URL for QR rendering.
-3. A student joins without an account and receives:
-   - a short-lived **Signal Token** for WebSocket participation;
-   - a longer-lived **Replay Token** reserved for future post-lecture learning.
-4. The student connects to `/ws`, sends `hello` with the Signal Token inside the encrypted WebSocket payload, and waits for `hello_ok`.
-5. During a live lecture, a signal travels through authentication, lecture authorization, schema validation, per-connection rate limiting, Redis idempotency/cooldown, atomic window aggregation and Ripple calculation.
-6. The professor receives server-timestamped `ripple_update` events at most twice per second.
-7. Sustained intensity creates one persisted confusion cluster; recovery closes it.
-8. Ending the lecture flushes aggregate buckets, finalizes clusters and blocks further live signals.
-9. The student sees only locally confirmed moments. PostgreSQL never receives an individual student signal history.
-
-## API and contracts
-
-REST and WebSocket schemas are exported from Pydantic models:
-
-- [`docs/contracts/openapi.json`](docs/contracts/openapi.json)
-- [`docs/contracts/ws-events.schema.json`](docs/contracts/ws-events.schema.json)
-- [`frontend/src/lib/api/types.gen.ts`](frontend/src/lib/api/types.gen.ts)
-- Fixtures: [`docs/contracts/fixtures/`](docs/contracts/fixtures/)
-
-CI fails when generated contracts drift from committed ones. See [docs/API_CONTRACTS.md](docs/API_CONTRACTS.md).
-
-## Testing
+If the invite code is rejected, run the migration and seed again:
 
 ```bash
 cd backend
-pytest -q
-
-cd ../frontend
-pnpm test
-pnpm e2e
+python -m app.migrate
+python -m app.seed
 ```
 
-Verified locally on 25 November 2026:
+## Verified, not implied
 
-- Backend: **37 passed** (25 unit, 9 integration, 3 security), real PostgreSQL + Redis.
-- Frontend: **11 passed**.
-- Playwright: **7 passed**, including the full professor/student workflow and automated axe checks on four public screens.
-- Ruff, mypy, ESLint, TypeScript and gitleaks: clean locally.
-- Production frontend build: successful.
-- Load test: **300 / 300** synthetic students connected, zero errors, signal-to-Ripple p95 **493 ms**, acknowledgement p95 **11 ms**. See [docs/PERFORMANCE_REPORT.md](docs/PERFORMANCE_REPORT.md).
+| Check | Actual result |
+| --- | --- |
+| Backend tests | **37 passed** against real PostgreSQL + Redis |
+| Frontend tests | **11 passed** |
+| End-to-end | **7 passed** — full lecture workflow, invalid code, keyboard/localization, 4 axe scans |
+| Lint & types | Ruff, mypy, ESLint and TypeScript clean |
+| Production build | Successful Next.js build |
+| 300-client load test | 300/300 connected, **0 errors**, ack p95 **11 ms**, Ripple p95 **493 ms** |
+| Multi-lecture load | 60 students / 3 lectures, **0 errors**, Ripple p95 **487 ms** |
+| Secrets | gitleaks clean locally |
+| Docker / remote CI | **Configured, not executed here** |
 
-## Privacy in one paragraph
+The 493 ms p95 is only 6.75 ms below the engineering target; p99 is above 500 ms. The [performance report](docs/PERFORMANCE_REPORT.md) includes the environment, methodology and limitations.
 
-There is no student account, no student table, no student name, email, phone, device identifier or individual signal history in PostgreSQL. Temporary Signal and Replay credentials are pseudonymous, lecture-scoped and time-limited. The server stores only a SHA-256 Signal Token hash in Redis for authorization, deduplication and cooldown. Confirmed student moments stay in IndexedDB on their device. Professor identity is the only persistent personal data. Read the live manifest at `/api/v1/privacy/manifest` or the plain-language page at `/privacy`.
+## What is real
 
-A token is pseudonymous, not proof of absolute anonymity: whoever holds it can act as that participant until it expires, and the same person can join from multiple browsers/devices.
+- Professor invite auth, lecture lifecycle and pause/resume timing.
+- Anonymous join with separately scoped Signal and Replay tokens.
+- Real authenticated WebSocket gateway with origin checks, hello timeout, rate limits and close codes.
+- Atomic Redis signal processing with duplicate and cooldown rejection.
+- Deterministic Ripple with hysteresis, small-group policy and 2 Hz cap.
+- Persisted confusion clusters and factual minute-level analytics.
+- Student IndexedDB history of server-confirmed signals.
+- QR presentation, post-lecture summary, privacy manifest, status page.
+- Accessible design system, EN/RU/KK, light/dark theme and PWA app shell.
 
-## Accessibility and localisation
+## Deliberately not finished
 
-- WCAG 2.2 AA target: semantic landmarks, keyboard navigation, visible focus, ARIA live status text, 44 px+ targets, reduced-motion fallbacks and text alternatives to colour.
-- English, Russian and Kazakh dictionaries are separate from business logic.
-- Light mode is the default; a low-light theme is available.
-- The Signal button always uses words, not colour alone.
+- Production STT and transcript ingestion.
+- Temporal RAG, Socratic Replay, GapCards, BriefNext, Handoff.
+- Cohort Memory and the full staged-autonomy workflow.
+- A 90-second judge demo.
+- Cloud deployment and multi-worker evaluator coordination.
 
-## Security
+No LLM provider is called in this phase. The Axiom interfaces are a prepared integration surface, not a shipped AI feature.
 
-- HMAC-signed, scoped student tokens; JWT professor sessions with issuer/audience/expiry checks.
-- Constant-time comparisons; invite codes stored as keyed hashes.
-- Origin validation, CORS allowlist, message-size limits, per-connection rate limiting and Redis TTLs.
-- No raw tokens, IPs or request bodies in application logs.
-- See [SECURITY.md](SECURITY.md) and [docs/SECURITY_PRIVACY.md](docs/SECURITY_PRIVACY.md).
+## Stack
+
+| Layer | Tools |
+| --- | --- |
+| Web | Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS, Lucide, IndexedDB, PWA |
+| API | FastAPI, Pydantic v2, asyncpg, redis-py asyncio, native WebSockets |
+| Data | PostgreSQL + pgvector, Redis Pub/Sub, SQL migrations |
+| Quality | Pytest, Hypothesis, Vitest, Playwright, axe, Ruff, mypy, ESLint, gitleaks |
+| Delivery | Docker Compose, GitHub Actions |
 
 ## Repository map
 
 ```text
-backend/   FastAPI app, SQL migrations, tests
-frontend/  Next.js App Router app, design system, PWA, unit/E2E tests
-docs/      audit, API/DB/security docs, ADRs, contracts, reports, handover
-scripts/   contract export, icons, smoke test, load test
-.github/   CI, E2E and secret scanning
+backend/    FastAPI app · realtime pipeline · SQL migrations · tests
+frontend/   Next.js app · design system · PWA · unit + E2E tests
+docs/       spec audit · API/DB/security docs · ADRs · contracts · reports
+scripts/    contract export · icons · smoke test · 300-client load test
+artifacts/  raw synthetic load-test results
 ```
-
-## Contribution workflow
-
-- Trunk-based; feature branches such as `feat/phase-2-axiom`.
-- Conventional Commits; do not rewrite shared history or force-push.
-- Run `make lint`, `make typecheck`, `make test`, `make contracts` before pushing.
-- Additive contract changes after the baseline; regenerate rather than hand-edit `types.gen.ts`.
-- Never add a student identity table or fabricate a metric/test result.
-- Preserve the privacy allowlist and CI privacy test.
 
 ## Documentation
 
-- [Specification audit](docs/SPEC_AUDIT.md)
-- [Architecture](ARCHITECTURE.md)
-- [Database schema](docs/DB_SCHEMA.md)
-- [API contracts](docs/API_CONTRACTS.md)
-- [Security & privacy](docs/SECURITY_PRIVACY.md)
-- [ADRs](docs/adr/)
-- [Build log](docs/BUILD_LOG.md)
-- [Performance report](docs/PERFORMANCE_REPORT.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Handover](docs/HANDOVER.md)
-- [Agent instructions](AGENTS.md)
+- [Specification audit](docs/SPEC_AUDIT.md) — what the PDF says, what was corrected and why
+- [Architecture](ARCHITECTURE.md) — containers, sequences, token lifecycle, data boundaries
+- [API contracts](docs/API_CONTRACTS.md) — REST and WebSocket protocol
+- [Database schema](docs/DB_SCHEMA.md) — tables, aggregate semantics, privacy rules
+- [Security & privacy](docs/SECURITY_PRIVACY.md) — threat model and honest limits
+- [ADRs](docs/adr/) — seven recorded decisions
+- [Build log](docs/BUILD_LOG.md) — actual commands and results
+- [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology and numbers
+- [Roadmap](docs/ROADMAP.md) — phases 0–7
+- [Handover](docs/HANDOVER.md) — the exact Phase 2 starting point
 
-## Limitations
+## Privacy in one paragraph
 
-- One API worker is the supported Phase 1 deployment shape. Redis Pub/Sub is in place, but Ripple runtime state is cached per process; multi-worker coordination is future work.
-- No production STT; transcript tables and Axiom interfaces exist without live ingestion.
-- Share profiles are browser-scoped: clearing site data removes local study history; joining from several devices creates independent participants.
-- A low number of signals does **not** prove understanding.
-- Docker Compose, GitHub Actions and cloud deployment were not executable in the local build environment. Their configuration is committed; verification status is reported honestly in the handover.
+A temporary Signal Token is pseudonymous, not proof of absolute anonymity. It can be used by whoever holds it until it expires, and the same person can join from multiple browsers. The server stores only a SHA-256 token hash in Redis, never in PostgreSQL. There is no student account, no student name/email/phone/device ID, and no individual signal history in the database. Clearing browser data removes local study history. Read the [live manifest](docs/SECURITY_PRIVACY.md) or open `/privacy` in the app.
+
+## Contributing
+
+The project is at a **Phase 1 complete / Phase 2 next** boundary. Read [AGENTS.md](AGENTS.md) before changing code. Keep contracts generated, preserve the privacy allowlist, and never report a test or benchmark that was not actually run.
+
+```bash
+make test
+make lint
+make typecheck
+make contracts
+make e2e
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+<div align="center">
+  <sub>Built for the Venture Startup Battle 2026 · Signal & Ripple foundation</sub>
+</div>

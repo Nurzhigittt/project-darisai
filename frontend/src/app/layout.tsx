@@ -37,6 +37,21 @@ export const metadata: Metadata = {
     description:
       "A quiet, anonymous Signal & Ripple tool for lectures. No student accounts.",
     type: "website",
+    images: [
+      {
+        url: "/social-preview.png",
+        width: 1280,
+        height: 640,
+        alt: "DärisAI — Make understanding visible",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DärisAI — Make understanding visible",
+    description:
+      "A quiet, anonymous Signal & Ripple tool for lectures. No student accounts.",
+    images: ["/social-preview.png"],
   },
   robots: { index: true, follow: true },
 };

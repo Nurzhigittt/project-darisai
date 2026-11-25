@@ -9,7 +9,7 @@ import { useI18n } from "@/lib/i18n";
 
 const githubUrl =
   process.env.NEXT_PUBLIC_GITHUB_URL ??
-  "https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai";
+  "https://github.com/Nurzhigittt/project-darisai";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -95,3 +95,4 @@ export function SiteFooter() {
     </footer>
   );
 }
+

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Code2, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -109,3 +109,4 @@ export function SiteHeader() {
     </header>
   );
 }
+

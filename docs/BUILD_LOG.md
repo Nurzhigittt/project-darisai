@@ -5,7 +5,7 @@ This log records what was actually run. It does not reconstruct work that did no
 
 ## Starting state
 
-- Target repository: `https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai`
+- Target repository: `https://github.com/Nurzhigittt/project-darisai`
 - Base commit: `fd9e564b734d41c6e5b05a41c270c0e8fe353f16` (`Create README.md`)
 - Existing content: a 7-byte `README.md` with the text `ignore`.
 - Branch created: `feat/phase-0-1-foundation-realtime`.
@@ -128,7 +128,7 @@ The 300-client p95 is below the 500 ms target by 6.75 ms. This is a narrow margi
 | `2f0e799b1548cdfdbaa7e0fa8eeed631db2d7086` | `test(ci): add contract checks, E2E, load testing and quality gates` |
 | `5063876c2e8c5f15fdcf9c14c87163b481cf2426` | `docs: audit specification and record delivery evidence` |
 
-The branch was pushed and verified at remote SHA `5063876c2e8c5f15fdcf9c14c87163b481cf2426` on `feat/phase-0-1-foundation-realtime`. Pull request: <https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai/pull/1>. The final documentation-link commit after this log is reported in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote`.
+The branch was pushed and verified at remote SHA `5063876c2e8c5f15fdcf9c14c87163b481cf2426` on `feat/phase-0-1-foundation-realtime`. Pull request: <https://github.com/Nurzhigittt/project-darisai/pull/1>. The final documentation-link commit after this log is reported in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote`.
 
 ## Reproduction notes
 
@@ -139,3 +139,4 @@ The repository is self-contained for Docker and CI. The local verification also 
 - Virtual environments in `backend/.venv` and `frontend/node_modules` are ignored by Git.
 
 A clean reviewer should follow `README.md` and use Docker Compose or their own PostgreSQL/Redis with `pgvector` enabled. The committed migrations, contracts, tests and lockfiles are the reproducible artifacts.
+

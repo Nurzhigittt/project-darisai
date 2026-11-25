@@ -29,7 +29,7 @@ import {
   getProfessorSession,
 } from "@/lib/auth/professor";
 import { useI18n } from "@/lib/i18n";
-import { formatDuration, formatOffset } from "@/lib/utils";
+import { cn, formatDuration, formatOffset } from "@/lib/utils";
 
 function Stat({
   icon,
@@ -186,32 +186,52 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                   />
                 </div>
               ) : (
-                <div
-                  className="mt-6 flex h-56 items-end gap-1.5 overflow-x-auto pb-7"
-                  role="img"
-                  aria-label={`${t("summary.timeline")}: ${summary.timeline
-                    .map((item) => `minute ${item.minute}: ${item.signals} signals`)
-                    .join(", ")}`}
-                >
-                  {summary.timeline.map((item) => (
+                <div className="mt-6 rounded-2xl border border-border bg-gradient-to-b from-background to-surface p-4">
+                  <div
+                    className="relative flex h-48 items-end gap-2 overflow-x-auto px-1 pb-7 pt-6"
+                    role="img"
+                    aria-label={`${t("summary.timeline")}: ${summary.timeline
+                      .map((item) => `minute ${item.minute}: ${item.signals} signals`)
+                      .join(", ")}`}
+                  >
                     <div
-                      key={item.minute_start_ms}
-                      className="group relative flex min-w-6 max-w-20 flex-1 flex-col items-center"
+                      aria-hidden
+                      className="pointer-events-none absolute inset-x-4 bottom-7 top-6 flex flex-col justify-between"
                     >
-                      <div
-                        className="w-full rounded-t-md bg-primary/70 transition-colors group-hover:bg-primary"
-                        style={{
-                          height: `${Math.max(6, (item.signals / maxSignals) * 170)}px`,
-                        }}
-                      />
-                      <span className="absolute -bottom-6 text-[10px] text-muted">
-                        {item.minute}
-                      </span>
-                      <span className="pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded bg-foreground px-2 py-1 text-[10px] text-background group-hover:block">
-                        {item.signals} · {item.unique} {t("summary.unique")}
-                      </span>
+                      {[0, 1, 2, 3].map((line) => (
+                        <span key={line} className="block border-t border-border/60" />
+                      ))}
                     </div>
-                  ))}
+                    <div
+                      className={cn(
+                        "relative flex h-full w-full items-end gap-2",
+                        summary.timeline.length < 8 && "justify-center",
+                      )}
+                    >
+                      {summary.timeline.map((item) => (
+                        <div
+                          key={item.minute_start_ms}
+                          className="group relative flex h-full min-w-10 max-w-16 flex-1 flex-col items-center justify-end"
+                        >
+                          <span className="mb-1 font-mono text-[10px] font-bold text-muted">
+                            {item.signals}
+                          </span>
+                          <div
+                            className="w-full rounded-t-md bg-primary/75 shadow-[0_0_18px_-8px_var(--primary)] transition-colors group-hover:bg-primary"
+                            style={{
+                              height: `${Math.max(8, (item.signals / maxSignals) * 150)}px`,
+                            }}
+                          />
+                          <span className="absolute -bottom-6 text-[10px] text-muted">
+                            {item.minute}
+                          </span>
+                          <span className="pointer-events-none absolute -top-6 hidden whitespace-nowrap rounded bg-foreground px-2 py-1 text-[10px] text-background group-hover:block">
+                            {item.signals} · {item.unique} {t("summary.unique")}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
               <p className="mt-4 text-xs text-muted">{t("summary.timelineNote")}</p>
