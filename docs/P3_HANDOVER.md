@@ -141,4 +141,11 @@ AXIOM_DAILY_GENERATION_BUDGET=100
 
 ## Commit references
 
-Fill from `git log --oneline` after the final P3 commits. Historical base: `0cce36e`; P3 branch starts there.
+| Commit | Meaning |
+| --- | --- |
+| `0cce36e` | P3 base on `main` |
+| `eaa6a40` | Embeddings, transcript ingestion, STT adapter, temporal retrieval |
+| `789e74d` | Guardrails, Socratic Replay, GapCards, teacher intelligence, tests |
+| `4b06410` | Evaluation suite, demo fixtures, contracts and P3 documentation |
+
+Final branch HEAD is recorded in the PR and the execution report. No force-push or history rewrite was used.
