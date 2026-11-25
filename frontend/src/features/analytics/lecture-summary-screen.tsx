@@ -5,7 +5,6 @@ import {
   BarChart3,
   Clock3,
   Info,
-  LockKeyhole,
   Radio,
   Sparkles,
   Users,
@@ -280,15 +279,17 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                 <div className="flex size-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
                   <Sparkles aria-hidden className="size-5" />
                 </div>
-                <h2 className="mt-5 text-xl font-bold">{t("summary.futureAI")}</h2>
+                <h2 className="mt-5 text-xl font-bold">{t("brief.title")}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted">
-                  {t("summary.futureAIBody")}
+                  {t("brief.subtitle")}
                 </p>
-                <div className="mt-5 flex items-center gap-2 text-xs text-muted">
-                  <LockKeyhole aria-hidden className="size-4" />
-                  {t("summary.noLlm")}
-                </div>
                 <div className="mt-6 flex flex-wrap gap-2">
+                  <Link
+                    href={`/brief/${lectureId}`}
+                    className="inline-flex min-h-11 items-center rounded-xl bg-primary-strong px-4 text-sm font-semibold text-surface"
+                  >
+                    {t("brief.open")}
+                  </Link>
                   <Link
                     href={`/p/${lectureId}`}
                     className="inline-flex min-h-10 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60"
@@ -297,7 +298,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                   </Link>
                   <Link
                     href="/professor"
-                    className="inline-flex min-h-10 items-center rounded-xl bg-primary px-3 text-sm font-semibold text-white"
+                    className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60"
                   >
                     {t("prof.home.recent")}
                   </Link>

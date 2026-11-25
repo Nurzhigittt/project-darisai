@@ -13,6 +13,12 @@ export type ControlResponse = components["schemas"]["ControlResponse"];
 export type Cluster = components["schemas"]["ClusterOut"];
 export type HeatmapBucket = components["schemas"]["HeatmapBucket"];
 export type PublicLecture = components["schemas"]["PublicLecture"];
+export type Insight = components["schemas"]["InsightOut"];
+export type InsightContent = components["schemas"]["InsightContent"];
+export type InsightCreate = components["schemas"]["InsightCreate"];
+export type InsightEdit = components["schemas"]["InsightEdit"];
+export type HandoffLink = components["schemas"]["HandoffLinkOut"];
+export type HandoffPublic = components["schemas"]["HandoffPublicOut"];
 
 export const API_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
@@ -102,8 +108,8 @@ export const api = {
   listLectures: (token: string) =>
     request<Lecture[]>("/api/v1/lectures", { token }),
 
-  getLecture: (token: string, lectureId: string) =>
-    request<Lecture>(`/api/v1/lectures/${lectureId}`, { token }),
+  getLecture: (token: string, lectureId: string, signal?: AbortSignal) =>
+    request<Lecture>(`/api/v1/lectures/${lectureId}`, { token, signal }),
 
   controlLecture: (
     token: string,
@@ -134,4 +140,37 @@ export const api = {
   getStatus: () => request<Status>("/api/v1/status"),
 
   getPrivacyManifest: () => request<PrivacyManifest>("/api/v1/privacy/manifest"),
+
+  listInsights: (token: string, lectureId: string, signal?: AbortSignal) =>
+    request<Insight[]>(`/api/v1/lectures/${lectureId}/insights?limit=100`, { token, signal }),
+
+  createInsight: (token: string, lectureId: string, body: InsightCreate) =>
+    request<Insight>(`/api/v1/lectures/${lectureId}/insights`, {
+      method: "POST", token, body,
+    }),
+
+  approveInsight: (token: string, lectureId: string, insightId: string) =>
+    request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/approve`, {
+      method: "POST", token,
+    }),
+
+  editInsight: (token: string, lectureId: string, insightId: string, body: InsightEdit) =>
+    request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/edit`, {
+      method: "POST", token, body,
+    }),
+
+  rejectInsight: (token: string, lectureId: string, insightId: string, reason: string) =>
+    request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/reject`, {
+      method: "POST", token, body: { reason },
+    }),
+
+  publishHandoff: (token: string, lectureId: string, insightId: string) =>
+    request<HandoffLink>(`/api/v1/lectures/${lectureId}/insights/${insightId}/publish`, {
+      method: "POST", token,
+    }),
+
+  redeemHandoff: (token: string, signal?: AbortSignal) =>
+    request<HandoffPublic>("/api/v1/handoff/redeem", {
+      method: "POST", body: { token }, signal,
+    }),
 };

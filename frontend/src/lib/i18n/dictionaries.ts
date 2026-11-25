@@ -1,3 +1,6 @@
+import { briefDictionaries } from "./brief";
+import { handoffDictionaries } from "./handoff";
+
 export const locales = ["en", "ru", "kk"] as const;
 export type Locale = (typeof locales)[number];
 
@@ -5,6 +8,8 @@ export type Dictionary = Record<string, string>;
 
 export const dictionaries: Record<Locale, Dictionary> = {
   en: {
+    ...briefDictionaries.en,
+    ...handoffDictionaries.en,
     "brand.name": "DärisAI",
     "brand.tagline": "Make understanding visible.",
     "lecture.scheduled": "Scheduled",
@@ -59,6 +64,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     "common.retry": "Try again",
     "common.back": "Back",
     "common.close": "Close",
+    "common.skipContent": "Skip to content",
     "common.cancel": "Cancel",
     "common.confirm": "Confirm",
     "common.copy": "Copy",
@@ -281,6 +287,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "DärisAI is an educational prototype. It does not measure comprehension.",
   },
   ru: {
+    ...briefDictionaries.ru,
+    ...handoffDictionaries.ru,
     "brand.name": "DärisAI",
     "brand.tagline": "Сделайте понимание видимым.",
     "lecture.scheduled": "Запланирована",
@@ -335,6 +343,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     "common.retry": "Попробовать снова",
     "common.back": "Назад",
     "common.close": "Закрыть",
+    "common.skipContent": "Перейти к содержимому",
     "common.cancel": "Отмена",
     "common.confirm": "Подтвердить",
     "common.copy": "Копировать",
@@ -554,6 +563,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
     "footer.caution": "DärisAI — образовательный прототип. Он не измеряет понимание.",
   },
   kk: {
+    ...briefDictionaries.kk,
+    ...handoffDictionaries.kk,
     "brand.name": "DärisAI",
     "brand.tagline": "Түсінуді көрінетін етіңіз.",
     "lecture.scheduled": "Жоспарланған",
@@ -608,6 +619,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     "common.retry": "Қайталап көру",
     "common.back": "Артқа",
     "common.close": "Жабу",
+    "common.skipContent": "Мазмұнға өту",
     "common.cancel": "Болдырмау",
     "common.confirm": "Растау",
     "common.copy": "Көшіру",

@@ -19,6 +19,7 @@ type DialogProps = {
   children?: ReactNode;
   footer?: ReactNode;
   className?: string;
+  closeLabel?: string;
 };
 
 export function Dialog({
@@ -29,6 +30,7 @@ export function Dialog({
   children,
   footer,
   className,
+  closeLabel = "Close",
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -47,6 +49,10 @@ export function Dialog({
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       onClose={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -67,7 +73,7 @@ export function Dialog({
             </p>
           ) : null}
         </div>
-        <IconButton label="Close" onClick={onClose} className="-mr-2 -mt-2">
+        <IconButton label={closeLabel} onClick={onClose} className="-mr-2 -mt-2">
           <X aria-hidden className="size-5" />
         </IconButton>
       </div>

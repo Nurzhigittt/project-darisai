@@ -322,12 +322,17 @@ export function ProfessorHomeScreen() {
                     </div>
                     <div className="flex shrink-0 gap-2">
                       {lecture.status === "ended" ? (
+                        <>
                         <Link
                           href={`/summary/${lecture.lecture_id}`}
                           className="inline-flex min-h-10 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60"
                         >
                           {t("prof.home.summary")}
                         </Link>
+                        <Link href={`/brief/${lecture.lecture_id}`} className="inline-flex min-h-11 items-center rounded-xl bg-primary-soft px-3 text-sm font-semibold text-foreground">
+                          BriefNext
+                        </Link>
+                        </>
                       ) : (
                         <Link
                           href={`/p/${lecture.lecture_id}`}

@@ -160,3 +160,22 @@ A clean reviewer should follow `README.md` and use Docker Compose or their own P
 The Phase 2 backend merge (`31929a6`, merged as `dc72db3`) added insight, handoff, autonomy and cohort routes, but the committed `docs/contracts/openapi.json` and generated `types.gen.ts` were not regenerated in that commit. GitHub Actions correctly failed the **API and WebSocket contract drift** job at the `git diff --exit-code` step.
 
 Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified `pnpm typecheck` and `pnpm lint`. This is an additive contract update; no existing Phase 1 shape was removed.
+
+## P1 BriefNext / Handoff frontend — 2026-11-26
+
+Implemented the professor review/manual-authoring flow and public fragment-token Handoff route against the existing P2 contracts at `0cce36e`. Added summary/home navigation, EN/RU/KK text, state/error handling, server-authoritative transitions and test-only contract coverage. Fixed stale publication links after refresh, native dialog cancellation and the skip link overwriting the Handoff fragment. No backend or generated schema changes.
+
+Actual local verification:
+
+| Check | Result |
+| --- | --- |
+| `pnpm lint` | Passed |
+| `pnpm typecheck` | Passed; final build TypeScript check also passed |
+| `pnpm test` | 31/31 tests, 7/7 files |
+| `pnpm build --webpack` | Passed; 10 static pages generated and both new routes included |
+| Default `pnpm build` | Interrupted after remaining at Turbopack compilation without further output |
+| New Playwright contract scenarios | 3 attempted; Chrome launch failed before test execution (`SIGABRT`/`EPERM`), no axe pass claimed |
+| Manual browser | Handoff missing-token/network states, desktop and 390×844 light/dark; keyboard skip preserves fragment and focuses main; no mobile horizontal overflow |
+| Real API / existing full E2E / backend checks | Not run: no running API, PostgreSQL/pgvector, Redis or provided P2 test backend |
+
+This is a locally implemented frontend slice, not verified end-to-end delivery. See `docs/handover/P1.md` for the integration checklist and deferred scope. No push, PR or deployment was performed.

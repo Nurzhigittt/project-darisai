@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { SkipLink } from "@/components/ui/skip-link";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -70,13 +71,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>
-        <a
-          href="#main"
-          className="sr-only-focusable fixed left-3 top-3 z-[200] rounded-lg bg-primary px-4 py-2 font-semibold text-white"
-        >
-          Skip to content
-        </a>
         <Providers>
+          <SkipLink />
           <ServiceWorkerRegister />
           {children}
         </Providers>
