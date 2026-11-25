@@ -159,5 +159,6 @@ AXIOM_EMBEDDING_PREWARM=false
 | `4b06410` | Evaluation suite, demo fixtures, contracts and P3 documentation |
 | `e19ffef` | Scrub synthetic fixture tokens and fix the secret-scanning false positive |
 | `a8eeac2` | Hybrid RAG, adversarial hardening, prewarm, replay abuse controls, provider smoke/docs |
+| `069f22e` | Live DeepSeek/Groq verification, live intelligence path, reasoning-off JSON mode |
 
-Final branch HEAD is the latest commit on PR #2. At `e19ffef`, GitHub Actions passed backend, frontend, contract drift, secret scanning and E2E; the hardening commit is verified locally and in the follow-up CI run. No force-push or history rewrite was used.
+Final branch HEAD is the latest commit on PR #2. At `e19ffef`, GitHub Actions passed backend, frontend, contract drift, secret scanning and E2E; the hardening and live-provider commits are verified locally and in the follow-up CI run. No force-push or history rewrite was used.
