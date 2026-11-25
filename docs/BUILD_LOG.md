@@ -189,3 +189,9 @@ Applied the supplied light/dark background, primary, foreground, secondary, acce
 Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. A one-off calculation checked the exact supplied values and every paired RGB value; sampled body, muted, primary-button and badge text/background combinations exceeded 4.5:1. Primary-button text contrast is 7.65:1 in light mode and 5.66:1 in dark mode. This is not a complete WCAG audit.
 
 Inspected the login screen in the built-in browser at desktop and 390×844 in both themes, confirmed computed colors, and found no horizontal overflow. Saved light/dark screenshots as session deliverables. Existing full-backend/E2E limitations above remain unchanged; no push or deployment was performed.
+
+## User-supplied application icon — 2026-11-26
+
+Replaced the active header, browser and installed-app icon references with exports of the supplied PNG. The canonical `docs/assets/app-icon.png` is byte-identical to the user's original; 64/180/192/512-pixel exports preserve the image composition and background. Removed the old SVG favicon, added `src/app/icon.png`, and updated the exporter to derive future icons from the checked-in artwork. New asset filenames avoid the previous Next image-optimizer cache; service-worker cache version v5 refreshes the manifest and app-shell assets.
+
+Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. The build includes `/icon.png`. Verified PNG dimensions, manifest targets, canonical-source hash equality and exporter Python syntax. The browser loaded the new header image and metadata links; inspected the mark in light/dark themes and saved a header screenshot as a session deliverable. No push or deployment was performed.

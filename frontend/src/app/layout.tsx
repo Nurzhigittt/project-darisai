@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   applicationName: "DärisAI",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
-    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+    icon: [{ url: "/icons/daris-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/icons/daris-apple-touch.png", sizes: "180x180" }],
   },
   appleWebApp: {
     capable: true,
