@@ -1,0 +1,17 @@
+{
+  "signal_token": "daris1.signal.<fixture-payload>.<fixture-signature>",
+  "replay_token": "daris1.replay.<fixture-payload>.<fixture-signature>",
+  "token_type": "temporary",
+  "lecture": {
+    "id": "c2a7e1d4-5b0f-4e63-a1c9-7d3f2b8e4a50",
+    "title": "Signals and Bernoulli",
+    "status": "live",
+    "language": "en",
+    "course_title": "Applied Physics"
+  },
+  "ws_url": "ws://localhost:8000/ws",
+  "offset_ms": 251340,
+  "signal_cooldown_ms": 15000,
+  "signal_token_expires_at": "2026-11-25T20:24:11Z",
+  "replay_token_expires_at": "2026-11-26T16:24:11Z"
+}

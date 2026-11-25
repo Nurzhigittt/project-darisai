@@ -1,0 +1,25 @@
+{
+  "lecture_id": "c2a7e1d4-5b0f-4e63-a1c9-7d3f2b8e4a50",
+  "bucket_ms": 60000,
+  "buckets": [
+    {
+      "minute": 1,
+      "minute_start_ms": 60000,
+      "signals": 4,
+      "unique": 4,
+      "intensity": 0.5,
+      "unique_semantics": "Distinct temporary participants observed in this minute; never the sum of per-bucket unique counts."
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": "a91d2c40-7e55-4f1b-b3a8-0c6d9e2f1a47",
+      "start_ms": 243000,
+      "end_ms": 258000,
+      "peak_intensity": 0.91,
+      "unique_tokens": 14
+    }
+  ],
+  "generated_at": "2026-11-25T16:24:11Z",
+  "note": "Signal counts are measured events. They are not a comprehension rate and low activity does not prove understanding."
+}
