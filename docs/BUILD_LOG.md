@@ -126,8 +126,9 @@ The 300-client p95 is below the 500 ms target by 6.75 ms. This is a narrow margi
 | `a319cabda50e00e0c9c70a78af5595f07f66d3f2` | `feat(backend): implement Signal and Ripple pipeline` |
 | `d3f0363660ed2b017ce5668f4feebb592340c86d` | `feat(frontend): build accessible Signal and Ripple experience` |
 | `2f0e799b1548cdfdbaa7e0fa8eeed631db2d7086` | `test(ci): add contract checks, E2E, load testing and quality gates` |
+| `5063876c2e8c5f15fdcf9c14c87163b481cf2426` | `docs: audit specification and record delivery evidence` |
 
-The documentation commit follows this log. The final remote HEAD is reported in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote`.
+The branch was pushed and verified at remote SHA `5063876c2e8c5f15fdcf9c14c87163b481cf2426` on `feat/phase-0-1-foundation-realtime`. Pull request: <https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai/pull/1>. The final documentation-link commit after this log is reported in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote`.
 
 ## Reproduction notes
 
