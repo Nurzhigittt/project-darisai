@@ -2,7 +2,7 @@
   "lecture_id": "2dd678be-81cd-4235-8d56-2cada98f014b",
   "moments": [
     {
-      "moment_id": "mom1.eyJjb25jZXB0IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNiXHUwNDM1XHUwNDNkXHUwNDM4XHUwNDM1IFx1MDQzOCBcdTA0NDFcdTA0M2FcdTA0M2VcdTA0NDBcdTA0M2VcdTA0NDFcdTA0NDJcdTA0NGMgXHUwNDNmXHUwNDNlXHUwNDQyXHUwNDNlXHUwNDNhXHUwNDMwIiwiZW5kIjoyNjIwMDAsImV4cCI6MTc5NTYzNzUxNSwibGlkIjoiMmRkNjc4YmUtODFjZC00MjM1LThkNTYtMmNhZGE5OGYwMTRiIiwibm9uY2UiOiIxNTVjODlhYi01YjRmLTRmMDYtOTcwMS0xYzkwNjUwMTJhZWUiLCJvZmYiOjI1MjAwMCwic3RhcnQiOjE2MjAwMH0.Tq20g1VcmPNzbrIiVSjumhj4FoXVrG0vV9DqnLvpuMM",
+      "moment_id": "mom1.example-moment-token",
       "offset_ms": 252000,
       "window": {
         "start_ms": 162000,
@@ -28,7 +28,7 @@
       }
     },
     {
-      "moment_id": "mom1.eyJjb25jZXB0IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNiXHUwNDM1XHUwNDNkXHUwNDM4XHUwNDM1IFx1MDQzOCBcdTA0NDFcdTA0M2FcdTA0M2VcdTA0NDBcdTA0M2VcdTA0NDFcdTA0NDJcdTA0NGMgXHUwNDNmXHUwNDNlXHUwNDQyXHUwNDNlXHUwNDNhXHUwNDMwIiwiZW5kIjozMjAwMDAsImV4cCI6MTc5NTYzNzUxNSwibGlkIjoiMmRkNjc4YmUtODFjZC00MjM1LThkNTYtMmNhZGE5OGYwMTRiIiwibm9uY2UiOiIzMzBjMWE3Mi0wZTMzLTQ2ZDctYWZlYy1mZWI1NDVmYjg5YzgiLCJvZmYiOjMxMDAwMCwic3RhcnQiOjIyMDAwMH0.FwR0dO7vjrLgVGU2jKJm1XWudrIzs4iNrHn6yFL_LNQ",
+      "moment_id": "mom1.example-moment-token",
       "offset_ms": 310000,
       "window": {
         "start_ms": 220000,

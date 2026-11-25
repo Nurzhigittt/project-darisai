@@ -3,7 +3,7 @@
   "cards": [
     {
       "card_id": "4ca2381f-8122-4d08-8ad1-abfbe196d594",
-      "moment_id": "mom1.eyJjb25jZXB0IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNiXHUwNDM1XHUwNDNkXHUwNDM4XHUwNDM1IFx1MDQzOCBcdTA0NDFcdTA0M2FcdTA0M2VcdTA0NDBcdTA0M2VcdTA0NDFcdTA0NDJcdTA0NGMgXHUwNDNmXHUwNDNlXHUwNDQyXHUwNDNlXHUwNDNhXHUwNDMwIiwiZW5kIjoyNjIwMDAsImV4cCI6MTc5NTYzNzUxNSwibGlkIjoiMmRkNjc4YmUtODFjZC00MjM1LThkNTYtMmNhZGE5OGYwMTRiIiwibm9uY2UiOiIxNTVjODlhYi01YjRmLTRmMDYtOTcwMS0xYzkwNjUwMTJhZWUiLCJvZmYiOjI1MjAwMCwic3RhcnQiOjE2MjAwMH0.Tq20g1VcmPNzbrIiVSjumhj4FoXVrG0vV9DqnLvpuMM",
+      "moment_id": "mom1.example-moment-token",
       "concept_title": "Давление и скорость потока",
       "front": "Что означает «Давление и скорость потока» в этом фрагменте?",
       "back": {

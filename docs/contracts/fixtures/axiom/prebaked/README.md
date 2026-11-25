@@ -5,6 +5,8 @@ Captured from a real local API run on the synthetic Bernoulli lecture on
 transcript-grounded fallbacks, not live LLM output.
 
 - `manifest.json` records the capture time, lecture, and source labels.
+- Signed `moment_id` and `state_token` values were replaced with obvious
+  placeholders before committing, so the files are not usable credentials.
 - `replay-start.json`, `replay-turn-1.json`, `replay-turn-2.json` exercise the
   signed-moment and signed-state flow.
 - `gapcards.json`, `brief_next.json`, `handoff.json` exercise the grounded

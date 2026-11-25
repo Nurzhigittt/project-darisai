@@ -4,7 +4,7 @@
     "lecture_id": "11111111-1111-4111-8111-111111111111",
     "moments": [
       {
-        "moment_id": "mom1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+        "moment_id": "mom1.example-moment-token",
         "outcome": "unclear",
         "student_note": "Не понял, почему давление не тянет."
       }
@@ -15,7 +15,7 @@
     "cards": [
       {
         "card_id": "44444444-4444-4444-8444-444444444444",
-        "moment_id": "mom1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+        "moment_id": "mom1.example-moment-token",
         "concept_title": "Давление и скорость потока",
         "front": "Что означает «Давление и скорость потока» в этом фрагменте?",
         "back": {
