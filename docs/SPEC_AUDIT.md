@@ -189,9 +189,10 @@ The 500 ms minimum spacing is a hard cap. The evaluator only sends on state chan
 
 ## 7. Repository and competition constraints
 
-- The target repository existed with an initial `README.md` commit. It was not empty with an already-protected main branch.
-- Work is on `feat/phase-0-1-foundation-realtime`; no force-push or history rewrite was used.
-- Existing files were preserved; the initial commit remains in history.
+- The original target repository existed with an initial `README.md` commit. The new repository `Nurzhigittt/project-darisai` also had one initial commit (`b3b9546`).
+- The project was imported into the new repository by merging the two unrelated histories (`ebee09c`), not by force-pushing over the initial commit.
+- Work is on `feat/phase-0-1-foundation-realtime` (original) and `release/project-darisai` → `main` (new); no force-push or history rewrite was used.
+- Existing files were preserved; both initial commits remain in history.
 - The competition's AI-assistance rules could not be verified from this environment. The execution is documented transparently in `docs/BUILD_LOG.md`; the team must confirm eligibility with organizers.
 - No real student, institutional or testimonial data is included. All demo/seed identities are labelled development fixtures.
 - No performance figure is a prediction; measured results are in `docs/PERFORMANCE_REPORT.md`.

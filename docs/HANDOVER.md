@@ -1,8 +1,10 @@
 # Handover
 
 **Last updated:** 25 November 2026.
-**Branch:** `feat/phase-0-1-foundation-realtime`
-**Base:** `fd9e564b734d41c6e5b05a41c270c0e8fe353f16`
+**Branch:** `main` in the new canonical repository
+**Original branch:** `feat/phase-0-1-foundation-realtime`
+**Original base:** `fd9e564b734d41c6e5b05a41c270c0e8fe353f16`
+**New repository base:** `b3b9546d01e0ac0f79c468161590c95f599dc1cd` (`Initial commit`)
 **Target:** `https://github.com/Nurzhigittt/project-darisai`
 
 ## Verified commits
@@ -14,11 +16,12 @@
 | `d3f0363660ed2b017ce5668f4feebb592340c86d` | Frontend product, PWA, design system, tests |
 | `2f0e799b1548cdfdbaa7e0fa8eeed631db2d7086` | Contracts, CI, smoke/load tooling, raw load reports |
 | `5063876c2e8c5f15fdcf9c14c87163b481cf2426` | Audit, ADRs, performance, build log, handover, screenshots |
+| `ebee09c` | Merge of original history and the new repository initial commit |
+| `ef1e93dda2d385cdf50ba7e7f41f95c638f789a1` | New app icon, iMac hero, refreshed screenshots, README/RU, contribution guide |
 
-**Pull request:** <https://github.com/Nurzhigittt/project-darisai/pull/1>
-**Verified remote SHA at push:** `5063876c2e8c5f15fdcf9c14c87163b481cf2426`.
+The original implementation PR remains <https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai/pull/1> for history. The new canonical repository was updated directly on `main` from the imported, merged history; no force-push or history rewrite was used.
 
-The final branch HEAD after this link-only documentation commit is reported in the execution report. Verify with `git log --oneline --decorate` and `git ls-remote origin`.
+The final new-repository HEAD after the documentation commit is reported in the execution report. Verify with `git log --oneline --decorate` and `git ls-remote origin`.
 
 ## Completed functionality
 

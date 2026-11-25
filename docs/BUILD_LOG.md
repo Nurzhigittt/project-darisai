@@ -5,10 +5,13 @@ This log records what was actually run. It does not reconstruct work that did no
 
 ## Starting state
 
-- Target repository: `https://github.com/Nurzhigittt/project-darisai`
-- Base commit: `fd9e564b734d41c6e5b05a41c270c0e8fe353f16` (`Create README.md`)
-- Existing content: a 7-byte `README.md` with the text `ignore`.
-- Branch created: `feat/phase-0-1-foundation-realtime`.
+- Original implementation repository: `https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai`
+- Original base commit: `fd9e564b734d41c6e5b05a41c270c0e8fe353f16` (`Create README.md`)
+- Original content: a 7-byte `README.md` with the text `ignore`.
+- Original branch: `feat/phase-0-1-foundation-realtime`.
+- New canonical repository: `https://github.com/Nurzhigittt/project-darisai`
+- New repository initial commit: `b3b9546d01e0ac0f79c468161590c95f599dc1cd` (`Initial commit`, 17-byte README).
+- The old and new histories were joined with **merge commit `ebee09c`**, so neither the original history nor the new repository's initial commit was rewritten.
 - No force-push, history rewrite or fabricated authorship was used.
 
 ## Milestones and verification
@@ -110,6 +113,15 @@ errors: 0
 
 The 300-client p95 is below the 500 ms target by 6.75 ms. This is a narrow margin; p99 is above target. See `docs/PERFORMANCE_REPORT.md` for limits.
 
+### 6.5 Visual refresh for the new repository
+
+- Replaced the app icon with an original open-ripple mark and regenerated PWA 192/512/maskable/apple icons.
+- Built a new iMac-style hero composition with an original warm cream → peach → sage gradient, aluminium all-in-one monitor, dock glyphs and a real production-build professor screenshot. No third-party brand logo was used.
+- Captured a fresh real-data product run: 8 synthetic students connected through the actual WebSocket gateway, 8 accepted signals, a persisted cluster, then the professor summary. The final captures include 9 accepted signals, 9 unique participants and 1 cluster.
+- Updated the browser logo to the new mark and improved the one-minute summary chart with a centred bar, grid and value label.
+- Added a 1280×640 social preview and wired it into Next.js Open Graph/Twitter metadata.
+- Final checks after the refresh: ESLint, TypeScript and production build passed; Playwright **7/7** passed; frontend unit tests **11/11** passed.
+
 ### 7. Unverified
 
 - `docker compose up --build` was not executed: Docker is not installed in this environment.
@@ -127,8 +139,10 @@ The 300-client p95 is below the 500 ms target by 6.75 ms. This is a narrow margi
 | `d3f0363660ed2b017ce5668f4feebb592340c86d` | `feat(frontend): build accessible Signal and Ripple experience` |
 | `2f0e799b1548cdfdbaa7e0fa8eeed631db2d7086` | `test(ci): add contract checks, E2E, load testing and quality gates` |
 | `5063876c2e8c5f15fdcf9c14c87163b481cf2426` | `docs: audit specification and record delivery evidence` |
+| `ebee09c` | `merge: bring Phase 0 and Phase 1 into project-darisai` |
+| `ef1e93dda2d385cdf50ba7e7f41f95c638f789a1` | `feat(brand): refresh README, icons and product visuals` |
 
-The branch was pushed and verified at remote SHA `5063876c2e8c5f15fdcf9c14c87163b481cf2426` on `feat/phase-0-1-foundation-realtime`. Pull request: <https://github.com/Nurzhigittt/project-darisai/pull/1>. The final documentation-link commit after this log is reported in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote`.
+The original implementation was pushed to the old target at `5063876...` and its historical PR is <https://github.com/hackathon-worldAI-2026-ULTRA/daris-ai/pull/1>. The project was then imported into the new repository without rewriting either history: the old project history and the new repository's initial commit `b3b9546` meet at merge `ebee09c`. The final new-repository HEAD is reported after the documentation commit in the execution report and can be verified with `git rev-parse HEAD` / `git ls-remote origin`.
 
 ## Reproduction notes
 
