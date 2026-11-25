@@ -1,0 +1,45 @@
+{
+  "_comment": "Cards are generated on demand; no student-specific card history is stored on the server.",
+  "request": {
+    "lecture_id": "11111111-1111-4111-8111-111111111111",
+    "moments": [
+      {
+        "moment_id": "mom1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+        "outcome": "unclear",
+        "student_note": "Не понял, почему давление не тянет."
+      }
+    ]
+  },
+  "response_200": {
+    "lecture_id": "11111111-1111-4111-8111-111111111111",
+    "cards": [
+      {
+        "card_id": "44444444-4444-4444-8444-444444444444",
+        "moment_id": "mom1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+        "concept_title": "Давление и скорость потока",
+        "front": "Что означает «Давление и скорость потока» в этом фрагменте?",
+        "back": {
+          "type": "transcript_quote",
+          "quote": "Пониженное давление — это не «всасывание» в бытовом смысле.",
+          "citation": {
+            "segment_id": "33333333-3333-4333-8333-333333333333",
+            "start_ms": 153000,
+            "end_ms": 162000,
+            "quote": "Пониженное давление — это не «всасывание» в бытовом смысле."
+          }
+        },
+        "difficulty": 2,
+        "source": "template",
+        "validation": {
+          "schema_ok": true,
+          "citations_ok": true,
+          "answer_leak": false,
+          "grounded_score": 1.0,
+          "attempts": 1,
+          "fallback_used": true,
+          "details": []
+        }
+      }
+    ]
+  }
+}

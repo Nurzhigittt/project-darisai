@@ -1,0 +1,74 @@
+{
+  "_comment": "The server treats history as untrusted. Use state_token from the previous turn; never fabricate it.",
+  "request": {
+    "lecture_id": "11111111-1111-4111-8111-111111111111",
+    "moment_id": "mom1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+    "stage": "socratic",
+    "history": [
+      {
+        "role": "axiom",
+        "text": "Как бы вы объяснили эту мысль своими словами?"
+      },
+      {
+        "role": "student",
+        "text": "Давление падает потому, что скорость растёт."
+      }
+    ],
+    "input": {
+      "text": "Давление падает потому, что скорость растёт."
+    },
+    "state_token": "sst1.eyJsaWQiOiJleGFtcGxlIn0.signature"
+  },
+  "response_200": {
+    "turn": {
+      "kind": "question",
+      "text": "Вы сказали, что давление падает из-за скорости. А почему рост скорости должен менять давление?",
+      "citations": [
+        {
+          "segment_id": "33333333-3333-4333-8333-333333333333",
+          "start_ms": 153000,
+          "end_ms": 162000,
+          "quote": "Пониженное давление — это не «всасывание» в бытовом смысле."
+        }
+      ],
+      "options": [],
+      "stage_complete": false,
+      "state_token": "sst1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+      "validation": {
+        "schema_ok": true,
+        "citations_ok": true,
+        "answer_leak": false,
+        "grounded_score": 1.0,
+        "attempts": 1,
+        "fallback_used": false,
+        "details": [
+          "Deterministic template built from a verified transcript quote."
+        ]
+      },
+      "source": "template"
+    },
+    "state_token": "sst1.eyJsaWQiOiJleGFtcGxlIn0.signature",
+    "turn_number": 1,
+    "stage": "socratic"
+  },
+  "errors": {
+    "401_scope": {
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "The replay token is not valid."
+      }
+    },
+    "400_state": {
+      "error": {
+        "code": "REPLAY_STATE_INVALID",
+        "message": "The replay state is invalid or expired. Start again."
+      }
+    },
+    "409_complete": {
+      "error": {
+        "code": "REPLAY_COMPLETE",
+        "message": "This replay is already complete."
+      }
+    }
+  }
+}

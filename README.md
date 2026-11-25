@@ -145,11 +145,11 @@ flowchart LR
   Professor <-->|WSS ripple| API
   API --> PG[("PostgreSQL + pgvector")]
   API <--> Redis[("Redis<br/>tokens · windows · Pub/Sub")]
-  API --> Axiom["Axiom interfaces<br/>(Phase 2, not implemented)"]
+  API --> Axiom["Axiom engine<br/>(P3 vertical slice)"]
 ```
 
 - **Signal Token** — short-lived, lecture-scoped, live participation only.
-- **Replay Token** — longer-lived, signed, future replay only; never authorizes live signals.
+- **Replay Token** — longer-lived, signed, Replay/GapCards only; never authorizes live signals.
 - **Redis** — hashes, cooldowns, idempotency and sliding windows, all TTL-scoped.
 - **PostgreSQL** — aggregate buckets, clusters and professor identity; no student rows.
 - **One API worker** is the supported Phase 1 shape. This is stated plainly in the handover.
@@ -241,16 +241,18 @@ The 493 ms p95 is only 6.75 ms below the engineering target; p99 is above 500 ms
 - Student IndexedDB history of server-confirmed signals.
 - QR presentation, post-lecture summary, privacy manifest, status page.
 - Accessible design system, EN/RU/KK, light/dark theme and PWA app shell.
+- Real 384-d ONNX E5 embeddings, timestamped transcript ingestion, lecture-isolated temporal + cosine retrieval.
+- Socratic Replay with signed moments/state, GapCards with verified quotes, and BriefNext/Handoff entering P2's approval workflow.
 
 ## Deliberately not finished
 
-- Production STT and transcript ingestion.
-- Temporal RAG, Socratic Replay, GapCards, BriefNext, Handoff.
+- A verified live LLM or Whisper call (adapters exist; no credentials were available).
+- Live-model safety/quality claims; deterministic guardrails and template mode are what was executed.
 - Cohort Memory and the full staged-autonomy workflow.
 - A 90-second judge demo.
 - Cloud deployment and multi-worker evaluator coordination.
 
-No LLM provider is called in this phase. The Axiom interfaces are a prepared integration surface, not a shipped AI feature.
+LLM and STT providers are optional and disabled by default. The verified offline path uses real E5 embeddings plus transcript-grounded template responses. See `docs/P3_HANDOVER.md` for the exact boundary.
 
 ## Stack
 
@@ -259,7 +261,8 @@ No LLM provider is called in this phase. The Axiom interfaces are a prepared int
 | Web | Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS, Lucide, IndexedDB, PWA |
 | API | FastAPI, Pydantic v2, asyncpg, redis-py asyncio, native WebSockets |
 | Data | PostgreSQL + pgvector, Redis Pub/Sub, SQL migrations |
-| Quality | Pytest, Hypothesis, Vitest, Playwright, axe, Ruff, mypy, ESLint, gitleaks |
+| AI | ONNX Runtime E5-small (384-d), optional OpenAI-compatible LLM/Whisper adapters |
+| Quality | Pytest, Hypothesis, Vitest, Playwright, axe, Ruff, mypy, ESLint, gitleaks, AI evaluation runner |
 | Delivery | Docker Compose, GitHub Actions |
 
 ## Repository map
@@ -291,7 +294,7 @@ A temporary Signal Token is pseudonymous, not proof of absolute anonymity. It ca
 
 ## Contributing
 
-The project is at a **Phase 1 complete / Phase 2 next** boundary. Read [AGENTS.md](AGENTS.md) before changing code. Keep contracts generated, preserve the privacy allowlist, and never report a test or benchmark that was not actually run.
+The project is at a **Phase 1 complete / Phase 2–3 working slice** boundary. Read [AGENTS.md](AGENTS.md) and [docs/P3_HANDOVER.md](docs/P3_HANDOVER.md) before changing code. Keep contracts generated, preserve the privacy allowlist, and never report a test or benchmark that was not actually run.
 
 ```bash
 make test

@@ -1,0 +1,32 @@
+{
+  "turn": {
+    "kind": "question",
+    "text": "Преподаватель сказал в 04:12–04:21: «Сейчас важный переход. Когда мы говорим «давление падает», мы не имеем в виду, что среда начинает притягивать предмет. Мы сравниваем две области с разной частотой и силой ударов». Как бы вы объяснили эту мысль своими словами и почему она следует из примера?",
+    "citations": [
+      {
+        "segment_id": "077ce231-9828-4514-9676-08deeb07ed7b",
+        "start_ms": 252000,
+        "end_ms": 261000,
+        "quote": "Сейчас важный переход. Когда мы говорим «давление падает», мы не имеем в виду, что среда начинает притягивать предмет. Мы сравниваем две области с разной частотой и силой ударов"
+      }
+    ],
+    "options": [],
+    "stage_complete": false,
+    "state_token": "sst1.eyJleHAiOjE3OTU2MzIxMTUsImxpZCI6IjJkZDY3OGJlLTgxY2QtNDIzNS04ZDU2LTJjYWRhOThmMDE0YiIsIm1pZCI6Im1vbTEuZXlKamIyNWpaWEIwSWpvaVhIVXdOREUwWEhVd05ETXdYSFV3TkRNeVhIVXdORE5pWEhVd05ETTFYSFV3TkROa1hIVXdORE00WEhVd05ETTFJRngxTURRek9DQmNkVEEwTkRGY2RUQTBNMkZjZFRBME0yVmNkVEEwTkRCY2RUQTBNMlZjZFRBME5ERmNkVEEwTkRKY2RUQTBOR01nWEhVd05ETm1YSFV3TkRObFhIVXdORFF5WEhVd05ETmxYSFV3TkROaFhIVXdORE13SWl3aVpXNWtJam95TmpJd01EQXNJbVY0Y0NJNk1UYzVOVFl6TnpVeE5Td2liR2xrSWpvaU1tUmtOamM0WW1VdE9ERmpaQzAwTWpNMUxUaGtOVFl0TW1OaFpHRTVPR1l3TVRSaUlpd2libTl1WTJVaU9pSXhOVFZqT0RsaFlpMDFZalJtTFRSbU1EWXRPVGN3TVMweFl6a3dOalV3TVRKaFpXVWlMQ0p2Wm1ZaU9qSTFNakF3TUN3aWMzUmhjblFpT2pFMk1qQXdNSDAuVHEyMGcxVmNtUE56YnJJaVZTanVtaGo0Rm9YVnJHMHZWOURxbkx2cHVNTSIsIm5vbmNlIjoiNWM4NmMyYzEtNDI4MC00NzM0LTg0YTEtMWI2MjA5ZDIxZjFkIiwic3RhZ2UiOiJzb2NyYXRpYyIsInR1cm4iOjF9.aC32dgE2Joj90WhlCTRGvjmk_fonq5k1Uu7DpIDZ1a8",
+    "validation": {
+      "schema_ok": true,
+      "citations_ok": true,
+      "answer_leak": false,
+      "grounded_score": 1.0,
+      "attempts": 1,
+      "fallback_used": false,
+      "details": [
+        "Deterministic template built from a verified transcript quote."
+      ]
+    },
+    "source": "template"
+  },
+  "state_token": "sst1.eyJleHAiOjE3OTU2MzIxMTUsImxpZCI6IjJkZDY3OGJlLTgxY2QtNDIzNS04ZDU2LTJjYWRhOThmMDE0YiIsIm1pZCI6Im1vbTEuZXlKamIyNWpaWEIwSWpvaVhIVXdOREUwWEhVd05ETXdYSFV3TkRNeVhIVXdORE5pWEhVd05ETTFYSFV3TkROa1hIVXdORE00WEhVd05ETTFJRngxTURRek9DQmNkVEEwTkRGY2RUQTBNMkZjZFRBME0yVmNkVEEwTkRCY2RUQTBNMlZjZFRBME5ERmNkVEEwTkRKY2RUQTBOR01nWEhVd05ETm1YSFV3TkRObFhIVXdORFF5WEhVd05ETmxYSFV3TkROaFhIVXdORE13SWl3aVpXNWtJam95TmpJd01EQXNJbVY0Y0NJNk1UYzVOVFl6TnpVeE5Td2liR2xrSWpvaU1tUmtOamM0WW1VdE9ERmpaQzAwTWpNMUxUaGtOVFl0TW1OaFpHRTVPR1l3TVRSaUlpd2libTl1WTJVaU9pSXhOVFZqT0RsaFlpMDFZalJtTFRSbU1EWXRPVGN3TVMweFl6a3dOalV3TVRKaFpXVWlMQ0p2Wm1ZaU9qSTFNakF3TUN3aWMzUmhjblFpT2pFMk1qQXdNSDAuVHEyMGcxVmNtUE56YnJJaVZTanVtaGo0Rm9YVnJHMHZWOURxbkx2cHVNTSIsIm5vbmNlIjoiNWM4NmMyYzEtNDI4MC00NzM0LTg0YTEtMWI2MjA5ZDIxZjFkIiwic3RhZ2UiOiJzb2NyYXRpYyIsInR1cm4iOjF9.aC32dgE2Joj90WhlCTRGvjmk_fonq5k1Uu7DpIDZ1a8",
+  "turn_number": 1,
+  "stage": "socratic"
+}

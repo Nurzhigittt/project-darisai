@@ -1,0 +1,283 @@
+{
+  "version": "1",
+  "corpus": "bernoulli_ru",
+  "note": "Synthetic demonstration lecture; labels manually authored.",
+  "cases": [
+    {
+      "id": "ret-01",
+      "language": "ru",
+      "query": "Почему занавеска втягивается, когда включают воду?",
+      "relevant": [
+        0,
+        18
+      ]
+    },
+    {
+      "id": "ret-02",
+      "language": "ru",
+      "query": "Что такое давление в жидкости?",
+      "relevant": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "ret-03",
+      "language": "ru",
+      "query": "Как связаны площадь сечения и скорость потока?",
+      "relevant": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": "ret-04",
+      "language": "ru",
+      "query": "Почему давление падает в узкой части трубы?",
+      "relevant": [
+        10,
+        11,
+        37
+      ]
+    },
+    {
+      "id": "ret-05",
+      "language": "ru",
+      "query": "Какие допущения используются в уравнении Бернулли?",
+      "relevant": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "ret-06",
+      "language": "ru",
+      "query": "Что такое эффект Вентури?",
+      "relevant": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": "ret-07",
+      "language": "ru",
+      "query": "Почему давление не всасывает предмет?",
+      "relevant": [
+        17,
+        19,
+        20
+      ]
+    },
+    {
+      "id": "ret-08",
+      "language": "ru",
+      "query": "Почему объяснение подъёмной силы через одинаковое время неверно?",
+      "relevant": [
+        25,
+        26
+      ]
+    },
+    {
+      "id": "ret-09",
+      "language": "ru",
+      "query": "Как измеряют давление в потоке?",
+      "relevant": [
+        34
+      ]
+    },
+    {
+      "id": "ret-10",
+      "language": "ru",
+      "query": "Где уравнение Бернулли ограничено?",
+      "relevant": [
+        27,
+        29,
+        39
+      ]
+    },
+    {
+      "id": "ret-11",
+      "language": "en",
+      "query": "why does a shower curtain move inward",
+      "relevant": [
+        0,
+        18
+      ]
+    },
+    {
+      "id": "ret-12",
+      "language": "en",
+      "query": "pressure as molecular collisions",
+      "relevant": [
+        2,
+        20
+      ]
+    },
+    {
+      "id": "ret-13",
+      "language": "en",
+      "query": "continuity equation for incompressible flow",
+      "relevant": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": "ret-14",
+      "language": "en",
+      "query": "why pressure drops in a narrowing pipe",
+      "relevant": [
+        10,
+        11,
+        15
+      ]
+    },
+    {
+      "id": "ret-15",
+      "language": "en",
+      "query": "assumptions of the Bernoulli equation",
+      "relevant": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "ret-16",
+      "language": "en",
+      "query": "Venturi effect applications",
+      "relevant": [
+        14,
+        31,
+        32
+      ]
+    },
+    {
+      "id": "ret-17",
+      "language": "en",
+      "query": "is low pressure the same as suction",
+      "relevant": [
+        17,
+        19,
+        20
+      ]
+    },
+    {
+      "id": "ret-18",
+      "language": "en",
+      "query": "equal transit time fallacy for lift",
+      "relevant": [
+        25,
+        26
+      ]
+    },
+    {
+      "id": "ret-19",
+      "language": "en",
+      "query": "lift from downwash and circulation",
+      "relevant": [
+        24,
+        26
+      ]
+    },
+    {
+      "id": "ret-20",
+      "language": "en",
+      "query": "limitations for viscous and compressible flow",
+      "relevant": [
+        29,
+        39
+      ]
+    },
+    {
+      "id": "ret-21",
+      "language": "kk",
+      "query": "неге қысым азаяды",
+      "relevant": [
+        10,
+        11,
+        15
+      ]
+    },
+    {
+      "id": "ret-22",
+      "language": "kk",
+      "query": "Бернулли теңдеуінің шарттары",
+      "relevant": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "ret-23",
+      "language": "kk",
+      "query": "ағын үзіліссіздігі",
+      "relevant": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": "ret-24",
+      "language": "kk",
+      "query": "Вентури әсері",
+      "relevant": [
+        14,
+        15
+      ]
+    },
+    {
+      "id": "ret-25",
+      "language": "kk",
+      "query": "қанаттың көтеру күші",
+      "relevant": [
+        24,
+        26,
+        29
+      ]
+    },
+    {
+      "id": "ret-26",
+      "language": "kk",
+      "query": "қысым молекулалардың соқтығысуы",
+      "relevant": [
+        2,
+        20
+      ]
+    },
+    {
+      "id": "ret-27",
+      "language": "kk",
+      "query": "сорғыш құбыр",
+      "relevant": [
+        32,
+        33
+      ]
+    },
+    {
+      "id": "ret-28",
+      "language": "kk",
+      "query": "Пито түтігі",
+      "relevant": [
+        34
+      ]
+    },
+    {
+      "id": "ret-29",
+      "language": "kk",
+      "query": "тұтқырлық әсері",
+      "relevant": [
+        29,
+        39
+      ]
+    },
+    {
+      "id": "ret-30",
+      "language": "kk",
+      "query": "Бернулли қорытындысы",
+      "relevant": [
+        37,
+        38
+      ]
+    }
+  ]
+}

@@ -410,99 +410,16 @@
         }
       }
     },
-    "/api/v1/join/{join_code}/preview": {
-      "get": {
-        "tags": [
-          "join"
-        ],
-        "summary": "Preview Join",
-        "operationId": "preview_join_api_v1_join__join_code__preview_get",
-        "parameters": [
-          {
-            "name": "join_code",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Join Code"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JoinPreview"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/join": {
+    "/api/v1/gapcards/generate": {
       "post": {
         "tags": [
-          "join"
+          "gapcards"
         ],
-        "summary": "Join Lecture",
-        "operationId": "join_lecture_api_v1_join_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JoinRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JoinResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/lectures": {
-      "post": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "Create Lecture",
-        "operationId": "create_lecture_api_v1_lectures_post",
+        "summary": "Generate Gapcards",
+        "operationId": "generate_gapcards_api_v1_gapcards_generate_post",
         "parameters": [
           {
-            "name": "authorization",
+            "name": "X-Replay-Token",
             "in": "header",
             "required": false,
             "schema": {
@@ -514,7 +431,7 @@
                   "type": "null"
                 }
               ],
-              "title": "Authorization"
+              "title": "X-Replay-Token"
             }
           }
         ],
@@ -523,198 +440,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LectureCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LectureOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "List Lectures",
-        "operationId": "list_lectures_api_v1_lectures_get",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 50,
-              "title": "Limit"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/LectureOut"
-                  },
-                  "title": "Response List Lectures Api V1 Lectures Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/lectures/{lecture_id}": {
-      "get": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "Get Lecture",
-        "operationId": "get_lecture_api_v1_lectures__lecture_id__get",
-        "parameters": [
-          {
-            "name": "lecture_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Lecture Id"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LectureOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/lectures/{lecture_id}/control": {
-      "post": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "Control Lecture",
-        "operationId": "control_lecture_api_v1_lectures__lecture_id__control_post",
-        "parameters": [
-          {
-            "name": "lecture_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Lecture Id"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ControlRequest"
+                "$ref": "#/components/schemas/GapCardGenerateRequest"
               }
             }
           }
@@ -725,125 +451,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ControlResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/lectures/{lecture_id}/heatmap": {
-      "get": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "Lecture Heatmap",
-        "operationId": "lecture_heatmap_api_v1_lectures__lecture_id__heatmap_get",
-        "parameters": [
-          {
-            "name": "lecture_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Lecture Id"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HeatmapResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/lectures/{lecture_id}/summary": {
-      "get": {
-        "tags": [
-          "lectures"
-        ],
-        "summary": "Lecture Summary",
-        "operationId": "lecture_summary_api_v1_lectures__lecture_id__summary_get",
-        "parameters": [
-          {
-            "name": "lecture_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Lecture Id"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LectureSummary"
+                  "$ref": "#/components/schemas/GapCardsResponse"
                 }
               }
             }
@@ -1390,6 +998,526 @@
         }
       }
     },
+    "/api/v1/lectures/{lecture_id}/insights/generate": {
+      "post": {
+        "tags": [
+          "intelligence"
+        ],
+        "summary": "Generate Intelligence",
+        "operationId": "generate_intelligence_api_v1_lectures__lecture_id__insights_generate_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntelligenceGenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceGenerateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/join/{join_code}/preview": {
+      "get": {
+        "tags": [
+          "join"
+        ],
+        "summary": "Preview Join",
+        "operationId": "preview_join_api_v1_join__join_code__preview_get",
+        "parameters": [
+          {
+            "name": "join_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Join Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinPreview"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/join": {
+      "post": {
+        "tags": [
+          "join"
+        ],
+        "summary": "Join Lecture",
+        "operationId": "join_lecture_api_v1_join_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures": {
+      "post": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "Create Lecture",
+        "operationId": "create_lecture_api_v1_lectures_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LectureCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LectureOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "List Lectures",
+        "operationId": "list_lectures_api_v1_lectures_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LectureOut"
+                  },
+                  "title": "Response List Lectures Api V1 Lectures Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}": {
+      "get": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "Get Lecture",
+        "operationId": "get_lecture_api_v1_lectures__lecture_id__get",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LectureOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/control": {
+      "post": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "Control Lecture",
+        "operationId": "control_lecture_api_v1_lectures__lecture_id__control_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ControlRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ControlResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/heatmap": {
+      "get": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "Lecture Heatmap",
+        "operationId": "lecture_heatmap_api_v1_lectures__lecture_id__heatmap_get",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/summary": {
+      "get": {
+        "tags": [
+          "lectures"
+        ],
+        "summary": "Lecture Summary",
+        "operationId": "lecture_summary_api_v1_lectures__lecture_id__summary_get",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LectureSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/privacy/manifest": {
       "get": {
         "tags": [
@@ -1404,6 +1532,124 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PrivacyManifest"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/replay/start": {
+      "post": {
+        "tags": [
+          "replay"
+        ],
+        "summary": "Start Replay",
+        "operationId": "start_replay_api_v1_replay_start_post",
+        "parameters": [
+          {
+            "name": "X-Replay-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Replay-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayStartOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/replay/turn": {
+      "post": {
+        "tags": [
+          "replay"
+        ],
+        "summary": "Replay Turn",
+        "operationId": "replay_turn_api_v1_replay_turn_post",
+        "parameters": [
+          {
+            "name": "X-Replay-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Replay-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayTurnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayTurnOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -1450,10 +1696,274 @@
           }
         }
       }
+    },
+    "/api/v1/lectures/{lecture_id}/transcript/import": {
+      "post": {
+        "tags": [
+          "transcript"
+        ],
+        "summary": "Import Transcript",
+        "operationId": "import_transcript_api_v1_lectures__lecture_id__transcript_import_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranscriptImportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscriptImportOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/transcript": {
+      "get": {
+        "tags": [
+          "transcript"
+        ],
+        "summary": "Get Transcript",
+        "operationId": "get_transcript_api_v1_lectures__lecture_id__transcript_get",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscriptOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/audio-chunks": {
+      "post": {
+        "tags": [
+          "transcript"
+        ],
+        "summary": "Upload Audio Chunk",
+        "operationId": "upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AudioChunkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AudioChunkOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "chunk_index": {
+            "type": "integer",
+            "title": "Chunk Index"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "segments": {
+            "type": "integer",
+            "title": "Segments",
+            "default": 0
+          },
+          "embedded": {
+            "type": "integer",
+            "title": "Embedded",
+            "default": 0
+          },
+          "degraded": {
+            "type": "boolean",
+            "title": "Degraded",
+            "default": false
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "chunk_index",
+          "status"
+        ],
+        "title": "AudioChunkOut"
+      },
       "AutonomyOut": {
         "properties": {
           "lecture_id": {
@@ -1538,6 +2048,73 @@
           "mode"
         ],
         "title": "AutonomyUpdate"
+      },
+      "Body_upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "chunk_index": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Chunk Index"
+          },
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start Ms"
+          },
+          "mime_type": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Mime Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "chunk_index",
+          "start_ms",
+          "mime_type"
+        ],
+        "title": "Body_upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post"
+      },
+      "Citation": {
+        "properties": {
+          "segment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Segment Id"
+          },
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start Ms"
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "End Ms"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Quote"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "segment_id",
+          "start_ms",
+          "end_ms",
+          "quote"
+        ],
+        "title": "Citation"
       },
       "ClusterOut": {
         "properties": {
@@ -1897,6 +2474,174 @@
         ],
         "title": "CourseOut"
       },
+      "GapCardBack": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "transcript_quote",
+            "title": "Type",
+            "default": "transcript_quote"
+          },
+          "quote": {
+            "type": "string",
+            "title": "Quote"
+          },
+          "citation": {
+            "$ref": "#/components/schemas/Citation"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quote",
+          "citation"
+        ],
+        "title": "GapCardBack"
+      },
+      "GapCardGenerateRequest": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "moments": {
+            "items": {
+              "$ref": "#/components/schemas/GapCardMomentIn"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Moments"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "moments"
+        ],
+        "title": "GapCardGenerateRequest"
+      },
+      "GapCardMomentIn": {
+        "properties": {
+          "moment_id": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 16,
+            "title": "Moment Id"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "unclear",
+              "partial",
+              "clear"
+            ],
+            "title": "Outcome",
+            "default": "unclear"
+          },
+          "student_note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 600
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "moment_id"
+        ],
+        "title": "GapCardMomentIn"
+      },
+      "GapCardOut": {
+        "properties": {
+          "card_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Card Id"
+          },
+          "moment_id": {
+            "type": "string",
+            "title": "Moment Id"
+          },
+          "concept_title": {
+            "type": "string",
+            "title": "Concept Title"
+          },
+          "front": {
+            "type": "string",
+            "title": "Front"
+          },
+          "back": {
+            "$ref": "#/components/schemas/GapCardBack"
+          },
+          "difficulty": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "title": "Difficulty"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "template",
+              "prebaked",
+              "live"
+            ],
+            "title": "Source"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ValidationResult"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "card_id",
+          "moment_id",
+          "concept_title",
+          "front",
+          "back",
+          "difficulty",
+          "source",
+          "validation"
+        ],
+        "title": "GapCardOut"
+      },
+      "GapCardsResponse": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "cards": {
+            "items": {
+              "$ref": "#/components/schemas/GapCardOut"
+            },
+            "type": "array",
+            "title": "Cards"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "cards"
+        ],
+        "title": "GapCardsResponse"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2140,6 +2885,50 @@
             "maxLength": 1000,
             "minLength": 1,
             "title": "Detail"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "title": "Citations"
+          },
+          "window_start_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start Ms"
+          },
+          "window_end_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End Ms"
+          },
+          "unique_signals": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unique Signals"
           }
         },
         "additionalProperties": false,
@@ -2376,6 +3165,14 @@
               }
             ],
             "title": "Duration Minutes"
+          },
+          "grounded_in": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "title": "Grounded In"
           }
         },
         "additionalProperties": false,
@@ -2385,6 +3182,59 @@
           "instructions"
         ],
         "title": "InsightTask"
+      },
+      "IntelligenceGenerateRequest": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "brief_next",
+              "handoff"
+            ],
+            "title": "Kind"
+          },
+          "max_concepts": {
+            "type": "integer",
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Max Concepts",
+            "default": 3
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "IntelligenceGenerateRequest"
+      },
+      "IntelligenceGenerateResponse": {
+        "properties": {
+          "insight": {
+            "$ref": "#/components/schemas/InsightOut"
+          },
+          "selection": {
+            "type": "string",
+            "title": "Selection"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "template",
+              "prebaked",
+              "live"
+            ],
+            "title": "Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "insight",
+          "selection",
+          "source"
+        ],
+        "title": "IntelligenceGenerateResponse"
       },
       "JoinPreview": {
         "properties": {
@@ -2940,6 +3790,342 @@
         ],
         "title": "PublicLecture"
       },
+      "ReplayHistoryItem": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "axiom",
+              "student"
+            ],
+            "title": "Role"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "text"
+        ],
+        "title": "ReplayHistoryItem"
+      },
+      "ReplayMomentOut": {
+        "properties": {
+          "moment_id": {
+            "type": "string",
+            "title": "Moment Id"
+          },
+          "offset_ms": {
+            "type": "integer",
+            "title": "Offset Ms"
+          },
+          "window": {
+            "$ref": "#/components/schemas/ReplayWindow"
+          },
+          "concept_title": {
+            "type": "string",
+            "title": "Concept Title"
+          },
+          "recap": {
+            "$ref": "#/components/schemas/ReplayRecap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "moment_id",
+          "offset_ms",
+          "window",
+          "concept_title",
+          "recap"
+        ],
+        "title": "ReplayMomentOut"
+      },
+      "ReplayRecap": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "title": "Citations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ReplayRecap"
+      },
+      "ReplayStartOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "moments": {
+            "items": {
+              "$ref": "#/components/schemas/ReplayMomentOut"
+            },
+            "type": "array",
+            "title": "Moments"
+          },
+          "transcript_status": {
+            "type": "string",
+            "title": "Transcript Status"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "template",
+              "prebaked",
+              "live"
+            ],
+            "title": "Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "moments",
+          "transcript_status",
+          "source"
+        ],
+        "title": "ReplayStartOut"
+      },
+      "ReplayStartRequest": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "flagged_offsets_ms": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Flagged Offsets Ms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "flagged_offsets_ms"
+        ],
+        "title": "ReplayStartRequest"
+      },
+      "ReplayTurnOut": {
+        "properties": {
+          "turn": {
+            "$ref": "#/components/schemas/SocraticTurn"
+          },
+          "state_token": {
+            "type": "string",
+            "title": "State Token"
+          },
+          "turn_number": {
+            "type": "integer",
+            "title": "Turn Number"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "mcq",
+              "socratic",
+              "complete"
+            ],
+            "title": "Stage"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "turn",
+          "state_token",
+          "turn_number",
+          "stage"
+        ],
+        "title": "ReplayTurnOut"
+      },
+      "ReplayTurnRequest": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "moment_id": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 16,
+            "title": "Moment Id"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "mcq",
+              "socratic"
+            ],
+            "title": "Stage"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/ReplayHistoryItem"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "title": "History"
+          },
+          "input": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input"
+          },
+          "state_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "moment_id",
+          "stage"
+        ],
+        "title": "ReplayTurnRequest"
+      },
+      "ReplayWindow": {
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "title": "Start Ms"
+          },
+          "end_ms": {
+            "type": "integer",
+            "title": "End Ms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "start_ms",
+          "end_ms"
+        ],
+        "title": "ReplayWindow"
+      },
+      "SocraticTurn": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "mcq",
+              "question",
+              "reflection",
+              "refusal"
+            ],
+            "title": "Kind"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "type": "array",
+            "title": "Citations"
+          },
+          "options": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "stage_complete": {
+            "type": "boolean",
+            "title": "Stage Complete",
+            "default": false
+          },
+          "state_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State Token"
+          },
+          "validation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ValidationResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "live",
+              "prebaked",
+              "template"
+            ],
+            "title": "Source",
+            "default": "template"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "text"
+        ],
+        "title": "SocraticTurn"
+      },
       "StatusResponse": {
         "properties": {
           "status": {
@@ -3072,6 +4258,294 @@
         ],
         "title": "TokenPolicy"
       },
+      "TranscriptImportOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "run": {
+            "$ref": "#/components/schemas/TranscriptRunOut"
+          },
+          "segments": {
+            "type": "integer",
+            "title": "Segments"
+          },
+          "embedded": {
+            "type": "integer",
+            "title": "Embedded"
+          },
+          "degraded": {
+            "type": "boolean",
+            "title": "Degraded"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "run",
+          "segments",
+          "embedded",
+          "degraded"
+        ],
+        "title": "TranscriptImportOut"
+      },
+      "TranscriptImportRequest": {
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Language"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptSegmentIn"
+            },
+            "type": "array",
+            "maxItems": 2000,
+            "minItems": 1,
+            "title": "Segments"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "language",
+          "segments"
+        ],
+        "title": "TranscriptImportRequest"
+      },
+      "TranscriptOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Language"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptSegmentOut"
+            },
+            "type": "array",
+            "title": "Segments"
+          },
+          "total_segments": {
+            "type": "integer",
+            "title": "Total Segments"
+          },
+          "embedded_segments": {
+            "type": "integer",
+            "title": "Embedded Segments"
+          },
+          "latest_run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TranscriptRunOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "language",
+          "segments",
+          "total_segments",
+          "embedded_segments"
+        ],
+        "title": "TranscriptOut"
+      },
+      "TranscriptRunOut": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Run Id"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "fixture",
+              "audio",
+              "manual"
+            ],
+            "title": "Source"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "processing",
+              "completed",
+              "degraded",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "segment_count": {
+            "type": "integer",
+            "title": "Segment Count"
+          },
+          "embedded_count": {
+            "type": "integer",
+            "title": "Embedded Count"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "source",
+          "status",
+          "segment_count",
+          "embedded_count",
+          "created_at"
+        ],
+        "title": "TranscriptRunOut"
+      },
+      "TranscriptSegmentIn": {
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start Ms"
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "End Ms"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "start_ms",
+          "end_ms",
+          "text"
+        ],
+        "title": "TranscriptSegmentIn"
+      },
+      "TranscriptSegmentOut": {
+        "properties": {
+          "segment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Segment Id"
+          },
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "start_ms": {
+            "type": "integer",
+            "title": "Start Ms"
+          },
+          "end_ms": {
+            "type": "integer",
+            "title": "End Ms"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "has_embedding": {
+            "type": "boolean",
+            "title": "Has Embedding",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "segment_id",
+          "lecture_id",
+          "start_ms",
+          "end_ms",
+          "text"
+        ],
+        "title": "TranscriptSegmentOut"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -3111,6 +4585,55 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "ValidationResult": {
+        "properties": {
+          "schema_ok": {
+            "type": "boolean",
+            "title": "Schema Ok"
+          },
+          "citations_ok": {
+            "type": "boolean",
+            "title": "Citations Ok"
+          },
+          "answer_leak": {
+            "type": "boolean",
+            "title": "Answer Leak"
+          },
+          "grounded_score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Grounded Score"
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Attempts"
+          },
+          "fallback_used": {
+            "type": "boolean",
+            "title": "Fallback Used",
+            "default": false
+          },
+          "details": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Details"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_ok",
+          "citations_ok",
+          "answer_leak",
+          "grounded_score",
+          "attempts"
+        ],
+        "title": "ValidationResult"
       }
     }
   }

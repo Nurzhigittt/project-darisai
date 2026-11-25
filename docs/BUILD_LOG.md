@@ -160,3 +160,14 @@ A clean reviewer should follow `README.md` and use Docker Compose or their own P
 The Phase 2 backend merge (`31929a6`, merged as `dc72db3`) added insight, handoff, autonomy and cohort routes, but the committed `docs/contracts/openapi.json` and generated `types.gen.ts` were not regenerated in that commit. GitHub Actions correctly failed the **API and WebSocket contract drift** job at the `git diff --exit-code` step.
 
 Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified `pnpm typecheck` and `pnpm lint`. This is an additive contract update; no existing Phase 1 shape was removed.
+
+## P3 Axiom milestone (`feat/p3-axiom-engine`)
+
+- Added `200_p3_axiom_transcript.sql` and applied it to the local PostgreSQL instance.
+- Downloaded and ran `intfloat/multilingual-e5-small` ONNX (384-d); 40/40 demonstration segments embedded, L2-normalized, finite.
+- Imported the synthetic 40-segment Russian Bernoulli fixture through the real API; run status `completed`, `embedded=40`.
+- Exercised Replay start/turn, GapCards and BriefNext/Handoff against the local API. Template source was returned because no LLM/STT credentials were available.
+- `pytest -q`: **108 passed**; Ruff and mypy clean.
+- Frontend: ESLint, TypeScript, Vitest 11/11 and production build passed; contracts regenerated and stable.
+- AI evaluation: 30 retrieval cases, Recall@4 **0.600**, MRR **0.4819**; 10/10 deterministic guardrails. Raw result `artifacts/evals/eval-20261125T180048Z.json`.
+- No live LLM or Whisper call was made. No deployment or Docker run was performed.
