@@ -179,3 +179,5 @@ Actual local verification:
 | Real API / existing full E2E / backend checks | Not run: no running API, PostgreSQL/pgvector, Redis or provided P2 test backend |
 
 This is a locally implemented frontend slice, not verified end-to-end delivery. See `docs/handover/P1.md` for the integration checklist and deferred scope. No push, PR or deployment was performed.
+
+Implementation commit: `283fae3c99f6842f5e30e3cf83cca4a709ca16f3` — `feat(frontend): add BriefNext review and public Handoff`, on `feat/p1-frontend-experience`.
