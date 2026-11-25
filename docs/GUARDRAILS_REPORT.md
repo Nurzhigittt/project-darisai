@@ -1,8 +1,8 @@
 # Axiom evaluation report
 
-**Date:** 25 November 2026  
-**Fixture:** `backend/app/demo/scenarios/bernoulli_ru.json` (40 synthetic Russian segments)  
-**Embedding:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2  
+**Date:** 25 November 2026
+**Fixture:** `backend/app/demo/scenarios/bernoulli_ru.json` (40 synthetic Russian segments)
+**Embedding:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2
 **Runner:** `cd backend && python -m evals.runner` and `python -m evals.adversarial`
 
 ## Result summary

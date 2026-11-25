@@ -1,9 +1,9 @@
 # Retrieval benchmark
 
-**Date:** 25 November 2026  
-**Fixture:** synthetic Russian Bernoulli lecture, 40 segments  
-**Model:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2  
-**Cases:** 30 queries — 10 RU, 10 EN, 10 KK; 20 tuning, 10 held-out  
+**Date:** 25 November 2026
+**Fixture:** synthetic Russian Bernoulli lecture, 40 segments
+**Model:** `intfloat/multilingual-e5-small`, `onnx/model_O4.onnx`, 384-d, L2
+**Cases:** 30 queries — 10 RU, 10 EN, 10 KK; 20 tuning, 10 held-out
 **Raw result:** `artifacts/evals/hardening/retrieval-final.json`
 
 ## Important label correction

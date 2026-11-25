@@ -1,8 +1,8 @@
 # P3 Axiom handover
 
-**Branch:** `feat/p3-axiom-engine`  
-**Base:** `0cce36eed53b3e8f247dcaaf09d34828f90bc58d`  
-**Status:** Phase 2 hardening complete (live providers unverified); Phase 3 complete; Phase 4 template integration; Phase 6 P3 support delivered.  
+**Branch:** `feat/p3-axiom-engine`
+**Base:** `0cce36eed53b3e8f247dcaaf09d34828f90bc58d`
+**Status:** Phase 2 hardening complete (live providers unverified); Phase 3 complete; Phase 4 template integration; Phase 6 P3 support delivered.
 **Date:** 25 November 2026 (Asia/Qyzylorda)
 
 ## What is implemented
@@ -46,8 +46,8 @@
 
 ## API contracts
 
-Regenerated OpenAPI: `docs/contracts/openapi.json`  
-Generated types: `frontend/src/lib/api/types.gen.ts`  
+Regenerated OpenAPI: `docs/contracts/openapi.json`
+Generated types: `frontend/src/lib/api/types.gen.ts`
 Examples: `docs/contracts/fixtures/axiom/`
 
 | Method | Path | Auth |
@@ -158,5 +158,6 @@ AXIOM_EMBEDDING_PREWARM=false
 | `789e74d` | Guardrails, Socratic Replay, GapCards, teacher intelligence, tests |
 | `4b06410` | Evaluation suite, demo fixtures, contracts and P3 documentation |
 | `e19ffef` | Scrub synthetic fixture tokens and fix the secret-scanning false positive |
+| `a8eeac2` | Hybrid RAG, adversarial hardening, prewarm, replay abuse controls, provider smoke/docs |
 
-Final branch HEAD is the latest commit on PR #2. At `e19ffef`, GitHub Actions passed backend, frontend, contract drift, secret scanning and E2E. No force-push or history rewrite was used.
+Final branch HEAD is the latest commit on PR #2. At `e19ffef`, GitHub Actions passed backend, frontend, contract drift, secret scanning and E2E; the hardening commit is verified locally and in the follow-up CI run. No force-push or history rewrite was used.

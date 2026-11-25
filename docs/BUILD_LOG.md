@@ -173,7 +173,7 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - No live LLM or Whisper call was made. No deployment or Docker run was performed.
 - PR #2 GitHub Actions at `e19ffef`: backend, frontend, contract drift, secret scanning and E2E all passed.
 
-## P3 AI hardening
+## P3 AI hardening (commit `a8eeac2`)
 
 - Hybrid retrieval added: exact filtered cosine + BM25 + weighted RRF + temporal RRF; dense-only mode retained.
 - Corrected off-by-one relevance labels in the 30-case suite before reporting the new benchmark.

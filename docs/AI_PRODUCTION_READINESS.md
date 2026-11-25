@@ -1,7 +1,7 @@
 # AI production readiness
 
-**Date:** 25 November 2026  
-**Scope:** P3 Axiom embedding/retrieval/generation runtime.  
+**Date:** 25 November 2026
+**Scope:** P3 Axiom embedding/retrieval/generation runtime.
 **Deployment status:** not deployed. Docker was unavailable; this document records local production-shape measurements and the required deployment controls.
 
 ## Readiness summary
