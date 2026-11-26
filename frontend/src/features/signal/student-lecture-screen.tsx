@@ -49,6 +49,8 @@ import {
   type WsStatus,
 } from "@/lib/ws/client";
 
+import styles from "./signal.module.css";
+
 type Phase = "idle" | "sending" | "accepted" | "error";
 type LectureStatus = "scheduled" | "live" | "paused" | "ended";
 
@@ -287,15 +289,17 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
 
   if (loadingSession) {
     return (
-      <div className="min-h-dvh bg-background">
-        <header className="container-page flex h-16 items-center justify-between">
-          <Logo />
-          <ThemeSwitcher />
+      <div className="app-page min-h-dvh">
+        <header className="app-header">
+          <div className="container-page flex items-center justify-between">
+            <Logo />
+            <ThemeSwitcher />
+          </div>
         </header>
         <main className="container-page py-12">
           <Skeleton className="h-8 w-40" />
           <Skeleton className="mt-6 h-16 w-3/4" />
-          <Skeleton className="mx-auto mt-16 size-72 rounded-full" />
+          <Skeleton className="mx-auto mt-16 size-[min(72vw,18rem)] rounded-full" />
         </main>
       </div>
     );
@@ -303,10 +307,12 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
 
   if (!session) {
     return (
-      <div className="min-h-dvh bg-background">
-        <header className="container-page flex h-16 items-center justify-between">
-          <Logo />
-          <ThemeSwitcher />
+      <div className="app-page min-h-dvh">
+        <header className="app-header">
+          <div className="container-page flex items-center justify-between">
+            <Logo />
+            <ThemeSwitcher />
+          </div>
         </header>
         <main id="main" className="container-page py-12">
           <ErrorState
@@ -327,15 +333,17 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      <header className="container-page flex h-16 items-center justify-between">
-        <Logo />
-        <div className="flex items-center gap-1.5">
-          <LanguageSwitcher />
-          <ThemeSwitcher />
+    <div className="app-page min-h-dvh">
+      <header className="app-header">
+        <div className="container-page flex flex-wrap items-center justify-between gap-2">
+          <Logo />
+          <div className="flex items-center gap-1.5">
+            <LanguageSwitcher />
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
-      <main id="main" className="container-page max-w-2xl pb-12">
+      <main id="main" className={`container-page ${styles.main}`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/"
@@ -358,11 +366,11 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
           />
         </div>
 
-        <div className="mt-7 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        <div className={styles.lectureHeader}>
+          <p className={styles.eyebrow}>
             {ended ? t("student.ended") : waiting ? t("join.waiting") : t("student.live")}
           </p>
-          <h1 className="mt-2 text-balance text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-tight">
+          <h1>
             {session.lecture.title || t("student.titleFallback")}
           </h1>
           <p className="mt-2 text-sm text-muted">
@@ -370,13 +378,9 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
           </p>
         </div>
 
-        <div className="relative mt-10">
-          <div
-            aria-hidden
-            className="absolute inset-x-8 top-8 -z-10 h-64 rounded-full bg-positive/10 blur-3xl"
-          />
+        <div className={styles.stage}>
           {waiting ? (
-            <div className="rounded-4xl border border-border bg-surface px-6 py-16 text-center shadow-soft">
+            <div className="app-panel app-panel-mint px-6 py-16 text-center">
               <div className="mx-auto grid size-20 place-items-center rounded-full bg-primary-soft">
                 <Clock3 aria-hidden className="size-9 text-primary" />
               </div>
@@ -393,7 +397,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
           ) : ended ? (
             <div
               data-testid="student-ended"
-              className="rounded-4xl border border-border bg-surface p-7 text-center shadow-soft sm:p-10"
+              className="app-panel app-panel-mint p-7 text-center sm:p-10"
             >
               <div className="mx-auto grid size-20 place-items-center rounded-full bg-positive/15">
                 <CheckCircle2 aria-hidden className="size-10 text-positive" />
@@ -440,17 +444,17 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center">
+            <div className={`app-panel ${styles.signalStage}`}>
               <SignalButton
                 state={visualState}
                 cooldownRemainingMs={cooldownRemaining}
                 cooldownTotalMs={cooldownMs}
                 onClick={submitSignal}
               />
-              <p className="mt-8 max-w-sm text-center text-base leading-7 text-muted">
+              <p className={styles.support}>
                 {t("student.signalSupport")}
               </p>
-              <div aria-live="polite" className="mt-4 min-h-12 max-w-md text-center">
+              <div aria-live="polite" className="mt-3 min-h-8 max-w-md text-center">
                 {feedback ? (
                   <p
                     className={
@@ -469,7 +473,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
           )}
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-6 text-center">
+        <div className={styles.footer}>
           <p className="flex items-center gap-2 text-xs text-muted">
             <ShieldCheck aria-hidden className="size-4 text-positive" />
             {t("student.privacy")}

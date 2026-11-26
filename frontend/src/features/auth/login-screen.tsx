@@ -51,16 +51,18 @@ export function LoginScreen() {
   }
 
   return (
-    <div className="min-h-dvh">
-      <header className="container-page flex h-20 items-center justify-between">
-        <Logo />
-        <div className="flex items-center gap-1.5">
-          <LanguageSwitcher />
-          <ThemeSwitcher />
+    <div className="app-page">
+      <header className="app-header">
+        <div className="container-page flex flex-wrap items-center justify-between gap-3">
+          <Logo />
+          <div className="flex items-center gap-1.5">
+            <LanguageSwitcher />
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
-      <main id="main" className="container-page grid gap-10 pb-20 pt-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div className="order-2 lg:order-1">
+      <main id="main" className="container-page grid gap-6 py-8 sm:py-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-10">
+        <div className="app-hero min-w-0">
           <Link
             href="/"
             className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted hover:text-foreground"
@@ -68,28 +70,28 @@ export function LoginScreen() {
             <ArrowLeft aria-hidden className="size-4" />
             {t("common.back")}
           </Link>
-          <div className="mt-6 flex size-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+          <div className="mt-6 flex size-14 items-center justify-center rounded-2xl border border-primary/10 bg-surface/80 text-primary shadow-soft">
             <GraduationCap aria-hidden className="size-7" />
           </div>
-          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-semibold leading-[1.02]">
+          <h1 className="mt-6 text-[clamp(2.2rem,4.8vw,4rem)] font-bold leading-[1.06]">
             {t("prof.login.title")}
           </h1>
           <p className="mt-4 max-w-lg text-lg leading-8 text-muted">
             {t("prof.login.body")}
           </p>
-          <ul className="mt-8 space-y-3 text-sm">
+          <ul className="mt-8 space-y-4 border-t border-border/70 pt-6 text-sm leading-6">
             <li className="flex items-start gap-3">
-              <ShieldCheck aria-hidden className="mt-0.5 size-5 text-positive" />
+              <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-positive" />
               <span>{t("prof.login.bullet1")}</span>
             </li>
             <li className="flex items-start gap-3">
-              <KeyRound aria-hidden className="mt-0.5 size-5 text-primary" />
+              <KeyRound aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" />
               <span>{t("prof.login.bullet2")}</span>
             </li>
           </ul>
         </div>
-        <div className="order-1 rounded-4xl border border-border bg-surface p-7 shadow-soft sm:p-10 lg:order-2">
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        <div className="app-panel app-panel-rose min-w-0 p-6 sm:p-9">
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <Input
               label={t("prof.login.invite")}
               value={inviteCode}

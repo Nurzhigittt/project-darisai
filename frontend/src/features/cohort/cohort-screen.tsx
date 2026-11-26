@@ -44,23 +44,23 @@ function StructuralGaps({ memory }: { memory: CohortMemory }) {
   const gaps = memory.structural_gaps ?? [];
   if (gaps.length === 0) return null;
   const percent = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
-  return <section className="mt-8" aria-labelledby="cohort-structural-title">
-    <h2 id="cohort-structural-title" className="text-2xl font-semibold">{t("cohort.structuralTitle")}</h2>
+  return <section className="mt-10" aria-labelledby="cohort-structural-title">
+    <h2 id="cohort-structural-title" className="text-2xl font-bold">{t("cohort.structuralTitle")}</h2>
     <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{t("cohort.structuralIntro")}</p>
-    <div className="mt-5 grid gap-4 md:grid-cols-2">
-      {gaps.map((gap) => <article key={gap.concept_canonical_id} className="rounded-2xl border border-border bg-surface p-5">
+    <div className="mt-6 grid gap-5 md:grid-cols-2">
+      {gaps.map((gap) => <article key={gap.concept_canonical_id} className="app-panel app-panel-rose min-w-0 p-6 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="break-words text-lg font-semibold">{gap.concept_title}</h3>
-            <code className="mt-1 block break-all font-mono text-xs text-muted">{gap.concept_canonical_id}</code>
+            <h3 className="break-words text-xl font-bold leading-7">{gap.concept_title}</h3>
+            <code className="mt-2 block break-all font-mono text-xs leading-5 text-muted">{gap.concept_canonical_id}</code>
           </div>
           <Badge tone={gap.provenance === "synthetic" ? "attention" : gap.provenance === "mixed" ? "primary" : "positive"}>
             {t(`cohort.provenance.${gap.provenance}`)}
           </Badge>
         </div>
-        <p className="mt-4 text-sm font-semibold">{t("cohort.structuralShare", { min: percent.format(gap.min_confused_share), max: percent.format(gap.max_confused_share) })}</p>
-        <p className="mt-2 text-sm leading-6 text-muted">{t("cohort.structuralTerms", { terms: gap.terms.join(" → ") })}</p>
-        <p className="mt-2 text-xs leading-5 text-muted">{t("cohort.structuralRule", { terms: gap.consecutive_terms, share: percent.format(0.6) })}</p>
+        <p className="mt-5 border-t border-border/70 pt-5 text-sm font-semibold leading-7">{t("cohort.structuralShare", { min: percent.format(gap.min_confused_share), max: percent.format(gap.max_confused_share) })}</p>
+        <p className="mt-2 break-words text-sm leading-7 text-muted">{t("cohort.structuralTerms", { terms: gap.terms.join(" → ") })}</p>
+        <p className="mt-3 text-xs leading-6 text-muted">{t("cohort.structuralRule", { terms: gap.consecutive_terms, share: percent.format(0.6) })}</p>
       </article>)}
     </div>
   </section>;
@@ -69,16 +69,16 @@ function StructuralGaps({ memory }: { memory: CohortMemory }) {
 function CohortTable({ memory }: { memory: CohortMemory }) {
   const { t } = useI18n();
   const titles = new Map((memory.structural_gaps ?? []).map((gap) => [gap.concept_canonical_id, gap.concept_title]));
-  return <section className="mt-8" aria-labelledby="cohort-table-title">
-    <h2 id="cohort-table-title" className="text-2xl font-semibold">{t("cohort.tableTitle")}</h2>
+  return <section className="app-panel mt-7 p-5 sm:p-8" aria-labelledby="cohort-table-title">
+    <h2 id="cohort-table-title" className="text-2xl font-bold">{t("cohort.tableTitle")}</h2>
     <p className="mt-2 text-sm leading-6 text-muted">{t("cohort.identifiers")}</p>
     <p id="cohort-scroll-hint" className="mt-1 text-sm leading-6 text-muted">{t("cohort.scroll")}</p>
     <div role="region" aria-label={t("cohort.tableRegion")} aria-describedby="cohort-scroll-hint" tabIndex={0}
-      className="relative mt-4 max-w-full overflow-x-auto rounded-2xl border border-border bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus">
+      className="relative mt-6 max-w-full overflow-x-auto rounded-2xl border border-border bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus">
       <table className="w-full min-w-[960px] border-collapse text-sm">
         <caption className="sr-only">{t("cohort.tableTitle")}. {t("cohort.denominator")}</caption>
         <thead>
-          <tr className="bg-background text-left align-bottom">
+          <tr className="bg-primary-soft/45 text-left align-bottom">
             {["concept", "lectures", "events", "signalShare", "clusterShare", "peak"].map((column, index) =>
               <th key={column} scope="col" className={`px-4 py-5 font-semibold leading-5 ${index === 0 ? "w-64" : "text-center"}`}>{t(`cohort.${column}`)}</th>)}
           </tr>
@@ -104,7 +104,7 @@ function CohortTable({ memory }: { memory: CohortMemory }) {
         </tbody>
       </table>
     </div>
-    <div className="mt-4 grid gap-4 text-sm leading-6 text-muted sm:grid-cols-2">
+    <div className="mt-5 grid gap-5 rounded-2xl bg-background/45 p-4 text-sm leading-6 text-muted sm:grid-cols-2">
       <div><p>{t("cohort.denominator")}</p><p className="mt-1">{t("cohort.valuesLegend")}</p></div>
       <div>
         <div aria-hidden className="mb-2 flex max-w-xs items-center gap-3 text-xs tabular-nums">
@@ -211,9 +211,9 @@ export function CohortScreen({ courseId }: { courseId: string }) {
   const generatedLabel = generated && Number.isFinite(generated.getTime())
     ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(generated) : null;
 
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70">
-      <div className="container-page flex min-h-16 flex-wrap items-center justify-between gap-2 py-2">
+  return <div className="app-page">
+    <header className="app-header">
+      <div className="container-page flex flex-wrap items-center justify-between gap-3">
         <Logo />
         <div className="flex items-center gap-1">
           <LanguageSwitcher /><ThemeSwitcher />
@@ -221,23 +221,23 @@ export function CohortScreen({ courseId }: { courseId: string }) {
         </div>
       </div>
     </header>
-    <main id="main" className="container-page py-8 sm:py-12">
+    <main id="main" className="container-page py-7 sm:py-10">
       <Link href="/professor" className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-semibold text-muted hover:text-foreground">
         <ArrowLeft aria-hidden className="size-4" />{t("cohort.back")}
       </Link>
-      <div className="mt-5 flex flex-wrap items-start justify-between gap-5">
+      <div className="app-hero mt-5 flex flex-wrap items-start justify-between gap-6">
         <div className="min-w-0 max-w-3xl">
-          {courseTitle ? <p className="mb-2 break-words text-sm font-semibold text-muted">{courseTitle}</p> : null}
-          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight">{t("cohort.title")}</h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">{t("cohort.subtitle")}</p>
+          {courseTitle ? <p className="mb-3 break-words text-sm font-semibold text-primary-strong">{courseTitle}</p> : null}
+          <h1 className="text-[clamp(2rem,4.6vw,3.5rem)] font-bold leading-[1.08]">{t("cohort.title")}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">{t("cohort.subtitle")}</p>
         </div>
         <Button variant="secondary" disabled={loading || offline} onClick={() => void load()}><RefreshCw aria-hidden className="size-4" />{t("cohort.refresh")}</Button>
       </div>
-      {offline ? <p role="status" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("cohort.offline")}</p> : null}
+      {offline ? <p role="status" className="app-panel mt-5 flex items-center gap-3 p-5 text-sm leading-6"><WifiOff aria-hidden className="size-5 shrink-0" />{t("cohort.offline")}</p> : null}
       {loading ? <div role="status" aria-label={t("cohort.loading")} className="mt-8 space-y-4">
         <Skeleton className="h-24 w-full" /><Skeleton className="h-72 w-full" /><span className="sr-only">{t("cohort.loading")}</span>
       </div> : error ? <div className="mt-8"><ErrorState title={t("cohort.error")} body={t(error)} action={<Button disabled={offline} onClick={() => void load()}>{t("cohort.retry")}</Button>} /></div> : memory ? <>
-        <div className="mt-7 flex items-start gap-3 rounded-2xl border border-border bg-surface p-5 text-sm leading-6">
+        <div className="app-panel app-panel-mint mt-7 flex items-start gap-4 p-6 text-sm leading-7 sm:p-7">
           <Info aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" />
           <div><p>{t("cohort.interpretation")}</p><p className="mt-2 text-muted">{t("cohort.thresholds", { lectures: memory.minimum_lectures_required, participants: memory.minimum_participants_per_lecture })}</p></div>
         </div>

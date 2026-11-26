@@ -149,9 +149,9 @@ export function ProfessorHomeScreen() {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      <header className="border-b border-border bg-surface/70">
-        <div className="container-page flex h-16 items-center justify-between">
+    <div className="app-page">
+      <header className="app-header">
+        <div className="container-page flex flex-wrap items-center justify-between gap-3">
           <Logo />
           <div className="flex items-center gap-1.5">
             <span className="mr-2 hidden text-sm text-muted sm:block">
@@ -159,32 +159,32 @@ export function ProfessorHomeScreen() {
             </span>
             <LanguageSwitcher />
             <ThemeSwitcher />
-            <Button variant="ghost" size="sm" onClick={signOut}>
+            <Button variant="ghost" size="sm" onClick={signOut} aria-label={t("prof.home.logout")}>
               <LogOut aria-hidden className="size-4" />
               <span className="hidden sm:inline">{t("prof.home.logout")}</span>
             </Button>
           </div>
         </div>
       </header>
-      <main id="main" className="container-page py-10 sm:py-14">
-        <div className="max-w-2xl">
+      <main id="main" className="container-page py-8 sm:py-12">
+        <div className="app-hero">
           <Badge tone="primary">
             <Sparkles aria-hidden className="size-3.5" />
             Teaching space
           </Badge>
-          <h1 className="mt-5 text-[clamp(2.4rem,5vw,3.8rem)] font-semibold leading-[1.02]">
+          <h1 className="mt-5 max-w-3xl text-[clamp(2.2rem,4.8vw,3.8rem)] font-bold leading-[1.06]">
             {t("prof.home.title")}
           </h1>
-          <p className="mt-4 text-lg leading-8 text-muted">{t("prof.home.body")}</p>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">{t("prof.home.body")}</p>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <section className="rounded-3xl border border-border bg-surface p-6 shadow-soft sm:p-8">
+        <div className="mt-7 grid items-start gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+          <section className="app-panel app-panel-rose min-w-0 p-6 sm:p-8">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary">
                 <Plus aria-hidden className="size-5" />
               </div>
-              <h2 className="text-xl font-semibold">{t("prof.home.new")}</h2>
+              <h2 className="text-xl font-bold">{t("prof.home.new")}</h2>
             </div>
             {loading ? (
               <div className="mt-6 space-y-4">
@@ -255,9 +255,9 @@ export function ProfessorHomeScreen() {
             )}
           </section>
 
-          <section className="rounded-3xl border border-border bg-surface p-6 shadow-soft sm:p-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">{t("prof.home.recent")}</h2>
+          <section className="app-panel min-w-0 p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-bold">{t("prof.home.recent")}</h2>
               <button
                 type="button"
                 onClick={() => session && void load(session)}
@@ -292,15 +292,15 @@ export function ProfessorHomeScreen() {
                 />
               </div>
             ) : (
-              <ul className="mt-5 divide-y divide-border">
+              <ul className="mt-6 space-y-3">
                 {lectures.map((lecture) => (
                   <li
                     key={lecture.lecture_id}
-                    className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                    className="flex min-w-0 flex-col gap-4 rounded-2xl border border-border/80 bg-background/45 p-4"
                   >
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate font-semibold">{lecture.title}</h3>
+                        <h3 className="break-words font-bold">{lecture.title}</h3>
                         <Badge tone={statusTone[lecture.status]}>
                           {t(
                             lecture.status === "scheduled"
@@ -313,14 +313,14 @@ export function ProfessorHomeScreen() {
                           )}
                         </Badge>
                       </div>
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-2 break-words text-xs leading-5 text-muted">
                         {lecture.course_title ?? ""} · {lecture.join_code} ·{" "}
                         {lecture.status === "ended"
                           ? formatDuration(lecture.offset_ms)
                           : new Date(lecture.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2 sm:justify-end">
+                    <div className="flex flex-wrap gap-2">
                       <Link href={`/transcript/${lecture.lecture_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
                       <Link href={`/settings/autonomy/${lecture.lecture_id}`}
                         className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">
@@ -344,7 +344,7 @@ export function ProfessorHomeScreen() {
                           className={cn(
                             "inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold",
                             lecture.status === "live"
-                              ? "bg-positive/15 text-[#2f6b51]"
+                              ? "bg-positive/15 text-foreground"
                               : "bg-primary-soft text-primary-strong",
                           )}
                         >
@@ -360,13 +360,13 @@ export function ProfessorHomeScreen() {
           </section>
         </div>
         {!loading && !error && courses.length > 0 ? (
-          <section className="mt-8" aria-labelledby="course-memory-title">
-            <h2 id="course-memory-title" className="text-2xl font-semibold">{t("teaching.courseMemory")}</h2>
+          <section className="mt-10 border-t border-border/70 pt-8" aria-labelledby="course-memory-title">
+            <h2 id="course-memory-title" className="text-2xl font-bold">{t("teaching.courseMemory")}</h2>
             <p className="mt-2 text-muted">{t("teaching.courseMemoryBody")}</p>
             <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {courses.map((course) => <li key={course.id} className="min-w-0 rounded-2xl border border-border bg-surface p-5">
-                <h3 className="break-words text-xl font-semibold">{course.title}</h3>
-                <Link href={`/cohort/${course.id}`} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-primary hover:bg-primary-soft/60">
+              {courses.map((course) => <li key={course.id} className="app-panel app-panel-mint flex min-w-0 flex-col items-start p-6">
+                <h3 className="break-words text-xl font-bold">{course.title}</h3>
+                <Link href={`/cohort/${course.id}`} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary/15 bg-surface/70 px-3 text-sm font-semibold text-primary hover:bg-primary-soft/60">
                   {t("teaching.cohort")}<ArrowRight aria-hidden className="size-4 shrink-0" />
                 </Link>
               </li>)}

@@ -12,7 +12,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-border bg-surface/60 px-6 py-12 text-center">
+    <div className="app-panel app-panel-mint px-6 py-12 text-center">
       {icon ? (
         <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary-soft text-primary">
           {icon}

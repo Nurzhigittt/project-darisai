@@ -30,6 +30,8 @@ import {
 import { useI18n } from "@/lib/i18n";
 import { cn, formatDuration, formatOffset } from "@/lib/utils";
 
+import styles from "./summary.module.css";
+
 function Stat({
   icon,
   label,
@@ -40,12 +42,12 @@ function Stat({
   value: string;
 }) {
   return (
-    <div className="rounded-3xl border border-border bg-surface p-5">
-      <div className="flex items-center gap-2 text-muted">
-        {icon}
-        <span className="text-xs font-semibold uppercase tracking-[0.12em]">{label}</span>
+    <div className={`app-panel ${styles.stat}`}>
+      <div className="flex items-center gap-3 text-muted">
+        <span className={styles.statIcon}>{icon}</span>
+        <span className="text-xs font-medium leading-5">{label}</span>
       </div>
-      <p className="mt-3 font-mono text-3xl font-semibold tabular-nums">{value}</p>
+      <p className={styles.statValue}>{value}</p>
     </div>
   );
 }
@@ -89,9 +91,9 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
   const maxSignals = Math.max(1, ...(summary?.timeline.map((item) => item.signals) ?? [1]));
 
   return (
-    <div className="min-h-dvh bg-background">
-      <header className="border-b border-border bg-surface/70">
-        <div className="container-page flex h-16 items-center justify-between">
+    <div className="app-page min-h-dvh">
+      <header className="app-header">
+        <div className="container-page flex items-center justify-between">
           <Logo />
           <div className="flex items-center gap-1">
             <LanguageSwitcher />
@@ -99,7 +101,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
           </div>
         </div>
       </header>
-      <main id="main" className="container-page py-10">
+      <main id="main" className={`container-page ${styles.main}`}>
         <Link
           href="/professor"
           className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-muted hover:text-foreground"
@@ -130,20 +132,22 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
           </div>
         ) : (
           <>
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              <Badge tone={summary.status === "ended" ? "neutral" : "positive"}>
-                {summary.status === "ended" ? t("student.ended") : t("student.live")}
-              </Badge>
-              <Badge tone="primary">{t("summary.factual")}</Badge>
-            </div>
-            <h1 className="mt-4 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-tight">
-              {summary.title}
-            </h1>
-            <p className="mt-2 text-muted">{t("summary.title")}</p>
-            <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold">{t("teaching.transcript")}</Link>
-            <Link href={`/settings/autonomy/${lectureId}`} className="mt-4 inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">
-              {t("teaching.autonomy")}
-            </Link>
+            <section className={`app-hero ${styles.hero}`}>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge tone={summary.status === "ended" ? "neutral" : "positive"}>
+                  {summary.status === "ended" ? t("student.ended") : t("student.live")}
+                </Badge>
+                <Badge tone="primary">{t("summary.factual")}</Badge>
+              </div>
+              <h1>{summary.title}</h1>
+              <p className="mt-4 text-muted">{t("summary.title")}</p>
+              <div className={styles.actions}>
+                <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold">{t("teaching.transcript")}</Link>
+                <Link href={`/settings/autonomy/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold">
+                  {t("teaching.autonomy")}
+                </Link>
+              </div>
+            </section>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Stat
@@ -170,12 +174,12 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
               />
             </div>
 
-            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary-soft/40 p-4 text-sm leading-6">
+            <div className="app-panel app-panel-mint mt-6 flex items-start gap-3 p-5 text-sm leading-6">
               <Info aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" />
               <p>{t("summary.note")}</p>
             </div>
 
-            <section className="mt-8 rounded-4xl border border-border bg-surface p-6 shadow-soft sm:p-8">
+            <section className={`app-panel mt-8 ${styles.timeline}`}>
               <div className="flex items-center gap-2">
                 <BarChart3 aria-hidden className="size-5 text-primary" />
                 <h2 className="text-xl font-semibold">{t("summary.timeline")}</h2>
@@ -189,7 +193,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                   />
                 </div>
               ) : (
-                <div className="mt-6 rounded-2xl border border-border bg-gradient-to-b from-background to-surface p-4">
+                <div className={styles.chart}>
                   <div
                     className="relative flex h-48 items-end gap-2 overflow-x-auto px-1 pb-7 pt-6"
                     role="img"
@@ -220,7 +224,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                             {item.signals}
                           </span>
                           <div
-                            className="w-full rounded-t-md bg-primary/75 shadow-[0_0_18px_-8px_var(--primary)] transition-colors group-hover:bg-primary"
+                            className={styles.bar}
                             style={{
                               height: `${Math.max(8, (item.signals / maxSignals) * 150)}px`,
                             }}
@@ -241,7 +245,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
             </section>
 
             <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-              <div className="rounded-4xl border border-border bg-surface p-6 shadow-soft sm:p-8">
+              <div className={`app-panel ${styles.moments}`}>
                 <div className="flex items-center gap-2">
                   <Waves aria-hidden className="size-5 text-ripple-warm" />
                   <h2 className="text-xl font-semibold">{t("summary.moments")}</h2>
@@ -255,7 +259,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                     {summary.clarification_moments.map((cluster) => (
                       <li
                         key={cluster.cluster_id}
-                        className="rounded-2xl border border-border bg-background p-4"
+                        className="app-panel-mint rounded-2xl border border-border p-4"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <p className="font-mono text-lg font-semibold tabular-nums">
@@ -279,8 +283,8 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                 )}
               </div>
 
-              <div className="rounded-4xl border border-dashed border-border p-6 sm:p-8">
-                <div className="flex size-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+              <div className={styles.brief}>
+                <div className={styles.briefIcon}>
                   <Sparkles aria-hidden className="size-5" />
                 </div>
                 <h2 className="mt-5 text-xl font-semibold">{t("brief.title")}</h2>
@@ -290,7 +294,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                 <div className="mt-6 flex flex-wrap gap-2">
                   <Link
                     href={`/brief/${lectureId}`}
-                    className="inline-flex min-h-11 items-center rounded-xl bg-primary-strong px-4 text-sm font-semibold text-surface"
+                    className="inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-semibold"
                   >
                     {t("brief.open")}
                   </Link>

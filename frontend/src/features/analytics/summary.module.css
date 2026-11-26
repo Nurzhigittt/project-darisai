@@ -1,0 +1,33 @@
+.main { padding-top: 28px; padding-bottom: 64px; }
+.hero { margin-top: 20px; }
+.hero h1 { max-width: 900px; margin-top: 22px; font-size: clamp(2.2rem, 4.8vw, 4.1rem); line-height: 1.08; letter-spacing: -0.045em; font-weight: 700; text-wrap: balance; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.actions a { background: color-mix(in srgb, var(--surface) 76%, transparent); }
+.actions a:hover { background: var(--surface); }
+.stat { height: 100%; padding: 24px; }
+.statIcon { display: grid; width: 36px; height: 36px; flex-shrink: 0; place-items: center; border-radius: 12px; color: var(--primary); background: var(--primary-soft); }
+.statValue { margin-top: 18px; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 650; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.timeline { padding: 30px; }
+.chart { margin-top: 26px; padding: 22px 16px 16px; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--primary-soft) 45%, transparent), transparent); }
+.bar { width: 100%; border-radius: 8px 8px 2px 2px; background: linear-gradient(180deg, #ad5277, #83294d); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2); transition: filter 150ms; }
+.bar:hover { filter: brightness(1.12); }
+:global([data-theme="dark"]) .bar { background: linear-gradient(180deg, #ee8fb5, #b5527a); }
+.moments { padding: 30px; }
+.brief { padding: 30px; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 28px; color: #fff; background: radial-gradient(ellipse at 100% 0%, #ac466f 0%, transparent 70%), linear-gradient(145deg, #912f56 30%, #702441 100%); box-shadow: 0 24px 65px -35px rgb(105 31 65 / 0.35); }
+.brief p { color: rgb(255 255 255 / 0.78); }
+.briefIcon { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid rgb(255 255 255 / 0.2); border-radius: 16px; color: #fff; background: rgb(255 255 255 / 0.1); }
+.brief a { color: #fff; border-color: rgb(255 255 255 / 0.3); }
+.brief a:first-child { color: #702441; background: #fff; }
+.brief a:hover { background: rgb(255 255 255 / 0.15); }
+.brief a:first-child:hover { background: #f9eaf0; }
+.brief :focus-visible { outline-color: #eaf2ef; }
+
+@media (max-width: 600px) {
+  .main { padding-top: 18px; padding-bottom: 36px; }
+  .hero { margin-top: 14px; }
+  .hero h1 { margin-top: 18px; font-size: clamp(2rem, 8vw, 2.8rem); }
+  .stat { padding: 20px 16px; }
+  .statIcon { width: 30px; height: 30px; border-radius: 10px; }
+  .timeline, .moments, .brief { padding: 22px 20px; }
+  .chart { padding: 18px 10px 12px; }
+}

@@ -2,6 +2,16 @@
 
 The public home page now puts joining a lecture first. A prominent code form shares the desktop hero with a short, reassuring headline; on mobile, the form comes before the explanatory copy. Lecturer access remains available as a secondary action. This replaces the previous serif-led academic composition after user feedback that it felt too corporate.
 
+## App-wide V3 direction — 2026-11-26
+
+After reviewing the inner screens, the user explicitly requested the landing's design on every page. The shared application now uses the same local Geologica variable font and its `ss01` alternates, mint/rose atmosphere, berry primary actions, soft borders and rounded surfaces. The earlier landing-only font restriction below describes the initial integration and is superseded by this request.
+
+`styles/globals.css` defines the shared `app-page`, `app-header`, `app-hero`, `app-panel` and tinted panel styles. Shared navigation, footer, buttons, fields, badges, dialogs and empty states follow the same system. Small feature CSS modules handle the compositions of the live stage, presentation, summary, Replay and Brief without changing API/state behavior.
+
+The design covers lecturer login/home, join, student Signal, lecturer Ripple, presentation, summary, Replay, GapCards/library, Brief, Handoff, transcript, Cohort, Autonomy, privacy, service status, offline, error and not-found screens. Signal remains one large green action; Ripple retains deterministic green-to-orange state semantics. Presentation uses the corresponding dark palette. No data, privacy, authentication or publication behavior is simulated by these production styles.
+
+The supplied Geologica asset and license are reused; no dependencies, lockfiles or contracts change. Visual fixtures stay in a separate scratch preview with a visible demo-data banner. Local and remote verification evidence is recorded in the build log and [design PR #5](https://github.com/Nurzhigittt/project-darisai/pull/5). Implementation merge: `5c66b8a`; all concurrent P2/P1 behavior from `e9dea4c` is preserved.
+
 ## Visual direction
 
 - The third pass restores the depth and color requested from the user's earlier light/dark screenshots: a responsive mint/rose atmospheric background behind the hero and demo, a faint dot texture, shaded berry joining and closing panels, and soft tinted surfaces. The second-pass composition, Geologica and interactions remain unchanged. All effects are scoped CSS; there are no new image requests or animations. Small text uses stronger local colors to remain legible over the washes.

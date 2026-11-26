@@ -10,8 +10,8 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <div className="grid min-h-dvh place-items-center bg-background p-6">
-      <div className="w-full max-w-lg">
+    <div className="app-page grid place-items-center px-4 py-10 sm:px-6">
+      <div className="app-hero w-full max-w-xl">
         <ErrorState
           title="Something went wrong"
           body="This screen could not be rendered. Your local study history was not uploaded or deleted."
