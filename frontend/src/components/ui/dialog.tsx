@@ -33,6 +33,7 @@ export function Dialog({
   closeLabel = "Close",
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const pendingControlledCloses = useRef(0);
   const titleId = useId();
   const descriptionId = useId();
 
@@ -40,7 +41,12 @@ export function Dialog({
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (!open && dialog.open) {
+      // close() queues its native event. The parent has already closed this
+      // cycle, so that event must not close a subsequently reopened dialog.
+      pendingControlledCloses.current += 1;
+      dialog.close();
+    }
   }, [open]);
 
   return (
@@ -48,7 +54,16 @@ export function Dialog({
       ref={ref}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
-      onClose={onClose}
+      onClose={(event) => {
+        if (event.target !== event.currentTarget) return;
+        if (pendingControlledCloses.current > 0) {
+          pendingControlledCloses.current -= 1;
+          return;
+        }
+        // A native close from outside this controlled effect still notifies
+        // the parent, unless its event belongs to an already reopened cycle.
+        if (!event.currentTarget.open) onClose();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
