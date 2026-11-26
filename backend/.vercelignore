@@ -1,0 +1,10 @@
+.venv
+.model_cache
+.pytest_cache
+.mypy_cache
+.ruff_cache
+tests
+evals
+*.log
+.env*
+!.env.example

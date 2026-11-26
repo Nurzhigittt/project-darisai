@@ -349,3 +349,10 @@ The 40-student template demonstration passed in 85.55 s, including 40 accepted s
 Pre-publication local checks: Ruff 0.14.5 passed (the newer host Ruff 0.15.20 reports two ASYNC240 findings; the repository-pinned binary was used); mypy passed for 84 source files; pytest 127 passed in 27.38 s; frontend ESLint/TypeScript passed, 188 tests passed, production webpack build passed. Reused external node_modules caused standalone tracing warnings; the verified deployment uses next start with installed dependencies, not the standalone export.
 
 Description/topics updates returned HTTP 404 for the push-only account. Social preview requires an administrator. Permanent hosting and Docker remain unverified. See `docs/FINAL_PUBLICATION.md` for the publication boundary.
+## Vercel + Supabase migration completion — 2026-11-27
+
+Inspected and continued the existing `feat/vercel-supabase` work without discarding it. Added `420_serverless_state_repair` to make `daris_private.ephemeral_state` and the Supabase broadcaster idempotently recoverable after a partial provisioning attempt; kept migrations 400/410 immutable. Added the Vercel backend entrypoint (`backend/api/index.py`), `requirements.txt`, and corrected the FastAPI function path.
+
+The serverless path now has an explicit FastAPI function config, a Supabase Realtime transport option (`NEXT_PUBLIC_REALTIME_TRANSPORT=supabase`), short-lived channel-scoped JWTs, HTTP command/snapshot recovery, and an installed adapter test. Deployment instructions now cover Supabase migration URLs, pooler settings, RLS verification, Vercel frontend/backend projects, exact environment variables, and Whisper limits.
+
+Actual local results: backend **131 tests** (including multi-instance Signal atomicity, restart/session recovery, token scope and RLS-adjacent settings), frontend **191 tests** (including 3 Supabase transport tests), production frontend build passed, and Playwright **16/16** passed against the local Codex backend. RLS SQL was applied successfully to a simulated Supabase schema. Docker and live Supabase/Vercel deployment remain unverified because Docker and cloud credentials are unavailable.

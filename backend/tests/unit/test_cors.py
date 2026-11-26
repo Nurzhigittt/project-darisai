@@ -70,10 +70,10 @@ async def test_autonomy_preflight_rejects_unknown_origin() -> None:
 
 @pytest.mark.asyncio
 async def test_autonomy_preflight_rejects_unsupported_method() -> None:
-    response = await preflight(method="DELETE")
+    response = await preflight(method="PATCH")
 
     assert response.status_code == 400
-    assert "DELETE" not in response.headers["Access-Control-Allow-Methods"]
+    assert "PATCH" not in response.headers["Access-Control-Allow-Methods"]
 
 
 @pytest.mark.asyncio

@@ -22,7 +22,10 @@ async def apply_migrations(settings: Settings) -> list[str]:
     verified so silent edits to historical migrations are detected.
     """
 
-    connection = await asyncpg.connect(dsn=settings.database_url)
+    connection = await asyncpg.connect(
+        dsn=settings.migration_database_url or settings.database_url,
+        statement_cache_size=0,
+    )
     applied_now: list[str] = []
     try:
         await connection.execute(

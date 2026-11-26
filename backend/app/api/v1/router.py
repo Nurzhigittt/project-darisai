@@ -14,12 +14,14 @@ from app.api.v1 import (
     join,
     lectures,
     privacy,
+    realtime,
     replay,
     system,
     transcript,
 )
 
 api_router = APIRouter()
+api_router.include_router(realtime.router)
 api_router.include_router(auth.router)
 api_router.include_router(autonomy.router)
 api_router.include_router(cohort.router)

@@ -1,3 +1,5 @@
+import { SupabaseSocket } from "./supabase";
+
 export type WsStatus =
   | "idle"
   | "connecting"
@@ -66,7 +68,7 @@ export type LectureStatePayload = {
 
 type Role = "student" | "professor";
 
-type Options = {
+export type SocketOptions = {
   url: string;
   lectureId: string;
   role: Role;
@@ -109,7 +111,8 @@ function envelope(type: string, lectureId: string, payload: Record<string, unkno
 }
 
 export class DarisSocket {
-  private readonly options: Options;
+  private readonly options: SocketOptions;
+  private readonly supabase: SupabaseSocket | null;
   private socket: WebSocket | null = null;
   private manualClose = false;
   private attempt = 0;
@@ -124,11 +127,14 @@ export class DarisSocket {
     this.setStatus("offline");
   };
 
-  constructor(options: Options) {
+  constructor(options: SocketOptions) {
     this.options = options;
+    this.supabase = process.env.NEXT_PUBLIC_REALTIME_TRANSPORT === "supabase"
+      ? new SupabaseSocket(options) : null;
   }
 
   connect(): void {
+    if (this.supabase) { this.supabase.connect(); return; }
     this.manualClose = false;
     if (typeof window !== "undefined") {
       window.addEventListener("online", this.onlineHandler);
@@ -234,6 +240,7 @@ export class DarisSocket {
   }
 
   sendStudentSignal(clientSeq: number, clientTsMs: number): boolean {
+    if (this.supabase) return this.supabase.sendStudentSignal(clientSeq, clientTsMs);
     return this.rawSend(
       envelope("student_signal", this.options.lectureId, {
         client_seq: clientSeq,
@@ -244,16 +251,19 @@ export class DarisSocket {
   }
 
   sendLectureControl(action: "start" | "pause" | "resume" | "end"): boolean {
+    if (this.supabase) return this.supabase.sendLectureControl(action);
     return this.rawSend(
       envelope("lecture_control", this.options.lectureId, { action }),
     );
   }
 
   isReady(): boolean {
+    if (this.supabase) return this.supabase.isReady();
     return this.status === "ready";
   }
 
   getStatus(): WsStatus {
+    if (this.supabase) return this.supabase.getStatus();
     return this.status;
   }
 
@@ -264,6 +274,7 @@ export class DarisSocket {
   }
 
   dispose(): void {
+    if (this.supabase) { this.supabase.dispose(); return; }
     this.manualClose = true;
     this.clearReconnect();
     this.stopHeartbeat();

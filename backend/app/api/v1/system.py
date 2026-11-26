@@ -27,15 +27,17 @@ async def status(ctx: ContextDep) -> StatusResponse:
             detail=None if db_ok else "Database probe failed.",
         ),
         ComponentState(
-            name="Redis",
+            name="Persistent session state" if ctx.settings.deployment_mode == "supabase" else "Redis",
             status="available" if redis_ok else "unavailable",
             latency_ms=redis_latency,
             detail=None if redis_ok else "Redis probe failed.",
         ),
         ComponentState(
-            name="WebSocket gateway",
+            name="Supabase Realtime configuration" if ctx.settings.deployment_mode == "supabase" else "WebSocket gateway",
             status="available" if redis_ok else "degraded",
             detail=(
+                "Private Supabase channels; provider connectivity requires a live subscription test."
+                if ctx.settings.deployment_mode == "supabase" else
                 "Public WebSocket fan-out uses Redis Pub/Sub."
                 if redis_ok
                 else "Pub/Sub fan-out is unavailable while Redis is down."
@@ -109,7 +111,7 @@ async def ready(ctx: ContextDep) -> JSONResponse:
             "latency_ms": db_latency,
         },
         {
-            "name": "redis",
+            "name": "postgresql_session_state" if ctx.settings.deployment_mode == "supabase" else "redis",
             "status": "ok" if redis_ok else "unavailable",
             "latency_ms": redis_latency,
         },

@@ -13,6 +13,7 @@ from app.schemas.lectures import (
     LectureOut,
     LectureSummary,
 )
+from app.serverless.store import STATE_LOCK
 from app.services.lectures import control_response
 
 router = APIRouter(tags=["lectures"])
@@ -46,8 +47,11 @@ async def control_lecture(
     ctx: ContextDep,
     professor: ProfessorDep,
 ) -> ControlResponse:
-    lecture = await ctx.lectures.control(lecture_id, professor.professor_id, body.action)
-    await ctx.ripple.publish_lecture_state(lecture, lecture["status"])
+    async with ctx.db.transaction():
+        if ctx.settings.deployment_mode == "supabase":
+            await ctx.db.fetchval("SELECT pg_advisory_xact_lock($1)", STATE_LOCK)
+        lecture = await ctx.lectures.control(lecture_id, professor.professor_id, body.action)
+        await ctx.ripple.publish_lecture_state(lecture, lecture["status"])
     return control_response(lecture)
 
 
