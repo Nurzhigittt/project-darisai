@@ -153,7 +153,10 @@ test("contract fixture: keyboard cancellation sends no PUT, and allow or revoke 
   await expect(allow).toBeFocused();
 
   await page.keyboard.press("Enter");
-  await dialog.getByRole("button", { name: label("autonomy.confirmAllow"), exact: true }).focus();
+  await expect(dialog).toBeVisible();
+  const confirmAllow = dialog.getByRole("button", { name: label("autonomy.confirmAllow"), exact: true });
+  await confirmAllow.focus();
+  await expect(confirmAllow).toBeFocused();
   await page.keyboard.press("Enter");
   await expect.poll(() => fixture.changes.length).toBe(1);
   await expect(article.getByText(label("autonomy.mode.locked"), { exact: true })).toBeVisible();
