@@ -144,36 +144,38 @@ function TranscriptContent({ lectureId }: { lectureId: string }) {
   }
   const disabled = busy || loading || offline || Boolean(error);
   const run = transcript?.latest_run;
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70"><div className="container-page flex min-h-16 flex-wrap items-center justify-between gap-2 py-2"><Logo /><div className="flex gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
-    <main id="main" className="container-page py-8 sm:py-12">
+  return <div className="app-page">
+    <header className="app-header"><div className="container-page flex flex-wrap items-center justify-between gap-3"><Logo /><div className="flex gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
+    <main id="main" className="container-page py-7 sm:py-10">
       <Link href="/professor" className="inline-flex min-h-11 items-center text-sm font-semibold text-muted">← {t("transcript.back")}</Link>
-      <p className="mt-4 break-words text-sm text-muted">{lecture?.title}</p>
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-4"><h1 className="text-4xl font-semibold">{t("transcript.title")}</h1><Button variant="secondary" disabled={loading || busy || offline} onClick={() => void load()}>{t("transcript.refresh")}</Button></div>
-      <p className="mt-3 max-w-3xl text-muted">{t("transcript.description")}</p>
-      {lecture ? <nav className="mt-4 flex flex-wrap gap-4" aria-label={t("teaching.related")}><Link className="inline-flex min-h-11 items-center font-semibold text-primary" href={`/brief/${lectureId}`}>{t("transcript.brief")}</Link></nav> : null}
-      {offline ? <p role="status" className="mt-4">{t("transcript.offline")}</p> : null}
-      {notice ? <p role="status" className="mt-4 rounded-xl border border-border bg-surface p-4">{t(notice)}</p> : null}
-      {loading ? <p role="status" className="mt-6">{t("transcript.loading")}</p> : null}
-      {error ? <p role="alert" className="mt-6">{t(error)}</p> : null}
+      <div className="app-hero mt-5">
+        <p className="break-words text-sm font-semibold text-primary-strong">{lecture?.title}</p>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-5"><h1 className="text-[clamp(2rem,4.6vw,3.5rem)] font-bold leading-[1.08]">{t("transcript.title")}</h1><Button variant="secondary" disabled={loading || busy || offline} onClick={() => void load()}>{t("transcript.refresh")}</Button></div>
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{t("transcript.description")}</p>
+        {lecture ? <nav className="mt-5 flex flex-wrap gap-3" aria-label={t("teaching.related")}><Link className="inline-flex min-h-11 items-center rounded-xl border border-primary/15 bg-surface/80 px-4 text-sm font-semibold text-primary hover:bg-primary-soft" href={`/brief/${lectureId}`}>{t("transcript.brief")}</Link></nav> : null}
+      </div>
+      {offline ? <p role="status" className="app-panel mt-5 p-5 text-sm leading-6">{t("transcript.offline")}</p> : null}
+      {notice ? <p role="status" className="app-panel app-panel-mint mt-5 p-5 text-sm leading-6">{t(notice)}</p> : null}
+      {loading ? <p role="status" className="app-panel mt-6 p-6 text-muted">{t("transcript.loading")}</p> : null}
+      {error ? <p role="alert" className="app-panel app-panel-rose mt-6 p-6 leading-7">{t(error)}</p> : null}
       {lecture ? <div className="mt-7 grid gap-6 lg:grid-cols-2">
-        <form onSubmit={(event) => void submit(event, "audio")} className="space-y-4 rounded-2xl border border-border bg-surface p-5">
-          <h2 className="text-2xl font-semibold">{t("transcript.audioTitle")}</h2><p className="text-sm text-muted">{t("transcript.audioHint")}</p>
+        <form onSubmit={(event) => void submit(event, "audio")} className="app-panel app-panel-mint min-w-0 space-y-5 p-6 sm:p-8">
+          <h2 className="text-2xl font-bold">{t("transcript.audioTitle")}</h2><p className="text-sm text-muted">{t("transcript.audioHint")}</p>
           <Input key={`audio-${fileKey}`} type="file" accept=".wav,.mp3,.m4a,.mp4,.webm,.ogg" label={t("transcript.audioFile")} disabled={disabled} onChange={(event) => setFile(event.target.files?.[0] ?? null)} />
           <div className="grid gap-4 sm:grid-cols-2"><Input type="number" min="0" step="1" label={t("transcript.chunk")} value={chunk} disabled={disabled} onChange={(event) => setChunk(event.target.value)} /><Input type="number" min="0" step="0.001" label={t("transcript.start")} value={start} disabled={disabled} onChange={(event) => setStart(event.target.value)} /></div>
           <Button disabled={disabled || !file} type="submit">{t(busy ? "transcript.processing" : "transcript.upload")}</Button>
         </form>
-        <form onSubmit={(event) => void submit(event, "json")} className="space-y-4 rounded-2xl border border-border bg-surface p-5">
-          <h2 className="text-2xl font-semibold">{t("transcript.importTitle")}</h2><p className="text-sm text-muted">{t("transcript.importHint")}</p>
+        <form onSubmit={(event) => void submit(event, "json")} className="app-panel app-panel-rose min-w-0 space-y-5 p-6 sm:p-8">
+          <h2 className="text-2xl font-bold">{t("transcript.importTitle")}</h2><p className="text-sm text-muted">{t("transcript.importHint")}</p>
           <Input key={`json-${fileKey}`} type="file" accept=".json,application/json" label={t("transcript.jsonFile")} disabled={disabled} onChange={(event) => setJsonFile(event.target.files?.[0] ?? null)} />
-          <pre className="overflow-x-auto rounded-lg bg-background p-3 text-xs" tabIndex={0} aria-label={t("transcript.example")}>{'{"language":"ru","segments":[\n  {"start_ms":0,"end_ms":1000,\n   "text":"..."}\n]}'}</pre>
+          <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-background/60 p-4 text-xs leading-6" tabIndex={0} aria-label={t("transcript.example")}>{'{"language":"ru","segments":[\n  {"start_ms":0,"end_ms":1000,\n   "text":"..."}\n]}'}</pre>
           <Button variant="secondary" disabled={disabled || !jsonFile} type="submit">{t("transcript.import")}</Button>
         </form>
       </div> : null}
-      {transcript ? <section className="mt-8" aria-labelledby="transcript-text"><h2 id="transcript-text" className="text-2xl font-semibold">{t("transcript.text")}</h2>
+      {transcript ? <section className="app-panel mt-8 p-6 sm:p-8" aria-labelledby="transcript-text"><h2 id="transcript-text" className="text-2xl font-bold">{t("transcript.text")}</h2>
         <p className="mt-3 text-sm text-muted">{t("transcript.counts", { total: transcript.total_segments, embedded: transcript.embedded_segments })}</p>
         {run ? <p className="mt-2 text-sm">{t("transcript.run")}: {t(`transcript.status.${run.status}`)} · {t(`transcript.source.${run.source}`)}</p> : null}
-        {!transcript.segments.length ? <p className="mt-5 text-muted">{t("transcript.empty")}</p> : <ol className="mt-5 space-y-3">{transcript.segments.map((segment) => <li key={segment.segment_id} className="rounded-xl border border-border bg-surface p-4"><p className="font-mono text-xs text-muted">{formatOffset(segment.start_ms)}–{formatOffset(segment.end_ms)}</p><p className="mt-2 whitespace-pre-wrap break-words">{segment.text}</p></li>)}</ol>}
+        {!transcript.segments.length ? <p className="mt-5 rounded-2xl border border-dashed border-border bg-background/40 p-6 text-muted">{t("transcript.empty")}</p> : <ol className="mt-6 space-y-3">{transcript.segments.map((segment) => <li key={segment.segment_id} className="rounded-2xl border border-border/80 bg-background/40 p-5 sm:grid sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-5"><p className="font-mono text-xs leading-7 text-primary-strong">{formatOffset(segment.start_ms)}–{formatOffset(segment.end_ms)}</p><p className="mt-2 whitespace-pre-wrap break-words leading-7 sm:mt-0">{segment.text}</p></li>)}</ol>}
       </section> : null}
     </main>
   </div>;

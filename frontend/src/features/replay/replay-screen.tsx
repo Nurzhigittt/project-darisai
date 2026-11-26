@@ -21,6 +21,7 @@ import { cn, formatOffset } from "@/lib/utils";
 
 import { Citations, ReplaySource } from "./citations";
 import { boundedReplayHistory } from "./replay-helpers";
+import styles from "./replay.module.css";
 
 type Discussion = {
   moment: ReplayMoment;
@@ -55,10 +56,10 @@ function validAccess(session: LocalSession | null): session is LocalSession {
 
 function Dialogue({ messages }: { messages: StoredReplayMessage[] }) {
   const { t } = useI18n();
-  return <ol className="space-y-4">
-    {messages.map((message, index) => <li key={index} className={cn("rounded-2xl border border-border p-4 sm:p-5", message.role === "student" ? "ml-4 bg-primary-soft sm:ml-10" : "bg-surface")}>
+  return <ol className={styles.messages}>
+    {messages.map((message, index) => <li key={index} className={cn(styles.message, message.role === "student" && styles.messageStudent)}>
       <div className="flex flex-wrap items-center gap-2"><span className="text-sm font-semibold">{t(message.role === "student" ? "replay.you" : "replay.axiom")}</span>{message.source ? <ReplaySource source={message.source} /> : null}</div>
-      <p className="mt-3 whitespace-pre-wrap break-words leading-7">{message.text}</p>
+      <p className={styles.messageText}>{message.text}</p>
       {message.options?.length ? <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-muted">{message.options.map((option) => <li key={option.id}>{option.text}</li>)}</ul> : null}
       <Citations citations={message.citations ?? []} />
     </li>)}
@@ -322,51 +323,80 @@ function ReplayContent({ lectureId }: { lectureId: string }) {
   const latest = active?.messages.at(-1);
   const rejoin = session?.joinCode ? `/join/${session.joinCode}` : "/#join";
 
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70"><div className="container-page flex h-16 items-center justify-between"><Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
-    <main id="main" className="container-page max-w-5xl py-8 sm:py-12">
+  return <div className="app-page">
+    <header className="app-header"><div className="container-page flex items-center justify-between gap-3"><Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
+    <main id="main" className="container-page max-w-6xl py-8 sm:py-12">
       <Link href={`/s/${lectureId}`} className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-semibold text-muted hover:text-foreground"><ArrowLeft aria-hidden className="size-4" />{t("replay.back")}</Link>
-      <p className="mt-5 break-words text-sm font-semibold text-muted">{session?.lecture.title}</p>
-      <h1 className="mt-2 text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-tight">{t("replay.title")}</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted">{t("replay.subtitle")}</p>
-      <p className="mt-5 rounded-xl border border-border bg-surface p-4 text-sm leading-6 text-muted">{t("replay.localNote")}</p>
-      {offline ? <p role="status" className="mt-4 flex gap-3 rounded-xl border border-border p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("replay.offline")}</p> : null}
-      {storageError ? <p role="alert" className="mt-4 rounded-xl border border-border p-4">{t("replay.storageError")}</p> : null}
-      {loading ? <div role="status" aria-label={t("replay.loading")} className="mt-8 space-y-3"><Skeleton className="h-20" /><Skeleton className="h-60" /><span className="sr-only">{t("replay.loading")}</span></div> : <>
+      <div className="app-hero mt-5">
+        <p className="mb-4 break-words text-sm font-medium text-muted">{session?.lecture.title}</p>
+        <h1 className="text-[clamp(2.2rem,6vw,3.75rem)] font-bold leading-tight tracking-tight">{t("replay.title")}</h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-muted sm:text-lg">{t("replay.subtitle")}</p>
+      </div>
+      <p className="app-panel app-panel-mint mt-5 p-5 text-sm leading-6 text-muted">{t("replay.localNote")}</p>
+      {offline ? <p role="status" className="app-panel app-panel-rose mt-4 flex gap-3 p-5 text-sm leading-6"><WifiOff aria-hidden className="size-5 shrink-0" />{t("replay.offline")}</p> : null}
+      {storageError ? <p role="alert" className="app-panel app-panel-rose mt-4 p-5 text-sm leading-6">{t("replay.storageError")}</p> : null}
+      {loading ? <div role="status" aria-label={t("replay.loading")} className="app-panel mt-8 space-y-5 p-6 sm:p-8"><Skeleton className="h-20" /><Skeleton className="h-60" /><span className="sr-only">{t("replay.loading")}</span></div> : <>
         {!session ? <div className="mt-8"><EmptyState title={t("replay.noSession")} body={t("replay.noSessionBody")} action={<Link href={rejoin} className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground">{t("replay.rejoin")}</Link>} /></div> : null}
-        {accessError ? <div role="alert" className="mt-6 rounded-2xl border border-border bg-surface p-5"><p>{t(accessError)}</p><div className="mt-3 flex flex-wrap gap-3"><Button variant="secondary" onClick={() => void loadLocal()}>{t("replay.reload")}</Button><Link href={rejoin} className="inline-flex min-h-11 items-center rounded-xl px-3 font-semibold text-primary">{t("replay.rejoin")}</Link></div></div> : null}
+        {accessError ? <div role="alert" className="app-panel app-panel-rose mt-6 p-5 sm:p-6"><p className="leading-7">{t(accessError)}</p><div className="mt-4 flex flex-wrap gap-3"><Button variant="secondary" onClick={() => void loadLocal()}>{t("replay.reload")}</Button><Link href={rejoin} className="inline-flex min-h-11 items-center rounded-xl px-3 font-semibold text-primary">{t("replay.rejoin")}</Link></div></div> : null}
         {session && offsets.length === 0 ? <div className="mt-8"><EmptyState icon={<History aria-hidden className="size-6" />} title={t("replay.noSignals")} body={t("replay.noSignalsBody")} /></div> : null}
-        {offsets.length ? <section className="mt-8" aria-labelledby="choose-moments"><h2 id="choose-moments" className="text-2xl font-semibold">{t("replay.select")}</h2><p className="mt-2 text-sm text-muted">{t("replay.selected", { count: selected.length })}</p>
-          <div className="mt-4 flex max-h-64 flex-wrap gap-2 overflow-y-auto rounded-2xl border border-border bg-surface p-3">
-            {offsets.map((offset) => <label id={`offset-${offset}`} key={offset} className={cn("inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 text-sm font-medium", selected.includes(offset) ? "border-primary bg-primary-soft" : "border-border")}>
+        {offsets.length ? <section className="app-panel mt-8 p-5 sm:p-7" aria-labelledby="choose-moments"><h2 id="choose-moments" className="text-xl font-bold tracking-tight sm:text-2xl">{t("replay.select")}</h2><p className="mt-2 text-sm text-muted">{t("replay.selected", { count: selected.length })}</p>
+          <div className="my-5 flex max-h-64 flex-wrap gap-2.5 overflow-y-auto p-1">
+            {offsets.map((offset) => <label id={`offset-${offset}`} key={offset} className={cn("inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-medium", selected.includes(offset) ? "border-primary/60 bg-primary-soft text-primary-strong" : "border-border bg-surface")}>
               <input type="checkbox" checked={selected.includes(offset)} disabled={disabled || (!selected.includes(offset) && selected.length >= 20)} className="size-4 accent-primary" onChange={(event) => setSelected((current) => event.target.checked ? [...current, offset].sort((a, b) => a - b) : current.filter((item) => item !== offset))} />{t("replay.mark", { time: formatOffset(offset) })}
             </label>)}
           </div>
-          <Button className="mt-4" disabled={disabled || selected.length === 0} loading={busy === "moments"} onClick={() => void findMoments(selected)}>{t("replay.find")}</Button>
+          <Button disabled={disabled || selected.length === 0} loading={busy === "moments"} onClick={() => void findMoments(selected)}>{t("replay.find")}</Button>
         </section> : null}
         {error ? <div className="mt-6"><ErrorState title={t("replay.error")} body={t(error)} /></div> : null}
         <p role="status" aria-live="polite" className="mt-3 text-sm text-muted">{busy ? t(busy === "moments" ? "replay.finding" : "replay.thinking") : ""}</p>
-        {moments ? <section className="mt-6" aria-labelledby="replay-moments"><h2 id="replay-moments" className="text-2xl font-semibold">{t("replay.moments")}</h2><p className="mt-2 text-sm text-muted">{t("replay.combined")}</p><div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {moments.moments.map((moment) => <button key={moment.offset_ms} type="button" disabled={disabled} onClick={() => openMoment(moment)} aria-pressed={active?.moment.offset_ms === moment.offset_ms} aria-label={t("replay.openMoment", { time: formatOffset(moment.offset_ms), concept: moment.concept_title })} className={cn("min-h-20 rounded-2xl border p-4 text-left disabled:opacity-60", active?.moment.offset_ms === moment.offset_ms ? "border-primary bg-primary-soft" : "border-border bg-surface")}><span className="text-sm font-semibold tabular-nums text-muted">{formatOffset(moment.offset_ms)}</span><span className="mt-1 block break-words font-semibold">{moment.concept_title}</span></button>)}
+        {moments ? <section className="mt-8" aria-labelledby="replay-moments"><h2 id="replay-moments" className="text-2xl font-bold tracking-tight">{t("replay.moments")}</h2><p className="mt-2 text-sm leading-6 text-muted">{t("replay.combined")}</p><div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {moments.moments.map((moment) => <button key={moment.offset_ms} type="button" disabled={disabled} onClick={() => openMoment(moment)} aria-pressed={active?.moment.offset_ms === moment.offset_ms} aria-label={t("replay.openMoment", { time: formatOffset(moment.offset_ms), concept: moment.concept_title })} className={styles.moment}><span className="text-xs font-semibold tabular-nums text-primary-strong">{formatOffset(moment.offset_ms)}</span><span className="mt-2 block break-words text-lg font-semibold leading-snug tracking-tight">{moment.concept_title}</span></button>)}
         </div></section> : null}
-        {active ? <section className="mt-8 rounded-3xl border border-border bg-surface/50 p-4 sm:p-6" aria-labelledby="discussion-title">
-          <div className="flex flex-wrap items-start justify-between gap-3"><h2 id="discussion-title" className="break-words text-2xl font-semibold">{active.moment.concept_title}</h2><ReplaySource source={active.source} /></div>
-          <p className="mt-2 text-xs text-muted">{t("replay.window", { start: formatOffset(active.moment.window.start_ms), end: formatOffset(active.moment.window.end_ms) })}</p>
-          <h3 className="mt-5 text-lg font-semibold">{t("replay.recap")}</h3><p className="mt-2 whitespace-pre-wrap break-words leading-7">{active.moment.recap.text}</p><Citations citations={active.moment.recap.citations ?? []} />
-          {active.source === "template" || latest?.source === "template" ? <p className="mt-3 text-xs leading-5 text-muted">{t("replay.templateNote")}</p> : null}
-          <h3 ref={responseHeading} tabIndex={-1} className="mt-7 rounded-lg text-xl font-semibold outline-offset-4">{t("replay.discussion")}</h3>
-          <div className="mt-4"><Dialogue messages={active.messages} /></div>
-          {active.messages.length === 0 ? <div className="mt-4">{currentRecord ? <p className="mb-3 text-sm leading-6 text-muted">{t("replay.restartHint")}</p> : null}<Button disabled={disabled || active.blocked} onClick={() => void send()} loading={busy === "turn"}>{t("replay.begin")}</Button></div> : null}
-          {active.messages.length > 0 && !active.completed && !active.blocked ? <form onSubmit={send} className="mt-5 space-y-4">
-            {latest?.kind === "mcq" ? <fieldset disabled={disabled} className="space-y-2"><legend className="mb-3 font-semibold">{t("replay.choose")}</legend>{latest.options?.map((option) => <label key={option.id} className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-border bg-surface p-3"><input type="radio" name="replay-choice" value={option.id} checked={choice === option.id} onChange={() => setChoice(option.id)} className="size-4 shrink-0 accent-primary" /><span className="break-words">{option.text}</span></label>)}</fieldset> : <div><label htmlFor="replay-answer" className="mb-2 block font-semibold">{t("replay.answer")}</label><textarea id="replay-answer" rows={4} maxLength={600} value={answer} disabled={disabled} onChange={(event) => setAnswer(event.target.value)} aria-describedby="replay-answer-hint" className="w-full rounded-xl border border-border bg-surface p-3 text-base leading-6" /><p id="replay-answer-hint" className="mt-2 text-xs text-muted">{t("replay.answerHint")}</p></div>}
-            <Button type="submit" disabled={disabled || (latest?.kind === "mcq" ? !choice : !answer.trim())} loading={busy === "turn"}>{t("replay.send")}</Button>
-          </form> : null}
-          {active.completed ? <div className="mt-5 rounded-2xl border border-border bg-primary-soft p-4"><h3 className="flex items-center gap-2 text-xl font-semibold"><CheckCircle2 aria-hidden className="size-5" />{t("replay.complete")}</h3><p className="mt-2 text-sm leading-6">{t(latest?.kind === "refusal" ? "replay.refusal" : "replay.completeBody")}</p></div> : null}
-          {active.blocked || active.completed ? <div className="mt-4"><p className="text-sm leading-6 text-muted">{t("replay.restartHint")}</p><Button className="mt-3" variant="secondary" disabled={disabled} onClick={() => void findMoments([active.moment.offset_ms], active.moment.offset_ms)}>{t("replay.restart")}</Button></div> : null}
-          {active.messages.length > 0 ? <fieldset className="mt-6" disabled={Boolean(busy)}><legend className="font-semibold">{t("replay.outcome")}</legend><div className="mt-3 flex flex-wrap gap-2">{(["unclear", "partial", "clear"] as const).map((value) => <button key={value} type="button" aria-pressed={(currentRecord?.outcome ?? "unclear") === value} onClick={() => void persist(active, value)} className={cn("min-h-11 rounded-xl border px-4 text-sm font-semibold", (currentRecord?.outcome ?? "unclear") === value ? "border-primary bg-primary-soft" : "border-border bg-surface")}>{t(`replay.outcome.${value}`)}</button>)}</div></fieldset> : null}
+        {active ? <section className={cn("app-panel app-panel-rose mt-8", styles.discussion)} aria-labelledby="discussion-title">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <h2 id="discussion-title" className="break-words text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{active.moment.concept_title}</h2>
+            <ReplaySource source={active.source} />
+          </div>
+          <p className="mt-3 text-xs font-medium leading-6 tabular-nums text-muted">{t("replay.window", { start: formatOffset(active.moment.window.start_ms), end: formatOffset(active.moment.window.end_ms) })}</p>
+          <div className={styles.discussionGrid}>
+            <div className={styles.recap}>
+              <h3 className="text-lg font-bold tracking-tight">{t("replay.recap")}</h3>
+              <p className="mt-4 whitespace-pre-wrap break-words leading-8">{active.moment.recap.text}</p>
+              <Citations citations={active.moment.recap.citations ?? []} />
+              {active.source === "template" || latest?.source === "template" ? <p className="mt-4 text-xs leading-6 text-muted">{t("replay.templateNote")}</p> : null}
+            </div>
+            <div className={styles.conversation}>
+              <h3 ref={responseHeading} tabIndex={-1} className="rounded-lg text-xl font-bold tracking-tight outline-offset-4">{t("replay.discussion")}</h3>
+              <div className="mt-5"><Dialogue messages={active.messages} /></div>
+              {active.messages.length === 0 ? <div className="mt-5">{currentRecord ? <p className="mb-4 text-sm leading-6 text-muted">{t("replay.restartHint")}</p> : null}<Button disabled={disabled || active.blocked} onClick={() => void send()} loading={busy === "turn"}>{t("replay.begin")}</Button></div> : null}
+              {active.messages.length > 0 && !active.completed && !active.blocked ? <form onSubmit={send} className="mt-6 space-y-5">
+                {latest?.kind === "mcq" ? <fieldset disabled={disabled} className="space-y-3">
+                  <legend className="mb-3 text-sm font-semibold">{t("replay.choose")}</legend>
+                  {latest.options?.map((option) => <label key={option.id} className={styles.choice}>
+                    <input type="radio" name="replay-choice" value={option.id} checked={choice === option.id} onChange={() => setChoice(option.id)} className="size-4 shrink-0 accent-primary" />
+                    <span className="break-words">{option.text}</span>
+                  </label>)}
+                </fieldset> : <div>
+                  <label htmlFor="replay-answer" className="mb-3 block text-sm font-semibold">{t("replay.answer")}</label>
+                  <textarea id="replay-answer" rows={4} maxLength={600} value={answer} disabled={disabled} onChange={(event) => setAnswer(event.target.value)} aria-describedby="replay-answer-hint" className="w-full rounded-2xl border border-border bg-surface p-4 text-base leading-7" />
+                  <p id="replay-answer-hint" className="mt-2 text-xs leading-6 text-muted">{t("replay.answerHint")}</p>
+                </div>}
+                <Button type="submit" disabled={disabled || (latest?.kind === "mcq" ? !choice : !answer.trim())} loading={busy === "turn"}>{t("replay.send")}</Button>
+              </form> : null}
+              {active.completed ? <div className="app-panel app-panel-mint mt-6 p-5">
+                <h3 className="flex items-center gap-2 text-xl font-bold tracking-tight"><CheckCircle2 aria-hidden className="size-5 shrink-0" />{t("replay.complete")}</h3>
+                <p className="mt-3 text-sm leading-7">{t(latest?.kind === "refusal" ? "replay.refusal" : "replay.completeBody")}</p>
+              </div> : null}
+              {active.blocked || active.completed ? <div className="mt-5"><p className="text-sm leading-6 text-muted">{t("replay.restartHint")}</p><Button className="mt-4" variant="secondary" disabled={disabled} onClick={() => void findMoments([active.moment.offset_ms], active.moment.offset_ms)}>{t("replay.restart")}</Button></div> : null}
+              {active.messages.length > 0 ? <fieldset className="mt-7 border-t border-border pt-5" disabled={Boolean(busy)}>
+                <legend className="pr-3 text-sm font-semibold">{t("replay.outcome")}</legend>
+                <div className="flex flex-wrap gap-2">{(["unclear", "partial", "clear"] as const).map((value) => <button key={value} type="button" aria-pressed={(currentRecord?.outcome ?? "unclear") === value} onClick={() => void persist(active, value)} className={cn("min-h-11 rounded-2xl border px-4 py-2 text-sm font-medium", (currentRecord?.outcome ?? "unclear") === value ? "border-primary/60 bg-primary-soft text-primary-strong" : "border-border bg-surface hover:bg-primary-soft/50")}>{t(`replay.outcome.${value}`)}</button>)}</div>
+              </fieldset> : null}
+            </div>
+          </div>
         </section> : null}
-        {saved.length ? <section className="mt-10" aria-labelledby="saved-replay"><h2 id="saved-replay" className="text-2xl font-semibold">{t("replay.saved")}</h2><p className="mt-2 text-sm leading-6 text-muted">{t("replay.savedHint")}</p><div className="mt-4 space-y-3">{saved.map((record) => <details key={record.id} className="rounded-2xl border border-border bg-surface p-4"><summary className="cursor-pointer break-words font-semibold">{formatOffset(record.offsetMs)} · {record.conceptTitle}<span className="ml-2 text-xs font-normal text-muted">{t(record.completed ? "replay.complete" : "replay.inProgress")} · {t(`replay.outcome.${record.outcome}`)}</span></summary><div className="mt-4"><ReplaySource source={record.source} /><p className="mt-3 whitespace-pre-wrap break-words leading-7">{record.recap}</p><Citations citations={record.recapCitations} /><div className="mt-5"><Dialogue messages={record.messages} /></div><p className="mt-4 text-sm text-muted">{t("replay.restartHint")}</p><Button className="mt-3" variant="secondary" disabled={disabled} onClick={() => void findMoments([record.offsetMs], record.offsetMs)}>{t("replay.restart")}</Button></div></details>)}</div></section> : null}
-        {saved.length || active?.completed ? <Link href={`/gapcards/${lectureId}`} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary px-5 font-semibold text-primary-foreground"><BookOpen aria-hidden className="size-4" />{t("replay.gapcards")}</Link> : null}
+        {saved.length ? <section className="mt-10" aria-labelledby="saved-replay"><h2 id="saved-replay" className="text-2xl font-bold tracking-tight">{t("replay.saved")}</h2><p className="mt-3 text-sm leading-6 text-muted">{t("replay.savedHint")}</p><div className="mt-5 space-y-4">{saved.map((record) => <details key={record.id} className="app-panel p-5 sm:p-6"><summary className="cursor-pointer break-words font-semibold leading-7">{formatOffset(record.offsetMs)} · {record.conceptTitle}<span className="ml-2 text-xs font-normal text-muted">{t(record.completed ? "replay.complete" : "replay.inProgress")} · {t(`replay.outcome.${record.outcome}`)}</span></summary><div className="mt-5"><ReplaySource source={record.source} /><p className="mt-4 whitespace-pre-wrap break-words leading-7">{record.recap}</p><Citations citations={record.recapCitations} /><div className="mt-6"><Dialogue messages={record.messages} /></div><p className="mt-5 text-sm text-muted">{t("replay.restartHint")}</p><Button className="mt-4" variant="secondary" disabled={disabled} onClick={() => void findMoments([record.offsetMs], record.offsetMs)}>{t("replay.restart")}</Button></div></details>)}</div></section> : null}
+        {saved.length || active?.completed ? <Link href={`/gapcards/${lectureId}`} className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-br from-primary to-primary-strong px-5 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:brightness-110"><BookOpen aria-hidden className="size-4" />{t("replay.gapcards")}</Link> : null}
       </>}
     </main>
   </div>;

@@ -97,9 +97,9 @@ export function HandoffScreen() {
     (view.kind === "network" || view.kind === "rateLimit" || view.kind === "server");
 
   return (
-    <div className="min-h-dvh">
-      <header className="safe-top border-b border-border bg-surface/80">
-        <div className="container-page flex min-h-16 flex-wrap items-center justify-between gap-3 py-3">
+    <div className="app-page">
+      <header className="app-header safe-top">
+        <div className="container-page flex flex-wrap items-center justify-between gap-3">
           <Logo />
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -108,22 +108,24 @@ export function HandoffScreen() {
         </div>
       </header>
 
-      <main id="main" className="container-page max-w-4xl py-10 sm:py-14">
-        <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
-          <BookOpen aria-hidden className="size-6" />
+      <main id="main" className="container-page max-w-5xl py-8 sm:py-12">
+        <div className="app-hero">
+          <div className="flex size-14 items-center justify-center rounded-2xl border border-primary/15 bg-surface/70 text-primary">
+            <BookOpen aria-hidden className="size-7" />
+          </div>
+          <h1 className="mt-6 text-[clamp(2rem,5vw,3.75rem)] font-bold leading-tight tracking-tight">
+            {t("handoff.title")}
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted sm:text-lg">
+            {t("handoff.intro")}
+          </p>
         </div>
-        <h1 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
-          {t("handoff.title")}
-        </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
-          {t("handoff.intro")}
-        </p>
 
         {!online ? <Banner tone="offline" className="mt-6">{t("handoff.offline")}</Banner> : null}
 
         <div className="mt-8">
           {view.status === "loading" ? (
-            <div role="status" aria-live="polite" className="space-y-4">
+            <div role="status" aria-live="polite" className="app-panel space-y-5 p-6 sm:p-8">
               <p className="text-sm text-muted">{t("handoff.loading")}</p>
               <Skeleton className="h-12 w-3/4" />
               <Skeleton className="h-64" />
@@ -140,13 +142,13 @@ export function HandoffScreen() {
               ) : undefined}
             />
           ) : (
-            <div className="space-y-5">
-              <div>
+            <div className="space-y-6">
+              <div className="app-panel app-panel-mint p-5 sm:p-6">
                 <p className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1.5 text-sm font-semibold text-foreground">
                   <Check aria-hidden className="size-4 shrink-0" />
                   {t("handoff.published")}
                 </p>
-                <p lang={view.handoff.language} className="mt-4 break-words text-lg font-semibold">
+                <p lang={view.handoff.language} className="mt-4 break-words text-xl font-bold leading-snug tracking-tight">
                   {view.handoff.lecture_title}
                 </p>
                 <p className="mt-1 text-sm leading-6 text-muted">
@@ -157,7 +159,7 @@ export function HandoffScreen() {
                   })}
                 </p>
               </div>
-              <Card lang={view.handoff.language} className="break-words p-5 sm:p-8">
+              <Card lang={view.handoff.language} className="break-words p-5 sm:p-8 lg:p-10">
                 <InsightContentView content={view.handoff} />
               </Card>
             </div>

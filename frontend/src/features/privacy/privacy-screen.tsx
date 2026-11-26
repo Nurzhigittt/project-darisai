@@ -21,14 +21,14 @@ function ListBlock({
   icon: React.ReactNode;
 }) {
   return (
-    <Card>
+    <Card className="h-full">
       <div className="flex items-center gap-3">
-        <div className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary">
+        <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary-soft text-primary">
           {icon}
         </div>
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-xl font-bold leading-7">{title}</h2>
       </div>
-      <ul className="mt-4 space-y-2.5 text-sm leading-6 text-muted">
+      <ul className="mt-6 space-y-3 border-t border-border/70 pt-5 text-sm leading-7 text-muted">
         {items.map((item) => (
           <li key={item} className="flex gap-2.5">
             <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-primary/60" />
@@ -65,17 +65,17 @@ export function PrivacyScreen() {
   }, []);
 
   return (
-    <div className="min-h-dvh">
+    <div className="app-page">
       <SiteHeader />
-      <main id="main" className="container-page py-12 sm:py-16">
-        <div className="max-w-3xl">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+      <main id="main" className="container-page py-8 sm:py-12">
+        <div className="app-hero">
+          <div className="flex size-14 items-center justify-center rounded-2xl border border-primary/10 bg-surface/80 text-primary shadow-soft">
             <ShieldCheck aria-hidden className="size-6" />
           </div>
-          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-semibold leading-[1.02]">
+          <h1 className="mt-6 max-w-3xl text-[clamp(2.2rem,4.8vw,4rem)] font-bold leading-[1.06]">
             {t("privacy.title")}
           </h1>
-          <p className="mt-5 text-lg leading-8 text-muted">{t("privacy.intro")}</p>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-muted">{t("privacy.intro")}</p>
         </div>
 
         {loading ? (
@@ -93,7 +93,7 @@ export function PrivacyScreen() {
               action={
                 <a
                   href={`${API_URL}/api/v1/privacy/manifest`}
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground"
+                  className="inline-flex min-h-11 items-center app-primary-button rounded-xl px-5 font-semibold text-primary-foreground"
                 >
                   {t("common.retry")}
                 </a>
@@ -102,12 +102,12 @@ export function PrivacyScreen() {
           </div>
         ) : (
           <>
-            <div className="mt-8 rounded-2xl border border-primary/20 bg-primary-soft/40 p-4 text-sm leading-6">
+            <div className="app-panel app-panel-mint mt-7 p-6 text-sm leading-7">
               <span className="font-semibold">{manifest.summary}</span>
               <span className="ml-2 text-muted">{t("privacy.source")}</span>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
               <ListBlock
                 title={t("privacy.notCollected")}
                 items={manifest.not_collected}
@@ -130,15 +130,15 @@ export function PrivacyScreen() {
               />
             </div>
 
-            <section className="mt-10">
-              <div className="flex items-center gap-2">
+            <section className="mt-12">
+              <div className="flex items-center gap-3">
                 <KeyRound aria-hidden className="size-5 text-primary" />
-                <h2 className="text-2xl font-semibold">{t("privacy.credentials")}</h2>
+                <h2 className="text-2xl font-bold">{t("privacy.credentials")}</h2>
               </div>
               <div className="mt-4 grid gap-4 lg:grid-cols-3">
                 {manifest.temporary_credentials.map((credential) => (
-                  <Card key={credential.name}>
-                    <h3 className="font-semibold">{credential.name}</h3>
+                  <Card key={credential.name} className="app-panel-rose min-w-0">
+                    <h3 className="break-words text-lg font-bold">{credential.name}</h3>
                     <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">
                       {credential.lifetime}
                     </p>
@@ -149,19 +149,19 @@ export function PrivacyScreen() {
               </div>
             </section>
 
-            <section className="mt-10">
-              <div className="flex items-center gap-2">
+            <section className="mt-12">
+              <div className="flex items-center gap-3">
                 <Database aria-hidden className="size-5 text-primary" />
-                <h2 className="text-2xl font-semibold">{t("privacy.collected")}</h2>
+                <h2 className="text-2xl font-bold">{t("privacy.collected")}</h2>
               </div>
               <p className="mt-2 text-sm text-muted">{t("privacy.source")}</p>
-              <div className="mt-4 space-y-2">
+              <div className="mt-5 space-y-3">
                 {manifest.tables.map((table) => (
                   <details
                     key={table.name}
-                    className="rounded-2xl border border-border bg-surface px-5 py-4"
+                    className="app-panel min-w-0 px-5 py-5 sm:px-7"
                   >
-                    <summary className="cursor-pointer font-semibold">
+                    <summary className="cursor-pointer break-words font-semibold leading-7">
                       <span className="font-mono text-sm text-primary">{table.name}</span>
                       <span className="ml-3 text-sm font-normal text-muted">
                         {table.purpose}
@@ -192,7 +192,7 @@ export function PrivacyScreen() {
               </div>
             </section>
 
-            <p className="mt-8 text-xs text-muted">
+            <p className="mt-8 break-words border-t border-border/70 pt-5 text-xs leading-6 text-muted">
               Manifest version {manifest.version} · allowlisted personal field(s):{" "}
               {(manifest.allowlisted_personal_fields ?? []).join(", ")}.
             </p>

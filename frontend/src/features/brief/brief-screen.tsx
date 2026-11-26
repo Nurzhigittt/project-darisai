@@ -292,11 +292,11 @@ function BriefContent({ lectureId }: { lectureId: string }) {
 
   const visible = insights.filter((item) => item.kind === kind);
   const disabled = Boolean(busy) || offline || loading || unresolved || Boolean(error);
-  const editorError = actionError ? <p role="alert" className="mb-4 rounded-xl border border-border bg-background p-3">{t(actionError)}</p> : null;
+  const editorError = actionError ? <p role="alert" className="app-panel app-panel-rose mb-4 p-4 text-sm leading-6">{t(actionError)}</p> : null;
 
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70">
-      <div className="container-page flex h-16 items-center justify-between">
+  return <div className="app-page">
+    <header className="app-header">
+      <div className="container-page flex items-center justify-between gap-3">
         <Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div>
       </div>
     </header>
@@ -304,35 +304,35 @@ function BriefContent({ lectureId }: { lectureId: string }) {
       <Link href={`/summary/${lectureId}`} className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-semibold text-muted hover:text-foreground">
         <ArrowLeft aria-hidden className="size-4" />{t("brief.summary")}
       </Link>
-      <div className="mt-5 flex flex-wrap items-start justify-between gap-5">
+      <div className="app-hero mt-5 flex flex-wrap items-start justify-between gap-6">
         <div className="min-w-0 max-w-3xl">
-          {lecture ? <p className="mb-2 break-words text-sm font-semibold text-muted">{lecture.title}</p> : null}
-          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight">{t("brief.title")}</h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">{t("brief.subtitle")}</p>
+          {lecture ? <p className="mb-4 break-words text-sm font-medium text-muted">{lecture.title}</p> : null}
+          <h1 className="text-[clamp(2rem,5vw,3.75rem)] font-bold leading-tight tracking-tight">{t("brief.title")}</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted sm:text-lg">{t("brief.subtitle")}</p>
         </div>
         <Button variant="secondary" disabled={Boolean(busy) || offline || loading} onClick={() => void refresh()}>
           <RefreshCw aria-hidden className="size-4" />{t("insight.refresh")}
         </Button>
       </div>
-      {lecture ? <nav aria-label={t("teaching.related")} className="mt-5 flex flex-wrap gap-3">
-        <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
-        <Link href={`/cohort/${lecture.course_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.cohort")}</Link>
-        <Link href={`/settings/autonomy/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.autonomy")}</Link>
+      {lecture ? <nav aria-label={t("teaching.related")} className="mt-5 flex flex-wrap gap-2.5">
+        <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-2xl border border-border bg-surface/75 px-4 py-2 text-sm font-medium hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
+        <Link href={`/cohort/${lecture.course_id}`} className="inline-flex min-h-11 items-center rounded-2xl border border-border bg-surface/75 px-4 py-2 text-sm font-medium hover:bg-primary-soft/60">{t("teaching.cohort")}</Link>
+        <Link href={`/settings/autonomy/${lectureId}`} className="inline-flex min-h-11 items-center rounded-2xl border border-border bg-surface/75 px-4 py-2 text-sm font-medium hover:bg-primary-soft/60">{t("teaching.autonomy")}</Link>
       </nav> : null}
-      {offline ? <p role="status" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("brief.offline")}</p> : null}
+      {offline ? <p role="status" className="app-panel app-panel-rose mt-5 flex items-center gap-3 p-5 text-sm leading-6"><WifiOff aria-hidden className="size-5 shrink-0" />{t("brief.offline")}</p> : null}
       <p role="status" aria-live="polite" className="mt-4 text-sm font-semibold">{message ? t(message) : ""}</p>
       {!editor && !rejecting ? editorError : null}
-      {loading ? <div role="status" aria-label={t("brief.loading")} className="mt-8 space-y-4">
+      {loading ? <div role="status" aria-label={t("brief.loading")} className="app-panel mt-8 space-y-5 p-6 sm:p-8">
         <Skeleton className="h-14 w-full" /><Skeleton className="h-72 w-full" />
         <span className="sr-only">{t("brief.loading")}</span>
       </div> : error ? <div className="mt-8"><ErrorState title={t("brief.error")} body={t(error)} action={<Button disabled={offline || Boolean(busy)} onClick={() => void refresh()}>{t("brief.retry")}</Button>} /></div> : lecture ? <>
-        <div className="mt-7 flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-sm leading-6 text-muted">
+        <div className="app-panel app-panel-mint mt-6 flex items-start gap-3 p-5 text-sm leading-6 text-muted">
           <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" /><p>{t("brief.manualNotice")}</p>
         </div>
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <div role="group" aria-label={t("insight.kind")} className="flex flex-wrap gap-2 rounded-2xl border border-border bg-surface p-1.5">
+        <div className="mb-7 mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div role="group" aria-label={t("insight.kind")} className="flex flex-wrap gap-2 rounded-2xl border border-border bg-surface/80 p-1.5">
             {(["brief_next", "handoff"] as const).map((value) => <button key={value} type="button" aria-pressed={kind === value}
-              onClick={() => setKind(value)} className={cn("inline-flex min-h-11 items-center gap-2 rounded-xl px-4 font-semibold", kind === value ? "bg-primary-soft text-foreground" : "text-muted hover:bg-background")}>
+              onClick={() => setKind(value)} className={cn("inline-flex min-h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold", kind === value ? "bg-primary-soft text-primary-strong" : "text-muted hover:bg-background")}>
               {value === "brief_next" ? <BookOpen aria-hidden className="size-4" /> : <FileText aria-hidden className="size-4" />}
               {t(`insight.kind.${value}`)}<span className="rounded-full bg-background px-2 text-sm">{insights.filter((item) => item.kind === value).length}</span>
             </button>)}
@@ -346,7 +346,7 @@ function BriefContent({ lectureId }: { lectureId: string }) {
         </div>
         {lecture.status !== "ended" ? <p className="mt-3 text-sm text-muted">{t("brief.notEnded")}</p> : null}
         {insights.length >= 100 ? <p className="mt-3 text-sm text-muted">{t("brief.limit")}</p> : null}
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-8">
           {visible.length === 0 ? <EmptyState icon={<FileText aria-hidden className="size-6" />} title={t("brief.emptyTitle")} body={t("brief.emptyBody")} /> :
             visible.map((insight) => <InsightCard key={`${insight.insight_id}:${links[insight.insight_id]?.expires_at ?? ""}`} insight={insight} link={links[insight.insight_id]}
               disabled={disabled} busy={busy?.startsWith(`${insight.insight_id}:`) ? busy.split(":")[1] ?? null : null}

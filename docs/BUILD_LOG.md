@@ -335,3 +335,19 @@ Actual final local validation with the installed Node v24.22.3:
 This integration does not merge main, deploy, or claim complete real P3 workflow acceptance. Final published commit SHA and exact remote run links are recorded in PR #4 and the user handoff report.
 
 First integrated PR CI at `80ba4ab` passed all four normal jobs. Browser run 45791953706 passed 14/16 tests: every original scenario, including Autonomy, plus the EN landing scenario passed. The two new RU/KK cases stopped at an ambiguous alert locator that also matched Next.js's empty route announcer. Scoped their alert lookup to the join form, retaining text, invalid-state and focus assertions. No product code or axe rule was changed; the rerun determines final results.
+
+## App-wide V3 design — 2026-11-26
+
+Applied the user's explicit request to carry the supplied landing design through every application screen. Geologica and its native ss01 alternates now form the shared font system. Added reusable mint/rose page and hero surfaces, berry primary actions, soft panels, compact language controls, consistent header/footer/forms/dialogs and deliberate responsive layouts for all lecturer, student, post-lecture and service routes. Signal remains one large green action; Ripple retains the existing green/orange state semantics. Replay puts the source and discussion side by side on desktop; Brief displays its three available concepts as separate responsive cards. No ranking or new data is invented.
+
+All API contracts, authentication, tokens, storage, state transitions and publication behavior remain unchanged. No dependency/lockfile change or production fixture fallback. The existing V3 landing composition remains intact. Fixed a visibly corrupted arrow in the live summary link, gave the icon-only mobile logout control its existing localized accessible name, and increased small-label contrast on the presentation gradient.
+
+Actual local validation with /usr/local/bin/node v24.22.3:
+
+- ESLint and standalone TypeScript passed; all **184/184 Vitest tests in 17 files passed**.
+- Final webpack production build passed compilation, TypeScript, static generation and all product routes. Normal locked dependencies are used; no external-node_modules trace warning in the integration build.
+- Backend Ruff passed. Mypy still reports missing numpy (79 files checked); pytest stops before collection with ModuleNotFoundError numpy. No substitute dependencies were introduced. Backend code is unchanged.
+- Built-in-browser visual QA: RU 1440px desktop and 390px mobile; Replay and Brief also checked at 320px with the dark palette. Confirmed loaded Geologica, current Signal/Ripple, visible Replay citation/timestamp/question and Brief approval controls. Checked responsive control bounds on Transcript, Cohort, Autonomy and the local library at 390px. Shared mobile navigation closes on Escape and restores button focus.
+- Filled visual screens use explicitly labelled synthetic data in a separate ignored scratch preview. They do not prove real P3 acceptance. Existing full browser/axe and real Signal-to-Ripple coverage run in remote CI; this Mac's supported headless environment remains unavailable.
+
+At prior head 3268aa1 both push/PR CI passed all four jobs, and both E2E runs passed 16/16 without retry. The new head's exact remote results and commit SHA will be recorded in PR #4 and the exported handoff report. Main is not merged and no deployment is performed.

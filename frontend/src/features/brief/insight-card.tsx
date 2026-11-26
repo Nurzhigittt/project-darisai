@@ -12,6 +12,7 @@ import { useI18n } from "@/lib/i18n";
 
 import { insightActions, safeHandoffUrl } from "./insight-actions";
 import { InsightContentView } from "./insight-content";
+import styles from "./brief.module.css";
 
 export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, onReject, onPublish }: {
   insight: Insight;
@@ -41,13 +42,13 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
   }
 
   return <article data-testid={`insight-${insight.insight_id}`}>
-    <Card className="overflow-hidden p-5 sm:p-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <Card className="overflow-hidden p-5 sm:p-8 lg:p-10">
+      <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
           <Badge>{t(`insight.status.${insight.status}`)}</Badge>
           <Badge tone="primary">{t(`insight.source.${insight.source}`)}</Badge>
         </div>
-        <time dateTime={insight.created_at} className="text-sm text-muted">
+        <time dateTime={insight.created_at} className="text-xs font-medium text-muted">
           {new Date(insight.created_at).toLocaleDateString(locale)}
         </time>
       </div>
@@ -56,7 +57,7 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
         <p className="text-sm font-semibold">{t("insight.reason")}</p>
         <p className="mt-1 whitespace-pre-wrap break-words text-muted">{insight.decision_reason}</p>
       </div> : null}
-      {insight.status !== "rejected" ? <div className="mt-6 flex flex-wrap gap-3 border-t border-border pt-5">
+      {insight.status !== "rejected" ? <div className={styles.actions}>
         {actions.approve ? <Button disabled={disabled} loading={busy === "approve"} onClick={onApprove}>
           <Check aria-hidden className="size-4" />{t("insight.approve")}
         </Button> : null}
@@ -71,7 +72,7 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
         </Button> : null}
       </div> : null}
       {insight.kind === "handoff" && insight.status === "published" ? <p className="mt-4 text-sm text-muted">{t("brief.extraLinkNotice")}</p> : null}
-      {url && link ? <div className="mt-5 space-y-3 rounded-2xl border border-border bg-background p-4">
+      {url && link ? <div className="app-panel app-panel-mint mt-6 space-y-4 p-5 sm:p-6">
         <Input label={t("brief.link")} readOnly value={url} onFocus={(event) => event.target.select()} />
         <p className="text-sm text-muted">{t("brief.linkExpires", { date: new Date(link.expires_at).toLocaleString(locale) })}</p>
         <div className="flex flex-wrap items-center gap-3">

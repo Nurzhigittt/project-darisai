@@ -41,10 +41,10 @@ export function RippleOrb({
     ? t("ripple.connection_unavailable")
     : t(`ripple.${statusLabel}`);
   const scale = 0.88 + Math.min(1, Math.max(0, intensity)) * 0.14;
-  const dimension = size === "lg" ? "size-[min(70vw,380px)]" : "size-48";
+  const dimension = size === "lg" ? "size-[min(70vw,340px)]" : "size-48";
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex w-full flex-col items-center gap-5">
       <div
         className={cn("relative grid place-items-center", dimension)}
         style={{ ["--ripple-color" as string]: color }}
@@ -115,10 +115,10 @@ export function RippleOrb({
         </svg>
       </div>
       <div className="text-center">
-        <p className="text-[clamp(1.35rem,4vw,2rem)] font-semibold tracking-tight">
+        <p className="max-w-md text-balance text-[clamp(1.35rem,4vw,2rem)] font-bold leading-tight tracking-[-0.035em]">
           {label}
         </p>
-        <p className="mt-1 text-sm text-muted">{t("prof.live.updated")}</p>
+        <p className="mt-2 text-xs text-muted">{t("prof.live.updated")}</p>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export function Textarea({ label, ...props }: TextareaHTMLAttributes<HTMLTextAre
   const id = useId();
   return <label htmlFor={id} className="block space-y-2 text-sm font-semibold">
     <span>{label}</span>
-    <textarea id={id} {...props} className="block min-h-24 w-full resize-y rounded-xl border border-border bg-surface p-3 text-base font-normal text-foreground" />
+    <textarea id={id} {...props} className="block min-h-24 w-full resize-y rounded-2xl border border-border bg-surface p-4 text-base font-normal leading-7 text-foreground" />
   </label>;
 }
 
@@ -52,14 +52,14 @@ export function InsightEditor({ initial, kind, busy, onSave, onCancel }: {
   }
 
   return <form onSubmit={submit} className="pb-5">
-    <fieldset disabled={busy} className="min-w-0 space-y-5 disabled:opacity-70">
+    <fieldset disabled={busy} className="min-w-0 space-y-6 disabled:opacity-70">
       <Input label={t("insight.headline")} required maxLength={200} value={content.headline}
         onChange={(event) => setContent({ ...content, headline: event.target.value })} />
       <Input label={t("insight.readSeconds")} type="number" required min={1} max={60} step={1}
         value={content.read_time_sec || ""} onChange={(event) => setContent({ ...content, read_time_sec: Number(event.target.value) })} />
       <div className="space-y-3">
         <h3 className="font-semibold">{t("insight.concepts")}</h3>
-        {concepts.map((concept, index) => <div key={index} className="space-y-3 rounded-2xl border border-border p-4">
+        {concepts.map((concept, index) => <div key={index} className="app-panel app-panel-mint space-y-4 p-5">
           <Input label={`${t("insight.conceptTitle")} ${index + 1}`} required maxLength={160} value={concept.title}
             onChange={(event) => setContent({ ...content, concepts: concepts.map((item, i) => i === index ? { ...item, title: event.target.value } : item) })} />
           <Textarea label={`${t("insight.conceptDetail")} ${index + 1}`} required maxLength={1000} value={concept.detail}
@@ -77,7 +77,7 @@ export function InsightEditor({ initial, kind, busy, onSave, onCancel }: {
           onChange={(event) => setContent({ ...content, task: event.target.checked ? { title: "", instructions: "", duration_minutes: null } : null })} />
         {t("insight.includeTask")}
       </label> : null}
-      {content.task ? <div className="space-y-4 rounded-2xl border border-border bg-background p-4">
+      {content.task ? <div className="app-panel app-panel-rose space-y-4 p-5">
         <Input label={t("insight.taskTitle")} required maxLength={160} value={content.task.title}
           onChange={(event) => setContent({ ...content, task: { ...content.task!, title: event.target.value } })} />
         <Textarea label={t("insight.instructions")} required maxLength={4000} rows={5} value={content.task.instructions}

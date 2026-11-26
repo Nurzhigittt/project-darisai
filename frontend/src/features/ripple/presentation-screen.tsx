@@ -13,6 +13,8 @@ import { api, ApiError, type Lecture } from "@/lib/api/client";
 import { getProfessorSession } from "@/lib/auth/professor";
 import { useI18n } from "@/lib/i18n";
 
+import styles from "./live.module.css";
+
 export function PresentationScreen({ lectureId }: { lectureId: string }) {
   const { t } = useI18n();
   const router = useRouter();
@@ -57,15 +59,15 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
 
   if (loading) {
     return (
-      <div data-theme="dark" className="grid min-h-dvh place-items-center bg-background">
-        <Skeleton className="h-96 w-96" />
+      <div data-theme="dark" className={`app-page grid min-h-dvh place-items-center ${styles.presentation}`}>
+        <Skeleton className="h-80 w-[min(90vw,24rem)]" />
       </div>
     );
   }
 
   if (error || !lecture) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-background p-6">
+      <div className="app-page grid min-h-dvh place-items-center p-6">
         <ErrorState
           title={t("errors.generic")}
           body={t("errors.notFound")}
@@ -80,39 +82,41 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
   }
 
   return (
-    <div data-theme="dark" className="flex min-h-dvh flex-col bg-background text-foreground">
-      <header className="flex items-center justify-between px-6 py-5">
-        <Link
-          href={`/p/${lectureId}`}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-white/70 hover:bg-white/10 hover:text-white"
-        >
-          <ArrowLeft aria-hidden className="size-4" />
-          {t("common.back")}
-        </Link>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => void fullscreen()}
-          className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-        >
-          <Expand aria-hidden className="size-4" />
-          {t("prof.live.fullscreen")}
-        </Button>
+    <div data-theme="dark" className={`app-page flex min-h-dvh flex-col ${styles.presentation}`}>
+      <header className="app-header">
+        <div className="container-page flex items-center justify-between gap-3">
+          <Link
+            href={`/p/${lectureId}`}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-white/70 hover:bg-white/10 hover:text-white"
+          >
+            <ArrowLeft aria-hidden className="size-4" />
+            {t("common.back")}
+          </Link>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => void fullscreen()}
+            className="border-white/20 bg-white/10 text-white hover:bg-white/20"
+          >
+            <Expand aria-hidden className="size-4" />
+            {t("prof.live.fullscreen")}
+          </Button>
+        </div>
       </header>
       <main
         id="main"
-        className="flex flex-1 flex-col items-center justify-center gap-8 px-6 pb-12 text-center"
+        className={styles.presentationMain}
       >
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white/50">
+        <div className={styles.presentationHeading}>
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white/75">
             {t("prof.live.joinTitle")}
           </p>
-          <h1 className="mt-3 text-balance text-[clamp(2rem,4vw,3.5rem)] font-semibold">
+          <h1>
             {lecture.title}
           </h1>
-          <p className="mt-2 text-white/60">{lecture.course_title ?? ""}</p>
+          <p className="mt-2 text-white/80">{lecture.course_title ?? ""}</p>
         </div>
-        <div className="rounded-4xl bg-white p-6 shadow-2xl">
+        <div className={styles.presentationQr}>
           <QRCodeSVG
             value={lecture.join_url}
             size={340}
@@ -124,18 +128,18 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
             role="img"
           />
         </div>
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/50">
+        <div className={styles.presentationCode}>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/75">
             {t("prof.live.code")}
           </p>
-          <p className="mt-2 font-mono text-[clamp(3rem,10vw,6rem)] font-semibold tracking-[0.2em]">
+          <p className="mt-2 font-mono font-semibold">
             {lecture.join_code}
           </p>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/60">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-white/80">
             {t("prof.live.joinBody")}
           </p>
         </div>
-        <p className="inline-flex items-center gap-2 text-xs text-white/45">
+        <p className={`inline-flex items-center gap-2 text-xs text-white/80 ${styles.presentationPrivacy}`}>
           <LockKeyhole aria-hidden className="size-4" />
           {t("join.anonymous")}
         </p>

@@ -218,34 +218,36 @@ function GapCardsContent({ lectureId }: { lectureId: string }) {
   const dueDate = card?.review ? new Date(card.review.dueAt) : null;
   const nextReview = dueDate && Number.isFinite(dueDate.getTime()) ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(dueDate) : null;
 
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70"><div className="container-page flex min-h-16 items-center justify-between gap-2 py-2"><Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
+  return <div className="app-page">
+    <header className="app-header"><div className="container-page flex items-center justify-between gap-3"><Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div></div></header>
     <main id="main" className="container-page max-w-4xl py-8 sm:py-12">
       <Link href={`/replay/${lectureId}`} className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-semibold text-muted hover:text-foreground"><ArrowLeft aria-hidden className="size-4" />{t("gapcards.replay")}</Link>
-      {session ? <p className="mt-5 break-words text-sm font-medium text-muted">{session.lecture.title}</p> : null}
-      <h1 className="mt-3 text-[clamp(2rem,5vw,3.5rem)] font-semibold">{t("gapcards.title")}</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted">{t("gapcards.subtitle")}</p>
-      <p className="mt-4 rounded-2xl border border-border bg-surface p-4 text-sm leading-6">{t("gapcards.localNotice")}</p>
-      {offline ? <p role="status" className="mt-4 flex items-center gap-3 rounded-xl border border-border p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("gapcards.offline")}</p> : null}
+      <div className="app-hero mt-5">
+        {session ? <p className="mb-4 break-words text-sm font-medium text-muted">{session.lecture.title}</p> : null}
+        <h1 className="text-[clamp(2rem,5vw,3.75rem)] font-bold leading-tight tracking-tight">{t("gapcards.title")}</h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-muted sm:text-lg">{t("gapcards.subtitle")}</p>
+      </div>
+      <p className="app-panel app-panel-mint mt-5 p-5 text-sm leading-6 text-muted">{t("gapcards.localNotice")}</p>
+      {offline ? <p role="status" className="app-panel app-panel-rose mt-4 flex items-center gap-3 p-5 text-sm leading-6"><WifiOff aria-hidden className="size-5 shrink-0" />{t("gapcards.offline")}</p> : null}
       <p role="status" aria-live="polite" className="mt-4 text-sm font-medium">{message ? t(message) : ""}</p>
-      {error ? <p role="alert" className="mb-4 rounded-xl border border-border bg-surface p-4">{t(error)}</p> : null}
-      {loading ? <div role="status" aria-label={t("gapcards.loading")}><Skeleton className="h-80 w-full" /><span className="sr-only">{t("gapcards.loading")}</span></div> : <>
+      {error ? <p role="alert" className="app-panel app-panel-rose mb-4 p-5 text-sm leading-6">{t(error)}</p> : null}
+      {loading ? <div role="status" aria-label={t("gapcards.loading")} className="app-panel mt-6 p-5 sm:p-8"><Skeleton className="h-80 w-full" /><span className="sr-only">{t("gapcards.loading")}</span></div> : <>
         <div className="my-6 flex flex-wrap items-center justify-between gap-4">
-          <p className="text-sm text-muted">{t("gapcards.reviewProgress", { reviewed, total: cards.length })}</p>
+          <p className="rounded-full border border-border bg-surface/80 px-4 py-2 text-xs font-medium text-muted">{t("gapcards.reviewProgress", { reviewed, total: cards.length })}</p>
           <Button variant={cards.length ? "secondary" : "primary"} disabled={busy || offline || !canGenerate} loading={busy && !flipped} onClick={() => void generate()}><RefreshCw aria-hidden className="size-4" />{t(cards.length ? "gapcards.refresh" : "gapcards.generate")}</Button>
         </div>
         {!canGenerate ? <p className="mb-5 text-sm text-muted">{t(!validPass ? "gapcards.expired" : "gapcards.noSignals")}</p> : <p className="mb-5 text-sm text-muted">{t("gapcards.generationHint")}</p>}
         {!card ? <EmptyState icon={<BookOpen aria-hidden className="size-6" />} title={t("gapcards.emptyTitle")} body={t("gapcards.emptyBody")} /> : <>
-          <article className="rounded-3xl border border-border bg-surface p-5 shadow-soft sm:p-8" aria-labelledby="gapcard-heading">
+          <article className="app-panel app-panel-rose p-5 sm:p-9" aria-labelledby="gapcard-heading">
             <div className="flex flex-wrap items-center justify-between gap-3"><Badge>{t(`gapcards.source.${card.source ?? "unknown"}`)}</Badge><span className="text-sm text-muted">{t("gapcards.position", { current: index + 1, total: cards.length })}</span></div>
             {card.source === "template" ? <p className="mt-3 text-sm text-muted">{t("gapcards.templateNotice")}</p> : null}
-            {card.conceptTitle ? <p className="mt-5 break-words text-sm font-medium text-muted">{card.conceptTitle}</p> : null}
-            <h2 id="gapcard-heading" ref={heading} tabIndex={-1} className="mt-4 break-words text-2xl font-semibold leading-relaxed outline-none sm:text-3xl">{card.front}</h2>
-            <Button className="mt-6" variant="secondary" aria-expanded={flipped} aria-controls={flipped ? "gapcard-back" : undefined} disabled={busy} onClick={() => setFlipped((current) => !current)}>{t(flipped ? "gapcards.hide" : "gapcards.flip")}</Button>
-            {flipped ? <section id="gapcard-back" aria-label={t("gapcards.quote")} className="mt-6 border-t border-border pt-5">
+            {card.conceptTitle ? <p className="mt-8 break-words text-sm font-medium text-primary-strong">{card.conceptTitle}</p> : null}
+            <h2 id="gapcard-heading" ref={heading} tabIndex={-1} className="mt-4 max-w-2xl break-words text-2xl font-bold leading-snug tracking-tight outline-offset-4 sm:text-3xl">{card.front}</h2>
+            <Button className="mt-8" variant="secondary" aria-expanded={flipped} aria-controls={flipped ? "gapcard-back" : undefined} disabled={busy} onClick={() => setFlipped((current) => !current)}>{t(flipped ? "gapcards.hide" : "gapcards.flip")}</Button>
+            {flipped ? <section id="gapcard-back" aria-label={t("gapcards.quote")} className="app-panel app-panel-mint mt-7 p-5 sm:p-6">
               <h3 className="text-lg font-semibold">{t("gapcards.quote")}</h3>
-              <blockquote className="mt-3 whitespace-pre-wrap break-words border-l-4 border-primary pl-4 text-lg leading-8">{card.quote}</blockquote>
-              <p className="mt-3 text-sm font-medium text-muted">{t("gapcards.timestamp")}: {formatOffset(card.citation?.start_ms ?? card.offsetMs)}{card.citation ? `–${formatOffset(card.citation.end_ms)}` : ""}</p>
+              <blockquote className="mt-5 whitespace-pre-wrap break-words border-l-2 border-primary/60 pl-5 text-base leading-8 sm:text-lg">{card.quote}</blockquote>
+              <p className="mt-4 inline-block rounded-full border border-border bg-surface/75 px-3 py-1.5 text-xs font-medium leading-5 tabular-nums text-muted">{t("gapcards.timestamp")}: {formatOffset(card.citation?.start_ms ?? card.offsetMs)}{card.citation ? `–${formatOffset(card.citation.end_ms)}` : ""}</p>
               <Link href={`/replay/${lectureId}#offset-${card.offsetMs}`} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl text-sm font-semibold text-primary">{t("gapcards.context")}<ArrowRight aria-hidden className="size-4" /></Link>
               <p className="mt-5 text-sm text-muted">{t("gapcards.ratingPrompt")}</p>
               <div role="group" aria-label={t("gapcards.ratingPrompt")} className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -254,7 +256,7 @@ function GapCardsContent({ lectureId }: { lectureId: string }) {
             </section> : null}
             {nextReview ? <p className="mt-5 text-sm text-muted">{t("gapcards.nextReview", { date: nextReview })}</p> : null}
           </article>
-          <nav aria-label={t("gapcards.cardNavigation")} className="mt-5 flex justify-between gap-3"><Button variant="secondary" disabled={busy || index === 0} onClick={() => move(index - 1)}><ArrowLeft aria-hidden className="size-4" />{t("gapcards.previous")}</Button><Button variant="secondary" disabled={busy || index + 1 >= cards.length} onClick={() => move(index + 1)}>{t("gapcards.next")}<ArrowRight aria-hidden className="size-4" /></Button></nav>
+          <nav aria-label={t("gapcards.cardNavigation")} className="mt-6 flex flex-wrap justify-between gap-3"><Button variant="secondary" disabled={busy || index === 0} onClick={() => move(index - 1)}><ArrowLeft aria-hidden className="size-4" />{t("gapcards.previous")}</Button><Button variant="secondary" disabled={busy || index + 1 >= cards.length} onClick={() => move(index + 1)}>{t("gapcards.next")}<ArrowRight aria-hidden className="size-4" /></Button></nav>
         </>}
       </>}
     </main>

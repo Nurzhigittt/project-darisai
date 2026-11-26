@@ -206,52 +206,52 @@ function AutonomyContent({ lectureId }: { lectureId: string }) {
   const courseNotice = lecture ? t("autonomy.courseNotice", { course: courseTitle }) : "";
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" });
 
-  return <div className="min-h-dvh bg-background">
-    <header className="border-b border-border bg-surface/70">
-      <div className="container-page flex h-16 items-center justify-between">
+  return <div className="app-page">
+    <header className="app-header">
+      <div className="container-page flex flex-wrap items-center justify-between gap-3">
         <Logo /><div className="flex items-center gap-1"><LanguageSwitcher /><ThemeSwitcher /></div>
       </div>
     </header>
-    <main id="main" className="container-page py-8 sm:py-12">
+    <main id="main" className="container-page py-7 sm:py-10">
       <Link href="/professor" className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-semibold text-muted hover:text-foreground">
         <ArrowLeft aria-hidden className="size-4" />{t("autonomy.professor")}
       </Link>
-      <div className="mt-5 flex flex-wrap items-start justify-between gap-5">
+      <div className="app-hero mt-5 flex flex-wrap items-start justify-between gap-6">
         <div className="min-w-0 max-w-3xl">
-          {lecture ? <p className="mb-2 break-words text-sm font-semibold text-muted">{courseTitle} · {lecture.title}</p> : null}
-          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight">{t("autonomy.title")}</h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted">{t("autonomy.subtitle")}</p>
+          {lecture ? <p className="mb-3 break-words text-sm font-semibold text-primary-strong">{courseTitle} · {lecture.title}</p> : null}
+          <h1 className="text-[clamp(2rem,4.6vw,3.5rem)] font-bold leading-[1.08]">{t("autonomy.title")}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">{t("autonomy.subtitle")}</p>
         </div>
         <Button variant="secondary" disabled={busy || loading || offline || Boolean(selected)} onClick={() => void refresh()}>
           <RefreshCw aria-hidden className="size-4" />{t("autonomy.refresh")}
         </Button>
       </div>
-      {offline ? <p role="status" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("autonomy.offline")}</p> : null}
+      {offline ? <p role="status" className="app-panel mt-5 flex items-center gap-3 p-5 text-sm leading-6"><WifiOff aria-hidden className="size-5 shrink-0" />{t("autonomy.offline")}</p> : null}
       <p role="status" aria-live="polite" className="mt-4 text-sm font-semibold">{message ? t(message) : ""}</p>
-      {!selected && actionError ? <p role="alert" className="mt-4 rounded-xl border border-border bg-surface p-4">{t(actionError)}</p> : null}
+      {!selected && actionError ? <p role="alert" className="app-panel app-panel-rose mt-4 p-5 text-sm leading-6">{t(actionError)}</p> : null}
       {loading ? <div role="status" aria-label={t("autonomy.loading")} className="mt-8 space-y-4">
         <Skeleton className="h-24 w-full" /><Skeleton className="h-52 w-full" /><span className="sr-only">{t("autonomy.loading")}</span>
       </div> : error ? <div className="mt-8"><ErrorState title={t("autonomy.errorTitle")} body={t(error)} action={<Button disabled={offline || busy} onClick={() => void refresh()}>{t("autonomy.retry")}</Button>} /></div> : lecture ? <>
-        <section aria-label={t("autonomy.title")} className="mt-7 rounded-2xl border border-border bg-surface p-5 text-sm leading-6">
+        <section aria-label={t("autonomy.title")} className="app-panel app-panel-mint mt-7 p-6 text-sm leading-7 sm:p-7">
           <div className="flex items-start gap-3"><ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" /><p className="font-medium">{courseNotice}</p></div>
           <p className="mt-3 text-muted">{t("autonomy.policyNotice")}</p>
           <p className="mt-2 text-muted">{t("autonomy.counterNotice")}</p>
         </section>
-        <div className="mt-6 space-y-4">
-          {policies.length === 0 ? <EmptyState icon={<LockKeyhole aria-hidden className="size-6" />} title={t("autonomy.emptyTitle")} body={t("autonomy.emptyBody")} /> : policies.map((policy) => <article key={policy.concept_canonical_id} aria-labelledby={`concept-${policy.concept_canonical_id}`} className="rounded-3xl border border-border bg-surface p-5 shadow-soft sm:p-6">
+        <div className="mt-6 grid gap-5">
+          {policies.length === 0 ? <EmptyState icon={<LockKeyhole aria-hidden className="size-6" />} title={t("autonomy.emptyTitle")} body={t("autonomy.emptyBody")} /> : policies.map((policy) => <article key={policy.concept_canonical_id} aria-labelledby={`concept-${policy.concept_canonical_id}`} className="app-panel p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div className="min-w-0 w-full sm:flex-1">
                 <Badge tone={policy.mode === "locked" ? "neutral" : "primary"}>{policy.mode === "locked" ? <LockKeyhole aria-hidden className="size-3.5" /> : <ShieldCheck aria-hidden className="size-3.5" />}{t(`autonomy.mode.${policy.mode}`)}</Badge>
-                <h2 id={`concept-${policy.concept_canonical_id}`} className="mt-3 break-words text-2xl font-semibold">{policy.concept_title}</h2>
+                <h2 id={`concept-${policy.concept_canonical_id}`} className="mt-3 break-words text-2xl font-bold">{policy.concept_title}</h2>
                 <p className="mt-2 text-sm text-muted">{t(policy.mode === "locked" ? "autonomy.lockedHint" : "autonomy.allowedHint")}</p>
               </div>
               <Button variant={policy.mode === "locked" ? "primary" : "secondary"} disabled={disabled} onClick={() => { setActionError(null); setMessage(null); setSelected(policy); }}>
                 {policy.mode === "locked" ? <ShieldCheck aria-hidden className="size-4" /> : <ShieldOff aria-hidden className="size-4" />}{t(policy.mode === "locked" ? "autonomy.allow" : "autonomy.revoke")}
               </Button>
             </div>
-            <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-t border-border pt-4 text-sm">
-              <div><dt className="text-muted">{t("autonomy.approvals")}</dt><dd className="mt-1 font-semibold tabular-nums">{policy.approvals}</dd></div>
-              <div><dt className="text-muted">{t("autonomy.rejections")}</dt><dd className="mt-1 font-semibold tabular-nums">{policy.rejections}</dd></div>
+            <dl className="mt-6 grid gap-3 border-t border-border/70 pt-5 text-sm sm:grid-cols-2">
+              <div className="rounded-2xl bg-background/55 p-4"><dt className="text-muted">{t("autonomy.approvals")}</dt><dd className="mt-2 text-2xl font-bold tabular-nums">{policy.approvals}</dd></div>
+              <div className="rounded-2xl bg-primary-soft/40 p-4"><dt className="text-muted">{t("autonomy.rejections")}</dt><dd className="mt-2 text-2xl font-bold tabular-nums">{policy.rejections}</dd></div>
             </dl>
             <p className="mt-4 text-xs text-muted">{policy.updated_at ? t("autonomy.updated", { date: dateFormatter.format(new Date(policy.updated_at)) }) : t("autonomy.default")}</p>
           </article>)}

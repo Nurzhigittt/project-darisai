@@ -107,13 +107,15 @@ export function JoinScreen({ code }: { code: string }) {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      <header className="container-page flex h-16 items-center justify-between">
-        <Logo />
-        <ThemeSwitcher />
+    <div className="app-page">
+      <header className="app-header">
+        <div className="container-page flex items-center justify-between gap-3">
+          <Logo />
+          <ThemeSwitcher />
+        </div>
       </header>
-      <main id="main" className="container-page grid min-h-[calc(100dvh-4rem)] place-items-center pb-16">
-        <div className="w-full max-w-xl">
+      <main id="main" className="container-page grid min-h-[calc(100dvh-5.5rem)] place-items-center py-8 sm:py-12">
+        <div className="w-full min-w-0 max-w-xl">
           <Link
             href="/"
             className="mb-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted hover:text-foreground"
@@ -121,8 +123,8 @@ export function JoinScreen({ code }: { code: string }) {
             <ArrowLeft aria-hidden className="size-4" />
             {t("common.back")}
           </Link>
-          <div className="rounded-4xl border border-border bg-surface p-7 shadow-soft sm:p-10">
-            <div className="flex items-center justify-between gap-4">
+          <div className="app-panel app-panel-rose p-5 sm:p-9">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <Badge tone="primary">
                 <LockKeyhole aria-hidden className="size-3.5" />
                 {t("join.title")}
@@ -157,7 +159,7 @@ export function JoinScreen({ code }: { code: string }) {
                   action={
                     <Link
                       href="/#join"
-                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
+                      className="inline-flex min-h-11 items-center app-primary-button rounded-xl px-5 py-2.5 font-semibold text-primary-foreground"
                     >
                       {t("common.retry")}
                     </Link>
@@ -174,7 +176,7 @@ export function JoinScreen({ code }: { code: string }) {
                   action={
                     <Link
                       href="/"
-                      className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
+                      className="inline-flex min-h-11 items-center app-primary-button rounded-xl px-5 py-2.5 font-semibold text-primary-foreground"
                     >
                       {t("common.back")}
                     </Link>
@@ -199,7 +201,7 @@ export function JoinScreen({ code }: { code: string }) {
 
             {state === "ready" && preview ? (
               <>
-                <div className="mt-8">
+                <div className="mt-7 border-b border-border/70 pb-6">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     {t("join.course")}
                   </p>
@@ -208,23 +210,23 @@ export function JoinScreen({ code }: { code: string }) {
                   </p>
                   <h1
                     data-testid="lecture-title"
-                    className="mt-3 text-[clamp(2rem,5vw,3rem)] font-semibold leading-tight"
+                    className="mt-3 break-words text-[clamp(2rem,5vw,3rem)] font-bold leading-[1.1]"
                   >
                     {preview.lecture.title}
                   </h1>
-                  <p className="mt-2 font-mono text-sm font-semibold tracking-[0.22em] text-muted">
+                  <p className="mt-4 inline-flex rounded-xl border border-primary/15 bg-surface/80 px-3 py-2 font-mono text-sm font-semibold tracking-[0.22em] text-primary-strong">
                     {normalized}
                   </p>
                 </div>
-                <ol className="mt-7 space-y-3 text-sm">
+                <ol className="mt-6 space-y-4 text-sm leading-6">
                   <li className="flex items-center gap-3">
-                    <span className="grid size-6 place-items-center rounded-full bg-positive/15 text-[#2f6b51]">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-positive/15 text-foreground">
                       <Check aria-hidden className="size-4" />
                     </span>
                     {t("join.ready")}
                   </li>
                   <li className="flex items-center gap-3">
-                    <span className="grid size-6 place-items-center rounded-full bg-primary-soft text-primary">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
                       <Clock3 aria-hidden className="size-4" />
                     </span>
                     {preview.lecture.status === "scheduled"
@@ -232,7 +234,7 @@ export function JoinScreen({ code }: { code: string }) {
                       : t("student.live")}
                   </li>
                   <li className="flex items-center gap-3 text-muted">
-                    <span className="grid size-6 place-items-center rounded-full border border-border">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-xl border border-border bg-surface/70">
                       <ShieldCheck aria-hidden className="size-3.5" />
                     </span>
                     {t("join.anonymous")}
