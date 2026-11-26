@@ -184,3 +184,14 @@ Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified 
 - Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
 - Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
 - No Docker or cloud deployment was performed. Live provider functional checks passed, but no live adversarial safety benchmark was run.
+
+## P2 backend completion (`feat/p2-backend-completion`)
+
+- Integrated P3 at `c21446a` through the P2 branch; no history rewrite.
+- Added migration `300_p2_completion.sql` and applied it to the local database.
+- Clean database: 4 migrations, 19 public tables, pgvector 0.8.1.
+- Phase 1 schema upgraded through all 4 migrations successfully.
+- Added canonical concepts, insight decision history, generation deduplication, Handoff revoke/redeem counters and IP rate limit, autonomy eligibility, cohort structural gaps, and isolated demo sessions.
+- Backend tests: **121 passed**; Ruff/mypy clean; frontend lint/typecheck/tests/build clean.
+- 300-client load: 300/300, 0 errors, ack p95 14.71 ms, Signal-to-Ripple p95 396.84 ms, p99 468.60 ms; API working set ~164 MB and CPU ~13.8% of four cores during the sample.
+- No Docker or cloud deployment was executed.

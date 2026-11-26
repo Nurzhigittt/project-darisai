@@ -44,6 +44,16 @@ Professor endpoints use `Authorization: Bearer <JWT>`. Replay and GapCards use `
 | POST | `/api/v1/replay/turn` | Replay Token | Stateless Socratic turn with signed state |
 | POST | `/api/v1/gapcards/generate` | Replay Token | Grounded review cards from signed moments |
 | POST | `/api/v1/lectures/{id}/insights/generate` | professor | BriefNext/Handoff → P2 `pending_approval` |
+| GET | `/api/v1/lectures/{id}/insights/{insight_id}/decisions` | professor | Immutable decision history |
+| POST | `/api/v1/lectures/{id}/insights/{insight_id}/handoff/revoke` | professor | Revoke active Handoff links |
+| GET | `/api/v1/lectures/{id}/concept-autonomy` | professor | Concept autonomy policy and eligibility |
+| PUT | `/api/v1/lectures/{id}/concept-autonomy/{concept_id}` | professor | Explicit lock/whitelist decision |
+| GET | `/api/v1/courses/{id}/cohort-memory` | professor | Cohort metrics and structural gaps |
+| GET | `/api/v1/demo/scenarios` | professor | Synthetic scenarios |
+| POST | `/api/v1/demo/lectures` | professor | Create isolated synthetic demo |
+| POST | `/api/v1/demo/lectures/{id}/reset` | professor | Reset signals/clusters/insights |
+| DELETE | `/api/v1/demo/lectures/{id}` | professor | Delete isolated demo |
+| POST | `/api/v1/demo/cleanup` | professor | Delete expired demos |
 
 ### Key request/response shapes
 
@@ -194,6 +204,14 @@ The server computes a SHA-256 Signal Token hash and atomically checks `(token_ha
 | `rest-*.json` | auth, lecture, join, heatmap examples |
 
 Fixtures contain placeholder credentials, not usable secrets.
+
+## P2 completion notes
+
+- Insight decisions are append-only; `GET .../decisions` returns action, status transition, reason and timestamp. It does not expose professor IDs or content hashes to students.
+- Handoff publication revokes prior active links; redeem is rate-limited per IP, expiry/revocation are enforced, and `revoke` is professor-only.
+- Cohort `structural_gaps` carries `provenance` (`synthetic`, `observed`, `mixed`). The demo seed is explicitly synthetic.
+- Autonomy defaults to `locked`; whitelist returns `AUTONOMY_NOT_ELIGIBLE` until the 30-day/approval/rejection/decision thresholds are met. No automatic publication path exists.
+- Demo endpoints only operate on `is_demo=true` lectures with an owned `demo_sessions` row.
 
 ## Axiom (P3)
 
