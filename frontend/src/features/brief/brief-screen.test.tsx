@@ -491,8 +491,8 @@ describe("BriefScreen", () => {
     fireEvent.click(editor.getByRole("button", { name: label("insight.create") }));
 
     expect(await within(screen.getByRole("main")).findByText(label("brief.uncertain"))).toBeInTheDocument();
-    expect(screen.queryByRole("dialog", { name: label("insight.createTitle") })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: label("brief.new") })).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: label("insight.createTitle") })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("button", { name: label("brief.new") })).not.toBeInTheDocument());
     expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
     await act(async () => reconciliation.resolve(json([created])));
 
