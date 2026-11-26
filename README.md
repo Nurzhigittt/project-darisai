@@ -287,6 +287,8 @@ artifacts/  raw synthetic load-test results
 - [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology and numbers
 - [Retrieval benchmark](docs/RETRIEVAL_BENCHMARK.md) — dense vs lexical vs hybrid
 - [AI production readiness](docs/AI_PRODUCTION_READINESS.md) — prewarm, cache, cost, limits
+- [P2 backend handover](docs/P2_HANDOVER.md) — cohort, autonomy, Handoff, demo backend
+- [Backend verification matrix](docs/BACKEND_VERIFICATION.md) — verified/limited/missing
 - [Roadmap](docs/ROADMAP.md) — phases 0–7
 - [Handover](docs/HANDOVER.md) — the exact Phase 2 starting point
 

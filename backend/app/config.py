@@ -127,6 +127,16 @@ class Settings(BaseSettings):
     axiom_stt_max_file_bytes: int = Field(default=26_214_400, ge=1_000_000)
     axiom_max_transcript_segments: int = Field(default=400, ge=1, le=2_000)
 
+    demo_session_ttl_minutes: int = Field(default=120, ge=5, le=1_440)
+    rate_limit_handoff_per_minute: int = Field(default=60, ge=1, le=1_000)
+    autonomy_observation_days: int = Field(default=30, ge=0, le=365)
+    autonomy_min_approvals: int = Field(default=5, ge=1, le=100)
+    autonomy_max_rejections: int = Field(default=2, ge=0, le=100)
+    autonomy_min_decisions: int = Field(default=5, ge=1, le=200)
+    cohort_structural_share: float = Field(default=0.60, ge=0, le=1)
+    cohort_structural_terms: int = Field(default=3, ge=3, le=12)
+    cohort_min_lectures_per_term: int = Field(default=3, ge=1, le=100)
+
     @model_validator(mode="after")
     def validate_production_safety(self) -> Settings:
         if self.environment != "production":

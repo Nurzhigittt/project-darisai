@@ -227,8 +227,8 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
       setLecture((current) =>
         current ? { ...current, status: response.status, started_at: response.started_at, ended_at: response.ended_at } : current,
       );
-      setEndOpen(false);
       if (action === "end") {
+        setEndOpen(false);
         router.push(`/summary/${lectureId}`);
       } else {
         push({

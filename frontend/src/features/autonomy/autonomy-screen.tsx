@@ -20,6 +20,7 @@ import { useI18n } from "@/lib/i18n";
 
 function errorKey(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.code === "AUTONOMY_NOT_ELIGIBLE") return "autonomy.notEligibleError";
     if (error.status === 0) return "autonomy.network";
     if (error.status === 403) return "autonomy.forbidden";
     if (error.status === 404) return "autonomy.notFound";
@@ -244,6 +245,13 @@ function AutonomyContent({ lectureId }: { lectureId: string }) {
                 <Badge tone={policy.mode === "locked" ? "neutral" : "primary"}>{policy.mode === "locked" ? <LockKeyhole aria-hidden className="size-3.5" /> : <ShieldCheck aria-hidden className="size-3.5" />}{t(`autonomy.mode.${policy.mode}`)}</Badge>
                 <h2 id={`concept-${policy.concept_canonical_id}`} className="mt-3 break-words text-2xl font-bold">{policy.concept_title}</h2>
                 <p className="mt-2 text-sm text-muted">{t(policy.mode === "locked" ? "autonomy.lockedHint" : "autonomy.allowedHint")}</p>
+                <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-border/70 bg-background/45 p-4">
+                  <Badge tone={policy.eligible ? "positive" : "neutral"}>{t(policy.eligible ? "autonomy.eligibility.ready" : "autonomy.eligibility.notReady")}</Badge>
+                  {policy.observation_started_at ? <span className="break-words text-xs leading-6 text-muted">{t("autonomy.eligibility.observation", { date: dateFormatter.format(new Date(policy.observation_started_at)) })}</span> : null}
+                  {policy.whitelisted_at ? <span className="break-words text-xs leading-6 text-muted">{t("autonomy.eligibility.whitelisted", { date: dateFormatter.format(new Date(policy.whitelisted_at)) })}</span> : null}
+                </div>
+                <p className="mt-3 text-xs leading-6 text-muted">{t("autonomy.eligibility.requirements")}</p>
+                {policy.policy_reason ? <p className="mt-3 whitespace-pre-wrap break-words border-l-2 border-primary/30 pl-3 text-xs leading-6 text-muted">{t("autonomy.eligibility.reason", { reason: policy.policy_reason })}</p> : null}
               </div>
               <Button variant={policy.mode === "locked" ? "primary" : "secondary"} disabled={disabled} onClick={() => { setActionError(null); setMessage(null); setSelected(policy); }}>
                 {policy.mode === "locked" ? <ShieldCheck aria-hidden className="size-4" /> : <ShieldOff aria-hidden className="size-4" />}{t(policy.mode === "locked" ? "autonomy.allow" : "autonomy.revoke")}

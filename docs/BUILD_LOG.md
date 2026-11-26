@@ -1,4 +1,4 @@
-# Build log
+﻿# Build log
 
 Timezone: Asia/Qyzylorda (UTC+05:00). Date: 25 November 2026.
 This log records what was actually run. It does not reconstruct work that did not happen.
@@ -263,48 +263,41 @@ Resolved the earlier publication blocker after user-confirmed GitHub CLI device 
 
 First remote CI at `18f14e7`: frontend lint/types/tests/default production build, backend Ruff/mypy/unit/integration/security tests, and API/WebSocket contract drift checks passed in run <https://github.com/Nurzhigittt/project-darisai/actions/runs/45780544158>. E2E was still running when this entry was written. Secret scanning found one false positive: the literal mock Replay moment `fresh-signed-moment-12345678` in the network-recovery component test. Added only that exact commit/path/rule/line fingerprint to `.gitleaksignore`; no real credential, test directory or generic rule is exempted. The latest PR checks remain the authoritative final status.
 
-## Theme-transition E2E follow-up — 2026-11-26
+## P2 backend completion (`feat/p2-backend-completion`)
 
-At `0c1ecc42649ce246ce5e4bfe1b39c58f661d8ede`, all four normal CI jobs passed, including secret scanning: <https://github.com/Nurzhigittt/project-darisai/actions/runs/45780837355>. The browser run <https://github.com/Nurzhigittt/project-darisai/actions/runs/45780837345> completed with 10 passed / 3 failed. The real API Signal → Ripple scenario passed. Three contract-fixture axe scans after theme toggles failed while colors were interpolating (for example, foreground `#75878a` on `#97a4a9`), rather than using either settled design palette.
+- Integrated P3 at `c21446a` through the P2 branch; no history rewrite.
+- Added migration `300_p2_completion.sql` and applied it to the local database.
+- Clean database: 4 migrations, 19 public tables, pgvector 0.8.1.
+- Phase 1 schema upgraded through all 4 migrations successfully.
+- Added canonical concepts, insight decision history, generation deduplication, Handoff revoke/redeem counters and IP rate limit, autonomy eligibility, cohort structural gaps, and isolated demo sessions.
+- Backend tests: **121 passed**; Ruff/mypy clean; frontend lint/typecheck/tests/build clean.
+- 300-client load: 300/300, 0 errors, ack p95 14.71 ms, Signal-to-Ripple p95 396.84 ms, p99 468.60 ms; API working set ~164 MB and CPU ~13.8% of four cores during the sample.
+- No Docker or cloud deployment was executed.
 
-Added a shared, bounded Playwright polling helper before axe scans in the two affected specs. It waits for active `CSSTransition` objects to finish, without arbitrary sleeps or waiting on infinite animations. All axe rules, normal-motion behavior, product code and colors are unchanged. The rerun must establish the final E2E result; this entry does not claim a passing rerun.
+## P1 final integration and accessibility — 2026-11-26
 
-After the test change, local ESLint, TypeScript, 175/175 Vitest tests in 15 files, `pnpm build --webpack`, Playwright discovery of all 13 scenarios, and backend Ruff passed. The bundled Node runtime initially could not load on this macOS; rerunning with the user's installed Node v24.22.3 succeeded. Local mypy and pytest still stop at the unavailable `numpy` import. No dependency versions were substituted. The unchanged backend passed remotely as recorded above. The generated development `next-env.d.ts` was restored and excluded from the commit. The follow-up commit SHA and latest CI evidence are recorded in PR #4 and the user handoff report.
+Merged P2 `f2a312f` (which contains P3 `c21446a`) into `feat/p1-frontend-experience` as `6ba8322`, preserving history and the P1 CORS `PUT` plus P3 `X-Replay-Token` allowances. Regenerated OpenAPI and TypeScript contracts.
 
-Follow-up commit `a63632cfe9e9215eb77b3e4bdc26c6868f7902c4`: all four CI jobs passed again (<https://github.com/Nurzhigittt/project-darisai/actions/runs/45784773275>). E2E passed 12/13 scenarios, including all three previously failing contrast checks and the real Signal → Ripple flow (<https://github.com/Nurzhigittt/project-darisai/actions/runs/45784773279>). The remaining failure was the Autonomy keyboard test's second dialog opening: it attempted to focus the existing hidden confirmation button before `showModal()` completed, and no PUT was sent. Added explicit visible-dialog and focused-button assertions before Enter; keyboard behavior and mutation assertions remain enabled. Local lint/types/175 tests/webpack production build and Ruff passed again; mypy/pytest remain blocked by the same missing numpy dependency. The latest PR run determines this final browser result.
-## Academic landing design — 2026-11-26
+Completed the P2-facing UI: server decision history, Handoff link revocation and revoked state, Cohort structural gaps with canonical titles and explicit synthetic/observed/mixed provenance, autonomy eligibility/observation/whitelist timestamps and `AUTONOMY_NOT_ELIGIBLE` handling. Regenerated contracts are stable.
 
-Implemented the public home-page redesign on isolated branch `design/academic-landing`, based on `6deb064c2e39b596032fb05104179e612b7e3f34`. Added scoped responsive styles, EN/RU/KK copy, the existing code-join flow, a labelled local product illustration, native FAQ and mobile navigation. Reuses the selected icon, Source Serif 4 / IBM Plex Sans, palette and existing providers. Functional development in the original checkout was not modified. See `docs/design/academic-landing.md` for scope and integration.
-
-Actual verification in the isolated frontend:
-
-- `/usr/local/bin/node node_modules/eslint/bin/eslint.js .` — passed.
-- `/usr/local/bin/node node_modules/typescript/bin/tsc --noEmit` — passed; final production build also completed TypeScript checks.
-- `/usr/local/bin/node node_modules/vitest/vitest.mjs run --cache=false --fsModuleCache=false --configLoader runner` — **93/93 tests, 11/11 files passed**. Five landing cases include invalid/valid codes, local-only demo state and Escape from trigger/navigation focus.
-- `NEXT_TELEMETRY_DISABLED=1 /usr/local/bin/node node_modules/next/dist/bin/next build --webpack` — compiled and generated all 10 static pages. The reused, ignored `node_modules` symlink caused a warning that 27 traced files were outside standalone output; a normal install/rebuild is required before distribution.
-- Built-app browser inspection: desktop 1440 × 1000, mobile 390 × 844, narrow 320 px; RU/KK/EN; light/dark themes. Checked menu toggle/Escape, native FAQ, local example, invalid-code focus and join-anchor focus. Found and corrected Escape handling on the menu trigger and focus timing after native fragment navigation. No horizontal overflow in checked states; screenshots saved as session deliverables.
-- Full real-API E2E, backend checks, deployment and complete accessibility audit were not run for this isolated design change. The existing E2E hero-heading assertion was updated, but that workflow was not executed. No push, merge or deployment was performed.
-
-The compatibility Node executable was used because the standalone package-manager runtime failed on this macOS version. Test cache flags and the runner config loader avoided writing through the shared dependency symlink. No package or lockfile changes were required. The implementation commit SHA is recorded in the exported integration README.
-
-## Student-first landing revision — 2026-11-26
-
-Revised the first landing design after the user requested a more approachable student experience. Moved the single code form into the hero as the main action, first on mobile; kept lecturer access secondary. Replaced landing-only serif typography with locally hosted Geologica and its native single-storey `ss01` alternates. Added original small SVG sketches and a handwritten underline, rewrote EN/RU/KK copy, moved the labelled product example below the joining task, and made the closing CTA student-first. No shared/global styles, dependencies, API or backend code changed.
-
-The Google Fonts Geologica source and SIL OFL license are included with provenance. The complete variable WOFF2 is 120360 bytes. FontTools checks preserved all 973 glyphs and 836 encoded codepoints; all 42 Kazakh letters in both cases plus ä were checked for coverage, with non-empty source outlines. Browser computed styles confirmed Geologica with `ss01`, and the font loaded successfully for the Kazakh sample.
+Accessibility root causes fixed without disabling axe rules: transient colour interpolation during theme changes, native dialog close re-entrancy, and a pause/resume control response closing the end-lecture dialog. All 16 Playwright tests pass, including the three previously failing mobile light/dark axe checks.
 
 Actual verification:
 
-- ESLint and standalone TypeScript checks passed using `/usr/local/bin/node`.
-- Full Vitest run: **93/93 tests, 11/11 files passed**. Existing landing interaction tests were updated for the new visible field label and a specific chart selector.
-- Final webpack production build passed compilation, TypeScript and 10 static pages. The same 27-file standalone trace warning from the ignored dependency symlink remains; install normally and rebuild before deployment.
-- Browser QA at 1360/1440 desktop widths, 390 × 844 mobile and 320 px narrow layouts. Checked RU/KK/EN, light/dark, menu/Escape, code validation and focus, native `#join` focus, local demonstration state and FAQ. Kazakh demo text was inspected after increasing small labels. No horizontal overflow in checked states. One code input is present in the DOM.
-- Saved desktop, full-page, RU mobile, KK mobile and dark mobile screenshots from the final compiled application.
-- The existing E2E heading expectation was updated; full real-API E2E and complete accessibility audit were not executed. No merge, push or deployment. The active functional checkout remains untouched.
+| Check | Result |
+| --- | --- |
+| Frontend ESLint / TypeScript | Passed |
+| Vitest | 187/187 in 17 files |
+| Production build | Passed |
+| Playwright E2E | 16/16 passed |
+| Axe mobile light/dark | Passed |
+| Backend Ruff / mypy / pytest | Passed; 125 tests |
+| Contracts | Stable |
+| Live P2 API | BriefNext/Handoff template, edit, approve, decisions, publish, redeem, revoke, structural gaps, autonomy eligibility, Replay, GapCards |
+| Live P2 UI | Brief history, structural gaps, autonomy eligibility rendered from real API |
 
-The implementation SHA is recorded in `darisai-v2-integration.txt` in the exported deliverables. The package contains a cumulative patch from the functional base and a separate revision-only patch for an already-applied first design.
+Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
 
-## Landing color and depth revision — 2026-11-26
 
 Added the user's requested mint/rose background gradients, a faint static dot texture, berry shading and soft depth to the isolated student-first landing. Scoped theme variables control the light/dark washes. One non-semantic wrapper surrounds the hero and product example; the existing composition, Geologica, copy, routes and interactions are unchanged. Strengthened small-text colors over the atmospheric surfaces. No global styles, dependencies, API or backend changes.
 
@@ -351,3 +344,9 @@ Actual local validation with /usr/local/bin/node v24.22.3:
 - Filled visual screens use explicitly labelled synthetic data in a separate ignored scratch preview. They do not prove real P3 acceptance. Existing full browser/axe and real Signal-to-Ripple coverage run in remote CI; this Mac's supported headless environment remains unavailable.
 
 At prior head 3268aa1 both push/PR CI passed all four jobs, and both E2E runs passed 16/16 without retry. The new head's exact remote results and commit SHA will be recorded in PR #4 and the exported handoff report. Main is not merged and no deployment is performed.
+
+### Concurrent P2/P1 integration preserved
+
+The initial push of visual commit `840ab70` was rejected safely because the remote P1 branch had advanced to `e9dea4c`. Fetched and merged that head without rewriting history. Preserved the complete P2 integration, decision history, Handoff revocation, Cohort structural gaps/provenance/titles, Autonomy eligibility/timestamps, atomic theme updates and the pause/resume end-dialog fix. Brief/Cohort conflicts were resolved by retaining all remote behavior and applying V3 styling; syntax-tree comparisons of these screens against the remote confirm only presentation differences. Documentation retains the team's real-infrastructure acceptance evidence (`artifacts/p1/live-p2.json`).
+
+Final merged frontend validation: ESLint, standalone TypeScript and **187/187 Vitest tests in 17 files passed**; webpack production build passed for all routes. Backend Ruff passed; local mypy checks 83 files but still stops on missing numpy, and pytest stops before collection for the same missing dependency. The earlier team's backend/live-API evidence is retained, not relabelled as a check run in this local session. No live backend is currently listening on port 8000. Final remote CI covers the merged head.

@@ -50,13 +50,13 @@ Stateless Replay using the Replay Token and local offsets; MCQ/question/refusal 
 
 ## Phase 4 — BriefNext & Handoff
 
-**Status: NOT STARTED.**
+**Status: COMPLETE (backend; live provider verified).**
 
 Teacher-approved insights, pending/approved/published states, magic-link Handoff, edit/reject reasons.
 
 ## Phase 5 — Cohort Memory & Staged Autonomy
 
-**Status: NOT STARTED.**
+**Status: COMPLETE (backend; synthetic cohort demo data is labeled).**
 
 Synthetic cohort tables exist but no live UI; autonomy policy, 30-day approval display, structural-gap detection, dean report.
 

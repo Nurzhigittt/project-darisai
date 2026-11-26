@@ -32,7 +32,8 @@ function lectureFixture(id = lectureId): Lecture {
 function policyFixture(overrides: Partial<ConceptAutonomy> = {}): ConceptAutonomy {
   return {
     lecture_id: lectureId, course_id: courseId, concept_canonical_id: conceptId,
-    concept_title: "Net force", mode: "locked", approvals: 0, rejections: 0, updated_at: null,
+    concept_title: "Net force", mode: "locked", approvals: 0, rejections: 0,
+    eligible: false, updated_at: null,
     ...overrides,
   };
 }
@@ -41,8 +42,8 @@ function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
 }
 
-function failure(status: number): Response {
-  return json({ error: { code: "TEST_ERROR", message: "Request could not be completed." } }, status);
+function failure(status: number, code = "TEST_ERROR"): Response {
+  return json({ error: { code, message: "Request could not be completed." } }, status);
 }
 
 function deferredResponse() {
@@ -417,5 +418,18 @@ describe("AutonomyScreen", () => {
     expect(getProfessorSession()?.accessToken).toBe("new-account-token");
     expect(navigation.replace).not.toHaveBeenCalled();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("keeps locked mode when the server reports AUTONOMY_NOT_ELIGIBLE", async () => {
+    signIn();
+    mockApi(() => [policyFixture()], (_url, options) =>
+      options.method === "PUT" ? failure(409, "AUTONOMY_NOT_ELIGIBLE") : undefined);
+    render(view());
+    fireEvent.click(await screen.findByRole("button", { name: label("autonomy.allow") }));
+    fireEvent.click(dialog().getByRole("button", { name: label("autonomy.confirmAllow") }));
+    expect(await screen.findByText(label("autonomy.notEligibleError"))).toBeInTheDocument();
+    expect(article().getByText(label("autonomy.mode.locked"))).toBeInTheDocument();
+    expect(screen.queryByText(label("autonomy.saved"))).not.toBeInTheDocument();
+    expect(article().getByText(label("autonomy.eligibility.notReady"))).toBeInTheDocument();
   });
 });

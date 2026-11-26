@@ -67,6 +67,12 @@
     border-radius: 0.4rem;
   }
 
+  html[data-theme-changing="true"] *,
+  html[data-theme-changing="true"] *::before,
+  html[data-theme-changing="true"] *::after {
+    transition: none !important;
+  }
+
   ::selection {
     background: var(--primary-soft);
     color: var(--foreground);

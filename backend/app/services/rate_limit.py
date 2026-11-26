@@ -27,6 +27,11 @@ class RateLimiter:
         key = "daris:rl:join:" + pseudonymous_rate_key(self._settings, ip_address, day)
         await self._enforce(key, self._settings.rate_limit_join_per_minute)
 
+    async def enforce_handoff(self, ip_address: str) -> None:
+        day = datetime.now(UTC).strftime("%Y-%m-%d")
+        key = "daris:rl:handoff:" + pseudonymous_rate_key(self._settings, ip_address, day)
+        await self._enforce(key, self._settings.rate_limit_handoff_per_minute)
+
     async def enforce_auth(self, ip_address: str) -> None:
         day = datetime.now(UTC).strftime("%Y-%m-%d")
         key = "daris:rl:auth:" + pseudonymous_rate_key(self._settings, ip_address, day)

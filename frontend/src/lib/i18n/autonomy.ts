@@ -42,6 +42,13 @@ const en = {
   "autonomy.offline": "No connection. Reconnect to view or change permissions.",
   "autonomy.uncertain": "The save result could not be confirmed. Settings must be read from the server before another change.",
   "autonomy.resolved": "Current server settings are shown below. Review the permission before making another change.",
+  "autonomy.eligibility.ready": "Eligible for autonomy",
+  "autonomy.eligibility.notReady": "Not eligible yet",
+  "autonomy.eligibility.requirements": "Eligibility requires 30 days of observation, at least 5 approvals, no more than 2 rejections, and at least 5 decisions.",
+  "autonomy.eligibility.observation": "Observation started: {date}",
+  "autonomy.eligibility.whitelisted": "Allowed on: {date}",
+  "autonomy.eligibility.reason": "Policy note: {reason}",
+  "autonomy.notEligibleError": "The server rejected this change because the concept has not met the 30-day and approval thresholds. Keep it locked and review the counters.",
 };
 
 export const autonomyDictionaries = {
@@ -88,6 +95,13 @@ export const autonomyDictionaries = {
     "autonomy.offline": "Нет соединения. Подключитесь к сети, чтобы просматривать или менять разрешения.",
     "autonomy.uncertain": "Результат сохранения не подтверждён. Перед следующим изменением нужно получить настройки с сервера.",
     "autonomy.resolved": "Ниже показаны текущие настройки сервера. Проверьте разрешение перед следующим изменением.",
+    "autonomy.eligibility.ready": "Готово к автономности",
+    "autonomy.eligibility.notReady": "Пока не соответствует условиям",
+    "autonomy.eligibility.requirements": "Для допуска нужны 30 дней наблюдения, не менее 5 одобрений, не более 2 отказов и не менее 5 решений.",
+    "autonomy.eligibility.observation": "Наблюдение начато: {date}",
+    "autonomy.eligibility.whitelisted": "Разрешено: {date}",
+    "autonomy.eligibility.reason": "Примечание к политике: {reason}",
+    "autonomy.notEligibleError": "Сервер отклонил изменение: концепт не прошёл 30-дневный период и пороги одобрений. Оставьте его заблокированным и проверьте счётчики.",
   },
   kk: {
     "autonomy.title": "AI автономдылығы",
@@ -131,5 +145,12 @@ export const autonomyDictionaries = {
     "autonomy.offline": "Байланыс жоқ. Рұқсаттарды көру немесе өзгерту үшін желіге қосылыңыз.",
     "autonomy.uncertain": "Сақтау нәтижесі расталмады. Келесі өзгеріске дейін серверден баптауларды алу қажет.",
     "autonomy.resolved": "Төменде сервердің ағымдағы баптаулары көрсетілген. Келесі өзгеріске дейін рұқсатты тексеріңіз.",
+    "autonomy.eligibility.ready": "Автономдылыққа дайын",
+    "autonomy.eligibility.notReady": "Әзірге талаптарға сай емес",
+    "autonomy.eligibility.requirements": "Рұқсат үшін 30 күн бақылау, кемінде 5 мақұлдау, 2-ден көп емес бас тарту және кемінде 5 шешім қажет.",
+    "autonomy.eligibility.observation": "Бақылау басталды: {date}",
+    "autonomy.eligibility.whitelisted": "Рұқсат берілді: {date}",
+    "autonomy.eligibility.reason": "Саясат ескертуі: {reason}",
+    "autonomy.notEligibleError": "Сервер өзгерісті қабылдамады: ұғым 30 күндік мерзім мен мақұлдау шегінен өтпеді. Оны бұғатталған күйде қалдырып, санауыштарды тексеріңіз.",
   },
 } satisfies Record<Locale, Record<keyof typeof en, string>>;

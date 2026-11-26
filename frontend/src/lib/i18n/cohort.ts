@@ -39,6 +39,14 @@ const en = {
   "cohort.scaleHigh": "100% / 1",
   "cohort.generated": "Report generated",
   "cohort.limit": "Showing the first 200 concepts. This report may not include every concept in the course.",
+  "cohort.structuralTitle": "Structural gaps",
+  "cohort.structuralIntro": "Concepts with a persistent confusion pattern across consecutive terms. Treat this as a signal to investigate, not as proof that students failed to learn.",
+  "cohort.structuralShare": "{min}–{max} confusion share across the affected terms",
+  "cohort.structuralTerms": "Terms: {terms}",
+  "cohort.structuralRule": "Rule: at least {terms} consecutive terms with a confusion share of {share} or more and sufficient lecture data.",
+  "cohort.provenance.synthetic": "Synthetic demo data",
+  "cohort.provenance.observed": "Observed data",
+  "cohort.provenance.mixed": "Mixed data",
 };
 
 export const cohortDictionaries = {
@@ -82,6 +90,14 @@ export const cohortDictionaries = {
     "cohort.scaleHigh": "100% / 1",
     "cohort.generated": "Отчёт сформирован",
     "cohort.limit": "Показаны первые 200 концептов. Отчёт может охватывать не все концепты курса.",
+    "cohort.structuralTitle": "Структурные пробелы",
+    "cohort.structuralIntro": "Концепты с устойчивой картиной затруднений в последовательных семестрах. Это сигнал для проверки, а не доказательство того, что студенты не освоили материал.",
+    "cohort.structuralShare": "Доля затруднений {min}–{max} в затронутых семестрах",
+    "cohort.structuralTerms": "Семестры: {terms}",
+    "cohort.structuralRule": "Правило: не менее {terms} последовательных семестров с долей затруднений {share} и выше при достаточном объёме лекций.",
+    "cohort.provenance.synthetic": "Синтетические демо-данные",
+    "cohort.provenance.observed": "Наблюдаемые данные",
+    "cohort.provenance.mixed": "Смешанные данные",
   },
   kk: {
     "cohort.title": "Курс жады",
@@ -122,5 +138,13 @@ export const cohortDictionaries = {
     "cohort.scaleHigh": "100% / 1",
     "cohort.generated": "Есеп жасалған уақыт",
     "cohort.limit": "Алғашқы 200 ұғым көрсетілді. Есепте курстың барлық ұғымы қамтылмауы мүмкін.",
+    "cohort.structuralTitle": "Құрылымдық олқылықтар",
+    "cohort.structuralIntro": "Тізбектелген семестрлерде қиындықтың тұрақты үлгісі бар ұғымдар. Бұл тексеруге арналған сигнал, студенттер меңгермеді деген дәлел емес.",
+    "cohort.structuralShare": "Тиісті семестрлерде қиындық үлесі {min}–{max}",
+    "cohort.structuralTerms": "Семестрлер: {terms}",
+    "cohort.structuralRule": "Ереже: қиындық үлесі {share} және одан жоғары, дәрістер көлемі жеткілікті кемінде {terms} тізбектелген семестр.",
+    "cohort.provenance.synthetic": "Синтетикалық демо-деректер",
+    "cohort.provenance.observed": "Бақыланған деректер",
+    "cohort.provenance.mixed": "Аралас деректер",
   },
 } satisfies Record<Locale, Record<keyof typeof en, string>>;

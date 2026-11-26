@@ -13,6 +13,7 @@ AutonomyMode = Literal["locked", "whitelisted"]
 
 class AutonomyUpdate(ApiModel):
     mode: AutonomyMode
+    reason: str | None = Field(default=None, min_length=1, max_length=500)
 
 
 class AutonomyOut(ApiModel):
@@ -23,4 +24,8 @@ class AutonomyOut(ApiModel):
     mode: AutonomyMode
     approvals: int = Field(ge=0)
     rejections: int = Field(ge=0)
+    eligible: bool = False
+    observation_started_at: datetime | None = None
+    whitelisted_at: datetime | None = None
+    policy_reason: str | None = None
     updated_at: datetime | None = None
