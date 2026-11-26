@@ -297,3 +297,5 @@ Actual verification:
 | Live P2 UI | Brief history, structural gaps, autonomy eligibility rendered from real API |
 
 Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
+
+

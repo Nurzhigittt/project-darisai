@@ -62,7 +62,7 @@ test("landing: Russian desktop supports code errors, FAQ and keyboard joining", 
   const input = page.getByLabel(copy.join.label);
   await input.fill("ab");
   await input.press("Enter");
-  await expect(page.locator("#code-error")).toHaveText(label("ru", "join.invalid.body"));
+  await expect(page.locator("form").getByRole("alert")).toHaveText(label("ru", "join.invalid.body"));
   await expect(input).toHaveAttribute("aria-invalid", "true");
   await expect(input).toBeFocused();
   await expect(page).toHaveURL(/\/$/);
@@ -103,7 +103,7 @@ test("landing: Kazakh dark theme fits 320px with accessible menu and form states
   await input.fill("a");
   await input.press("Enter");
   await expect(input).toBeFocused();
-  await expect(page.locator("#code-error")).toHaveText(label("kk", "join.invalid.body"));
+  await expect(page.locator("form").getByRole("alert")).toHaveText(label("kk", "join.invalid.body"));
   const silenceFaq = copy.faq.items[2];
   if (!silenceFaq) throw new Error("The Kazakh silence FAQ must be present");
   await page.locator("summary").filter({ hasText: silenceFaq.question }).click();
