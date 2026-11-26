@@ -92,11 +92,26 @@ Embeddings, hybrid retrieval, Replay, GapCards and teacher intelligence remain
 available through deterministic transcript-grounded templates. This is the mode
 used by CI and the local screenshot verification.
 
+## Replay and GapCards with the local provider
+
+With Ollama configured, a real Replay turn completed in **147.92 s** and returned
+a grounded MCQ with a transcript citation and signed state token. Replay start
+and GapCards both selected their deterministic **template** paths (`source=template`)
+in this run; GapCards validation passed (`schema_ok`, `citations_ok`,
+`grounded_score=1.0`, `fallback_used=true`) in 9.02 s. BriefNext and Handoff used
+`source=live` local generation. The claim is therefore partial, not "all AI is
+local".
+
+Evidence: [`artifacts/evals/local/local-replay-gapcards.json`](../artifacts/evals/local/local-replay-gapcards.json).
+
 ## Hardware and operational notes
 
 - `qwen2.5:1.5b` is roughly 1 GB on disk and ran on CPU in this environment.
 - Generation is intentionally slower than cloud; the UI keeps the request
-  bounded and displays an honest pending/error state.
+  bounded and displays an honest pending/error state. Measured: BriefNext 28.18 s
+  (one concept), Handoff 91.10 s, Replay turn 147.92 s. Long-form local calls are
+  not interactive. Tuning (`max_tokens=800`, `keep_alive=5m`, 60 s timeout) is
+  recorded in [`artifacts/evals/local/ollama-latency.json`](../artifacts/evals/local/ollama-latency.json).
 - Local STT uses CPU INT8 and is slower than Groq; it is suitable for uploaded
   chunks, not live streaming. The Kazakh small-model transcript is imperfect.
 - No claim of complete offline operation is made: the transcript-grounded
