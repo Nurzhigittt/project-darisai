@@ -3,7 +3,8 @@
 **Branch:** `feat/p2-backend-completion`  
 **P3 base:** `c21446a6eae7ec94b4c3fa960b8d0964514308a1`  
 **Repository:** https://github.com/Nurzhigittt/project-darisai  
-**Status:** P2 backend completion locally verified; Docker/cloud not run.  
+**Pull Request:** https://github.com/Nurzhigittt/project-darisai/pull/3  
+**Status:** P2 backend completion verified locally and in GitHub CI; Docker/cloud not run.  
 **Date:** 26 November 2026 (Asia/Qyzylorda)
 
 ## Integration shape
@@ -110,6 +111,7 @@ idempotent.
 - Load-test CPU estimate: ~13.8% of 4 cores; API working set ~164 MB during the
   run. These are single-sample observations, not capacity guarantees.
 - Docker/cloud: not run.
+- GitHub CI: run `45780053520` success; End-to-end `45780053331` success.
 
 ## P1 integration
 
@@ -152,5 +154,7 @@ idempotent.
 | --- | --- |
 | `c21446a` | P3 base integrated into this branch |
 | `775cd96` | P2 backend completion: migration, cohort/autonomy/Handoff/demo, tests |
+| `1d9e4b9` | P2 handover, verification matrix, load evidence |
 
-The final branch HEAD includes the documentation commit and is recorded in the P2 PR.
+The branch is pushed at `1d9e4b9` (plus this documentation update); CI was green on
+the code commit and is re-run on the documentation commit.

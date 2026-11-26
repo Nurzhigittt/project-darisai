@@ -49,7 +49,7 @@ pytest -q
 - Ruff: clean
 - mypy: clean
 - Frontend: ESLint, TypeScript, Vitest 11/11, production build passed
-- CI: pending this branch's push; prior P3 CI was green
+- CI: run `45780053520` success (backend, frontend, contracts, secret scan); End-to-end `45780053331` success
 - Secret scanning: prior P3 CI green; no keys committed
 - Load test: `artifacts/loadtest/loadtest-20261126T075720Z.json`
 
