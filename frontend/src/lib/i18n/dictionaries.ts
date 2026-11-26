@@ -1,3 +1,7 @@
+import { cohortDictionaries } from "./cohort";
+import { autonomyDictionaries } from "./autonomy";
+import { teachingDictionaries } from "./teaching";
+
 import { briefDictionaries } from "./brief";
 import { handoffDictionaries } from "./handoff";
 
@@ -10,6 +14,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
   en: {
     ...briefDictionaries.en,
     ...handoffDictionaries.en,
+    ...cohortDictionaries.en,
+    ...autonomyDictionaries.en,
+    ...teachingDictionaries.en,
     "brand.name": "DärisAI",
     "brand.tagline": "Make understanding visible.",
     "lecture.scheduled": "Scheduled",
@@ -289,6 +296,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
   ru: {
     ...briefDictionaries.ru,
     ...handoffDictionaries.ru,
+    ...cohortDictionaries.ru,
+    ...autonomyDictionaries.ru,
+    ...teachingDictionaries.ru,
     "brand.name": "DärisAI",
     "brand.tagline": "Сделайте понимание видимым.",
     "lecture.scheduled": "Запланирована",
@@ -565,6 +575,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
   kk: {
     ...briefDictionaries.kk,
     ...handoffDictionaries.kk,
+    ...cohortDictionaries.kk,
+    ...autonomyDictionaries.kk,
+    ...teachingDictionaries.kk,
     "brand.name": "DärisAI",
     "brand.tagline": "Түсінуді көрінетін етіңіз.",
     "lecture.scheduled": "Жоспарланған",

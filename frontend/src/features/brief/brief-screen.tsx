@@ -33,6 +33,10 @@ function errorKey(error: unknown): string {
   return "brief.error";
 }
 
+function uncertainOutcome(error: unknown): boolean {
+  return !(error instanceof ApiError) || error.status === 0 || error.status >= 500 || error.code === "INVALID_RESPONSE";
+}
+
 export function BriefScreen({ lectureId }: { lectureId: string }) {
   const { t } = useI18n();
   const router = useRouter();
@@ -49,6 +53,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [links, setLinks] = useState<Record<string, HandoffLink>>({});
   const [offline, setOffline] = useState(false);
+  const [unresolved, setUnresolved] = useState(false);
   const busyRef = useRef(false);
   const controller = useRef<AbortController | null>(null);
 
@@ -62,9 +67,9 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
     router.replace("/login");
   }, [router]);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (): Promise<boolean> => {
     const session = getProfessorSession();
-    if (!session) { expireSession(); return; }
+    if (!session) { expireSession(); return false; }
     controller.current?.abort();
     const request = new AbortController();
     controller.current = request;
@@ -75,16 +80,19 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         api.getLecture(session.accessToken, lectureId, request.signal),
         api.listInsights(session.accessToken, lectureId, request.signal),
       ]);
-      if (request.signal.aborted) return;
+      if (request.signal.aborted) return false;
       setLecture(nextLecture);
       setInsights(nextInsights);
       // A material may have been edited and republished in another tab.
       // The list cannot prove that a previously issued link is still valid.
       setLinks({});
+      setUnresolved(false);
+      return true;
     } catch (caught) {
-      if (request.signal.aborted) return;
-      if (caught instanceof ApiError && caught.status === 401) { expireSession(); return; }
+      if (request.signal.aborted) return false;
+      if (caught instanceof ApiError && caught.status === 401) { expireSession(); return false; }
       setError(errorKey(caught));
+      return false;
     } finally {
       if (!request.signal.aborted) setLoading(false);
     }
@@ -104,6 +112,9 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   }, []);
 
   function replaceInsight(updated: Insight) {
+    if (!updated || updated.lecture_id !== lectureId || typeof updated.insight_id !== "string") {
+      throw new Error("Unexpected material response");
+    }
     setInsights((current) => current.some((item) => item.insight_id === updated.insight_id)
       ? current.map((item) => item.insight_id === updated.insight_id ? updated : item)
       : [updated, ...current]);
@@ -114,8 +125,17 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
     });
   }
 
+  async function refresh() {
+    if (busyRef.current || offline) return;
+    const resolving = unresolved;
+    if (await load() && resolving) {
+      setActionError(null);
+      setMessage("brief.resolved");
+    }
+  }
+
   async function run(key: string, operation: (token: string) => Promise<void>): Promise<boolean> {
-    if (busyRef.current || offline) return false;
+    if (busyRef.current || offline || loading || unresolved || error) return false;
     const session = getProfessorSession();
     if (!session) { expireSession(); return false; }
     busyRef.current = true;
@@ -127,12 +147,22 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
       return true;
     } catch (caught) {
       if (caught instanceof ApiError && caught.status === 401) expireSession();
-      else {
-        setActionError(caught instanceof ApiError && caught.status === 422 ? "insight.validation" :
-          caught instanceof ApiError && caught.status === 0 ? "brief.actionError" : errorKey(caught));
-        // On a stale state or uncertain network outcome, fetch the server's state.
-        // Never automatically repeat a mutation (especially creation/publication).
-        if (caught instanceof ApiError && (caught.status === 409 || caught.status === 0)) await load();
+      else if (uncertainOutcome(caught)) {
+        // The server may have saved the change before the response was lost.
+        // Close stale forms and discard capabilities; read once, never replay.
+        setEditor(null);
+        setRejecting(null);
+        setReason("");
+        setLinks({});
+        setUnresolved(true);
+        setActionError("brief.uncertain");
+        if (await load()) {
+          setActionError(null);
+          setMessage("brief.resolved");
+        }
+      } else {
+        setActionError(caught instanceof ApiError && caught.status === 422 ? "insight.validation" : errorKey(caught));
+        if (caught instanceof ApiError && caught.status === 409) await load();
       }
       return false;
     } finally {
@@ -173,6 +203,9 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   async function publish(insight: Insight) {
     await run(`${insight.insight_id}:publish`, async (token) => {
       const link = await api.publishHandoff(token, lectureId, insight.insight_id);
+      if (!link || link.insight_id !== insight.insight_id || typeof link.handoff_url !== "string") {
+        throw new Error("Unexpected publication response");
+      }
       setLinks((current) => ({ ...current, [insight.insight_id]: link }));
       setInsights((current) => current.map((item) => item.insight_id === insight.insight_id ? { ...item, status: "published" } : item));
       setMessage("brief.published");
@@ -180,7 +213,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   }
 
   const visible = insights.filter((item) => item.kind === kind);
-  const disabled = Boolean(busy) || offline;
+  const disabled = Boolean(busy) || offline || loading || unresolved || Boolean(error);
   const editorError = actionError ? <p role="alert" className="mb-4 rounded-xl border border-border bg-background p-3">{t(actionError)}</p> : null;
 
   return <div className="min-h-dvh bg-background">
@@ -199,17 +232,21 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
           <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight">{t("brief.title")}</h1>
           <p className="mt-3 max-w-2xl text-lg text-muted">{t("brief.subtitle")}</p>
         </div>
-        <Button variant="secondary" disabled={disabled || loading} onClick={() => void load()}>
+        <Button variant="secondary" disabled={Boolean(busy) || offline || loading} onClick={() => void refresh()}>
           <RefreshCw aria-hidden className="size-4" />{t("insight.refresh")}
         </Button>
       </div>
+      {lecture ? <nav aria-label={t("teaching.related")} className="mt-5 flex flex-wrap gap-3">
+        <Link href={`/cohort/${lecture.course_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.cohort")}</Link>
+        <Link href={`/settings/autonomy/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.autonomy")}</Link>
+      </nav> : null}
       {offline ? <p role="status" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface p-4"><WifiOff aria-hidden className="size-5 shrink-0" />{t("brief.offline")}</p> : null}
       <p role="status" aria-live="polite" className="mt-4 text-sm font-semibold">{message ? t(message) : ""}</p>
       {!editor && !rejecting ? editorError : null}
       {loading ? <div role="status" aria-label={t("brief.loading")} className="mt-8 space-y-4">
         <Skeleton className="h-14 w-full" /><Skeleton className="h-72 w-full" />
         <span className="sr-only">{t("brief.loading")}</span>
-      </div> : error ? <div className="mt-8"><ErrorState title={t("brief.error")} body={t(error)} action={<Button disabled={offline} onClick={() => void load()}>{t("brief.retry")}</Button>} /></div> : lecture ? <>
+      </div> : error ? <div className="mt-8"><ErrorState title={t("brief.error")} body={t(error)} action={<Button disabled={offline || Boolean(busy)} onClick={() => void refresh()}>{t("brief.retry")}</Button>} /></div> : lecture ? <>
         <div className="mt-7 flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-sm leading-6 text-muted">
           <ShieldCheck aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" /><p>{t("brief.manualNotice")}</p>
         </div>

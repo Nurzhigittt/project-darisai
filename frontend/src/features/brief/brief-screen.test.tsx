@@ -154,6 +154,115 @@ afterEach(() => {
 });
 
 describe("BriefScreen", () => {
+  it.each(["network", "server", "malformed", "unknown"])("reconciles an uncertain %s creation without retaining or replaying the draft", async (outcome) => {
+    signIn();
+    let created: Insight | null = null;
+    const reconciliation = deferredResponse();
+    const transport = mockApi(() => [], (url, options) => {
+      if (options.method === "POST" && url.pathname === `${lecturePath}/insights`) {
+        const body = JSON.parse(String(options.body)) as { content: Insight["content"] };
+        created = insightFixture({ content: body.content });
+        if (outcome === "network") return Promise.reject(new TypeError("Response lost"));
+        if (outcome === "server") return failure(501, "UPSTREAM_ERROR");
+        if (outcome === "malformed") return new Response("truncated JSON", { status: 201 });
+        return json(null, 201);
+      }
+      if (options.method === "GET" && url.pathname === `${lecturePath}/insights` && created) return reconciliation.promise;
+    });
+    renderBrief();
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.new") }));
+    const editor = within(screen.getByRole("dialog", { name: label("insight.createTitle") }));
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.headline") }), { target: { value: "Saved despite lost response" } });
+    fireEvent.click(editor.getByRole("button", { name: label("insight.create") }));
+
+    expect(await within(screen.getByRole("main")).findByText(label("brief.uncertain"))).toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: label("insight.createTitle") })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: label("brief.new") })).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+    await act(async () => reconciliation.resolve(json([created])));
+
+    expect(await screen.findByText("Saved despite lost response")).toBeInTheDocument();
+    expect(screen.getByText(label("brief.resolved"))).toBeInTheDocument();
+    expect(transport.mock.calls.filter(([url, options]) => options?.method === "GET" && new URL(String(url)).pathname === `${lecturePath}/insights`)).toHaveLength(2);
+    // A new creation is a deliberate fresh draft, not a retry of the saved one.
+    fireEvent.click(screen.getByRole("button", { name: label("brief.new") }));
+    expect(within(screen.getByRole("dialog", { name: label("insight.createTitle") })).getByRole("textbox", { name: label("insight.headline") })).toHaveValue("");
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+  });
+
+  it("blocks publication after failed reconciliation until a manual refresh confirms server state", async () => {
+    signIn();
+    let current = insightFixture({ kind: "handoff", status: "approved" });
+    let failedPublish = false;
+    let reconciliationReads = 0;
+    const transport = mockApi(() => [current], (url, options) => {
+      if (options.method === "POST" && url.pathname === `${insightPath}/publish`) {
+        current = { ...current, status: "published" };
+        failedPublish = true;
+        return failure(503, "RESPONSE_LOST");
+      }
+      if (options.method === "GET" && url.pathname === `${lecturePath}/insights` && failedPublish) {
+        reconciliationReads += 1;
+        if (reconciliationReads === 1) return failure(503, "UNAVAILABLE");
+      }
+    });
+    renderBrief();
+    await screen.findByText("Forces and motion");
+    selectHandoff();
+    fireEvent.click(card().getByRole("button", { name: label("insight.publish") }));
+    const retry = await screen.findByRole("button", { name: label("brief.retry") });
+    await waitFor(() => expect(retry).toBeEnabled());
+    expect(within(screen.getByRole("main")).getByText(label("brief.uncertain"))).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: label("brief.new") })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: label("insight.publish") })).not.toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: label("brief.link") })).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+
+    fireEvent.click(retry);
+    expect(await screen.findByText(label("brief.resolved"))).toBeInTheDocument();
+    expect(card().getByText(label("insight.status.published"))).toBeInTheDocument();
+    expect(card().getByRole("button", { name: label("brief.createLink") })).toBeEnabled();
+    expect(screen.queryByText(label("brief.uncertain"))).not.toBeInTheDocument();
+    expect(reconciliationReads).toBe(2);
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+  });
+
+  it.each(["edit", "reject"])("closes an uncertain %s dialog and shows the reconciled material", async (action) => {
+    signIn();
+    let current = insightFixture();
+    const transport = mockApi(() => [current], (url, options) => {
+      if (options.method === "POST" && url.pathname === `${insightPath}/${action}`) {
+        current = { ...current, status: action === "edit" ? "edited" : "rejected", decision_reason: "Clarify this example." };
+        return failure(503, "RESPONSE_LOST");
+      }
+    });
+    renderBrief();
+    await screen.findByText("Review the force diagram");
+    fireEvent.click(card().getByRole("button", { name: label(`insight.${action}`) }));
+    const dialogTitle = label(action === "edit" ? "insight.editTitle" : "insight.rejectTitle");
+    const editor = within(screen.getByRole("dialog", { name: dialogTitle }));
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.reason") }), { target: { value: "Clarify this example." } });
+    fireEvent.click(editor.getByRole("button", { name: label(action === "edit" ? "insight.save" : "insight.confirmReject") }));
+    expect(await screen.findByText(label("brief.resolved"))).toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: dialogTitle })).not.toBeInTheDocument();
+    expect(card().getByText(label(action === "edit" ? "insight.status.edited" : "insight.status.rejected"))).toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+  });
+
+  it("preserves a draft after a known validation rejection without unnecessary reconciliation", async () => {
+    signIn();
+    const transport = mockApi(() => [], (_url, options) => options.method === "POST" ? failure(422, "VALIDATION_ERROR") : undefined);
+    renderBrief();
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.new") }));
+    const editor = within(screen.getByRole("dialog", { name: label("insight.createTitle") }));
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.headline") }), { target: { value: "Keep this draft" } });
+    fireEvent.click(editor.getByRole("button", { name: label("insight.create") }));
+    expect(await editor.findByRole("alert")).toHaveTextContent(label("insight.validation"));
+    expect(editor.getByRole("textbox", { name: label("insight.headline") })).toHaveValue("Keep this draft");
+    expect(screen.queryByText(label("brief.uncertain"))).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([url, options]) => options?.method === "GET" && new URL(String(url)).pathname === `${lecturePath}/insights`)).toHaveLength(1);
+  });
+
   it("redirects to login without requesting protected content when no professor session exists", async () => {
     const transport = mockApi(() => []);
     renderBrief();

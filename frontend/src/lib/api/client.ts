@@ -19,6 +19,10 @@ export type InsightCreate = components["schemas"]["InsightCreate"];
 export type InsightEdit = components["schemas"]["InsightEdit"];
 export type HandoffLink = components["schemas"]["HandoffLinkOut"];
 export type HandoffPublic = components["schemas"]["HandoffPublicOut"];
+export type CohortMemory = components["schemas"]["CohortMemoryOut"];
+export type CohortConceptMetric = components["schemas"]["CohortConceptMetric"];
+export type ConceptAutonomy = components["schemas"]["AutonomyOut"];
+export type AutonomyUpdate = components["schemas"]["AutonomyUpdate"];
 
 export const API_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
@@ -39,7 +43,7 @@ export class ApiError extends Error {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PUT";
   body?: unknown;
   token?: string | null;
   signal?: AbortSignal;
@@ -62,8 +66,19 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     if (error instanceof DOMException && error.name === "AbortError") throw error;
     throw new ApiError(0, "NETWORK_ERROR", "The server could not be reached.");
   }
-  const text = await response.text();
-  const data = text ? (JSON.parse(text) as unknown) : null;
+  let data: unknown;
+  try {
+    const text = await response.text();
+    data = text ? (JSON.parse(text) as unknown) : null;
+  } catch {
+    // Proxies can return HTML or truncate a response after a mutation succeeded.
+    // Preserve HTTP errors; a malformed success must not look like a saved change.
+    throw new ApiError(
+      response.ok ? 502 : response.status,
+      "INVALID_RESPONSE",
+      "The server returned an unreadable response.",
+    );
+  }
   if (!response.ok) {
     const body = data as
       | { error?: { code?: string; message?: string; request_id?: string | null } }
@@ -85,8 +100,8 @@ export const api = {
       body: { invite_code: inviteCode },
     }),
 
-  listCourses: (token: string) =>
-    request<Course[]>("/api/v1/courses", { token }),
+  listCourses: (token: string, signal?: AbortSignal) =>
+    request<Course[]>("/api/v1/courses", { token, signal }),
 
   createCourse: (token: string, title: string) =>
     request<Course>("/api/v1/courses", {
@@ -144,30 +159,42 @@ export const api = {
   listInsights: (token: string, lectureId: string, signal?: AbortSignal) =>
     request<Insight[]>(`/api/v1/lectures/${lectureId}/insights?limit=100`, { token, signal }),
 
-  createInsight: (token: string, lectureId: string, body: InsightCreate) =>
+  createInsight: (token: string, lectureId: string, body: InsightCreate, signal?: AbortSignal) =>
     request<Insight>(`/api/v1/lectures/${lectureId}/insights`, {
-      method: "POST", token, body,
+      method: "POST", token, body, signal,
     }),
 
-  approveInsight: (token: string, lectureId: string, insightId: string) =>
+  approveInsight: (token: string, lectureId: string, insightId: string, signal?: AbortSignal) =>
     request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/approve`, {
-      method: "POST", token,
+      method: "POST", token, signal,
     }),
 
-  editInsight: (token: string, lectureId: string, insightId: string, body: InsightEdit) =>
+  editInsight: (token: string, lectureId: string, insightId: string, body: InsightEdit, signal?: AbortSignal) =>
     request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/edit`, {
-      method: "POST", token, body,
+      method: "POST", token, body, signal,
     }),
 
-  rejectInsight: (token: string, lectureId: string, insightId: string, reason: string) =>
+  rejectInsight: (token: string, lectureId: string, insightId: string, reason: string, signal?: AbortSignal) =>
     request<Insight>(`/api/v1/lectures/${lectureId}/insights/${insightId}/reject`, {
-      method: "POST", token, body: { reason },
+      method: "POST", token, body: { reason }, signal,
     }),
 
-  publishHandoff: (token: string, lectureId: string, insightId: string) =>
+  publishHandoff: (token: string, lectureId: string, insightId: string, signal?: AbortSignal) =>
     request<HandoffLink>(`/api/v1/lectures/${lectureId}/insights/${insightId}/publish`, {
-      method: "POST", token,
+      method: "POST", token, signal,
     }),
+
+  getCohortMemory: (token: string, courseId: string, signal?: AbortSignal) =>
+    request<CohortMemory>(`/api/v1/courses/${courseId}/cohort-memory?limit=200`, { token, signal }),
+
+  listConceptAutonomy: (token: string, lectureId: string, signal?: AbortSignal) =>
+    request<ConceptAutonomy[]>(`/api/v1/lectures/${lectureId}/concept-autonomy`, { token, signal }),
+
+  updateConceptAutonomy: (
+    token: string, lectureId: string, conceptId: string, body: AutonomyUpdate, signal?: AbortSignal,
+  ) => request<ConceptAutonomy>(`/api/v1/lectures/${lectureId}/concept-autonomy/${conceptId}`, {
+    method: "PUT", token, body, signal,
+  }),
 
   redeemHandoff: (token: string, signal?: AbortSignal) =>
     request<HandoffPublic>("/api/v1/handoff/redeem", {

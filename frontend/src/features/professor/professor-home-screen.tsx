@@ -320,7 +320,11 @@ export function ProfessorHomeScreen() {
                           : new Date(lecture.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex flex-wrap gap-2 sm:justify-end">
+                      <Link href={`/settings/autonomy/${lecture.lecture_id}`}
+                        className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">
+                        {t("teaching.autonomy")}
+                      </Link>
                       {lecture.status === "ended" ? (
                         <>
                         <Link
@@ -354,6 +358,20 @@ export function ProfessorHomeScreen() {
             )}
           </section>
         </div>
+        {!loading && !error && courses.length > 0 ? (
+          <section className="mt-8" aria-labelledby="course-memory-title">
+            <h2 id="course-memory-title" className="text-2xl font-semibold">{t("teaching.courseMemory")}</h2>
+            <p className="mt-2 text-muted">{t("teaching.courseMemoryBody")}</p>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {courses.map((course) => <li key={course.id} className="min-w-0 rounded-2xl border border-border bg-surface p-5">
+                <h3 className="break-words text-xl font-semibold">{course.title}</h3>
+                <Link href={`/cohort/${course.id}`} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-primary hover:bg-primary-soft/60">
+                  {t("teaching.cohort")}<ArrowRight aria-hidden className="size-4 shrink-0" />
+                </Link>
+              </li>)}
+            </ul>
+          </section>
+        ) : null}
       </main>
     </div>
   );

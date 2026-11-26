@@ -24,6 +24,8 @@ const en = {
   "brief.conflict": "This material changed elsewhere. Refresh to see its current state.",
   "brief.notFound": "This lecture or material is unavailable.",
   "brief.retry": "Try again",
+  "brief.uncertain": "The action may have completed, but its response was not confirmed. Refresh the materials before making another change.",
+  "brief.resolved": "The current materials have been loaded from the server. Review them before repeating any action.",
   "brief.actionError":
     "Could not complete the action. Refresh and check the material before trying again.",
   "brief.copyFailed": "Could not copy the link. Select it and copy it manually.",
@@ -107,6 +109,8 @@ export const briefDictionaries = {
     "brief.conflict": "Материал изменён в другом окне. Обновите его, чтобы увидеть текущее состояние.",
     "brief.notFound": "Эта лекция или материал недоступны.",
     "brief.retry": "Попробовать снова",
+    "brief.uncertain": "Действие могло завершиться, но ответ не подтверждён. Обновите материалы перед следующим изменением.",
+    "brief.resolved": "Загружены текущие материалы с сервера. Проверьте их, прежде чем повторять действие.",
     "brief.actionError":
       "Не удалось выполнить действие. Обновите и проверьте материал перед повторной попыткой.",
     "brief.copyFailed": "Не удалось скопировать ссылку. Выделите и скопируйте её вручную.",
@@ -187,6 +191,8 @@ export const briefDictionaries = {
     "brief.conflict": "Материал басқа жерде өзгертілді. Қазіргі нұсқасын көру үшін жаңартыңыз.",
     "brief.notFound": "Бұл дәріс немесе материал қолжетімсіз.",
     "brief.retry": "Қайталап көру",
+    "brief.uncertain": "Әрекет аяқталуы мүмкін, бірақ жауап расталмады. Келесі өзгеріске дейін материалдарды жаңартыңыз.",
+    "brief.resolved": "Сервердегі ағымдағы материалдар жүктелді. Әрекетті қайталаудан бұрын оларды тексеріңіз.",
     "brief.actionError":
       "Әрекетті аяқтау мүмкін болмады. Қайталаудан бұрын материалды жаңартып, тексеріңіз.",
     "brief.copyFailed": "Сілтемені көшіру мүмкін болмады. Оны таңдап, қолмен көшіріңіз.",
