@@ -1,4 +1,4 @@
-# Build log
+﻿# Build log
 
 Timezone: Asia/Qyzylorda (UTC+05:00). Date: 25 November 2026.
 This log records what was actually run. It does not reconstruct work that did not happen.
@@ -160,3 +160,142 @@ A clean reviewer should follow `README.md` and use Docker Compose or their own P
 The Phase 2 backend merge (`31929a6`, merged as `dc72db3`) added insight, handoff, autonomy and cohort routes, but the committed `docs/contracts/openapi.json` and generated `types.gen.ts` were not regenerated in that commit. GitHub Actions correctly failed the **API and WebSocket contract drift** job at the `git diff --exit-code` step.
 
 Fix: ran `python scripts/export_schemas.py` and `pnpm contracts`, then verified `pnpm typecheck` and `pnpm lint`. This is an additive contract update; no existing Phase 1 shape was removed.
+
+## P1 BriefNext / Handoff frontend — 2026-11-26
+
+Implemented the professor review/manual-authoring flow and public fragment-token Handoff route against the existing P2 contracts at `0cce36e`. Added summary/home navigation, EN/RU/KK text, state/error handling, server-authoritative transitions and test-only contract coverage. Fixed stale publication links after refresh, native dialog cancellation and the skip link overwriting the Handoff fragment. No backend or generated schema changes.
+
+Actual local verification:
+
+| Check | Result |
+| --- | --- |
+| `pnpm lint` | Passed |
+| `pnpm typecheck` | Passed; final build TypeScript check also passed |
+| `pnpm test` | 31/31 tests, 7/7 files |
+| `pnpm build --webpack` | Passed; 10 static pages generated and both new routes included |
+| Default `pnpm build` | Interrupted after remaining at Turbopack compilation without further output |
+| New Playwright contract scenarios | 3 attempted; Chrome launch failed before test execution (`SIGABRT`/`EPERM`), no axe pass claimed |
+| Manual browser | Handoff missing-token/network states, desktop and 390×844 light/dark; keyboard skip preserves fragment and focuses main; no mobile horizontal overflow |
+| Real API / existing full E2E / backend checks | Not run: no running API, PostgreSQL/pgvector, Redis or provided P2 test backend |
+
+This is a locally implemented frontend slice, not verified end-to-end delivery. See `docs/handover/P1.md` for the integration checklist and deferred scope. No push, PR or deployment was performed.
+
+Implementation commit: `283fae3c99f6842f5e30e3cf83cca4a709ca16f3` — `feat(frontend): add BriefNext review and public Handoff`, on `feat/p1-frontend-experience`.
+
+## User-supplied design tokens — 2026-11-26
+
+Applied the supplied light/dark background, primary, foreground, secondary, accent and surface values exactly. Updated their paired RGB variables for Tailwind opacity utilities and derived hover, soft, muted, border and focus tones. Added a primary-foreground token so pink buttons use dark text in dark mode. Warning states use the existing semantic attention color. Updated browser/PWA colors, the app-shell cache version, presentation background and QR foreground.
+
+Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. A one-off calculation checked the exact supplied values and every paired RGB value; sampled body, muted, primary-button and badge text/background combinations exceeded 4.5:1. Primary-button text contrast is 7.65:1 in light mode and 5.66:1 in dark mode. This is not a complete WCAG audit.
+
+Inspected the login screen in the built-in browser at desktop and 390×844 in both themes, confirmed computed colors, and found no horizontal overflow. Saved light/dark screenshots as session deliverables. Existing full-backend/E2E limitations above remain unchanged; no push or deployment was performed.
+
+## User-supplied application icon — 2026-11-26
+
+Replaced the active header, browser and installed-app icon references with exports of the supplied PNG. The canonical `docs/assets/app-icon.png` is byte-identical to the user's original; 64/180/192/512-pixel exports preserve the image composition and background. Removed the old SVG favicon, added `src/app/icon.png`, and updated the exporter to derive future icons from the checked-in artwork. New asset filenames avoid the previous Next image-optimizer cache; service-worker cache version v5 refreshes the manifest and app-shell assets.
+
+Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. The build includes `/icon.png`. Verified PNG dimensions, manifest targets, canonical-source hash equality and exporter Python syntax. The browser loaded the new header image and metadata links; inspected the mark in light/dark themes and saved a header screenshot as a session deliverable. No push or deployment was performed.
+
+## User-selected typography — 2026-11-26
+
+Replaced Manrope with locally bundled Fontsource packages: Source Serif 4 600 for headings and IBM Plex Sans 400 for body copy, with 500/600 for controls and navigation. Normalized the old 700/800 utility weights to 600, preserved monospace codes/timers, and loosened the landing hero's tracking and line height. Concept, lecture-card and student-history titles now use heading elements. Font imports include Latin, Cyrillic and Cyrillic-ext subsets with `font-display: swap`; no runtime Google Fonts requests are introduced. The lockfile changes only the font dependencies.
+
+Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. Checked computed heading/body/button/navigation families and weights in the built-in browser. Visually inspected Russian/Kazakh login copy at 390×844 and the landing page at mobile and 1280×800 desktop widths, including English copy and both themes; observed no horizontal overflow. The browser check caught an unquoted numeric family name, corrected to `"Source Serif 4"` in Tailwind before the successful build. Saved light/dark landing screenshots as session deliverables. Real-backend/E2E limitations above are unchanged; no push or deployment was performed.
+
+## P3 Axiom milestone (`feat/p3-axiom-engine`)
+
+- Added `200_p3_axiom_transcript.sql` and applied it to the local PostgreSQL instance.
+- Downloaded and ran `intfloat/multilingual-e5-small` ONNX (384-d); 40/40 demonstration segments embedded, L2-normalized, finite.
+- Imported the synthetic 40-segment Russian Bernoulli fixture through the real API; run status `completed`, `embedded=40`.
+- Exercised Replay start/turn, GapCards and BriefNext/Handoff against the local API. Template source was returned because no LLM/STT credentials were available.
+- `pytest -q`: **108 passed**; Ruff and mypy clean.
+- Frontend: ESLint, TypeScript, Vitest 11/11 and production build passed; contracts regenerated and stable.
+- AI evaluation: 30 retrieval cases, Recall@4 **0.600**, MRR **0.4819**; 10/10 deterministic guardrails. Raw result `artifacts/evals/eval-20261125T180048Z.json`.
+- The earlier baseline made no live LLM/Whisper call; the hardening pass later verified live DeepSeek and Groq calls. No deployment or Docker run was performed.
+- PR #2 GitHub Actions at `e19ffef`: backend, frontend, contract drift, secret scanning and E2E all passed.
+
+## P3 AI hardening (commit `a8eeac2`)
+
+- Hybrid retrieval added: exact filtered cosine + BM25 + weighted RRF + temporal RRF; dense-only mode retained.
+- Corrected off-by-one relevance labels in the 30-case suite before reporting the new benchmark.
+- Retrieval: overall Recall@4 **0.8667**, MRR **0.7000**; RU 0.90, EN 0.80, KK 0.90; held-out Recall@4 **0.90**.
+- Adversarial suite: **32/32** constructed cases (29 deterministic, 1 fake LLM, 2 template). Live adversarial sample size: **0**.
+- Live provider smoke: **10/10 functional checks** with DeepSeek `deepseek-flash`; Groq `whisper-large-v3-turbo` returned a timestamped transcription. Live P2 API BriefNext returned `source=live` and `pending_approval`. Raw artifacts `artifacts/evals/hardening/live-provider-smoke.json`, `provider-smoke.json` and `live-api-insight.json`.
+- Added per-Replay-Token request cap, single-use state nonce, model prewarm and status readiness.
+- Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
+- Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
+- No Docker or cloud deployment was performed. Live provider functional checks passed, but no live adversarial safety benchmark was run.
+
+## P1 remaining frontend workflows — 2026-11-26
+
+Implemented Cohort Memory and server-authoritative Autonomy controls in `2f828d7`. After discovering that the team had delivered the actual P3 APIs/contracts on `feat/p3-axiom-engine`, merged P3 `c21446a` into the P1 branch as `6deb064`, preserving both histories. Resolved CORS by retaining P1's PUT and P3's X-Replay-Token header allowance; shared main was not changed. The P3 evidence above belongs to that team's earlier environment and is not a successful backend run on this Mac.
+
+Added Transcript JSON/audio import, BriefNext/Handoff server generation and evidence rendering, Socratic Replay, GapCards with local review scheduling, and the local learning library. Added EN/RU/KK copy and navigation. Replay credentials are separate from professor/Signal credentials; signed moments and state capabilities remain in memory. IndexedDB migration preserves prior records and revision checks prevent stale Replay/card writes from restoring cleared history. Uncertain professor mutations reconcile with one read and never automatically repeat the write. Moved the CORS regression tests into `tests/unit` so CI's explicit unit selection runs them.
+
+Local verification:
+
+| Check | Actual result |
+| --- | --- |
+| Frontend ESLint / TypeScript | Passed |
+| Frontend Vitest | 175/175 tests in 15 files, including the final late-Signal-ACK/local-history deletion regressions |
+| `pnpm build --webpack` | Passed; all new routes included. Default Turbopack build is not claimed as passing locally |
+| Backend Ruff after P3 integration | Passed |
+| Backend before P3 integration | Ruff/mypy and four real CORS middleware tests passed. Full pytest stopped because PostgreSQL at 127.0.0.1:55432 was unavailable |
+| Backend after P3 integration | Mypy and pytest collection blocked by missing numpy. Exact dependency installation could not resolve `filelock==4.3.1` / `numpy==2.5.5` in this environment. No substitute dependencies installed |
+| Contract regeneration after integration | Not completed locally because the backend import dependencies are unavailable; P3's committed generated schemas/types were used unchanged |
+| Playwright contract E2E | 1 failed before scenario execution and 2 not run: missing Chromium headless shell. Official browser installation reports unsupported mac13-arm64 for this version. No passing E2E or axe result claimed |
+
+Inspected an isolated build with a prominent synthetic-data banner and a local fixture API, outside the repository. The actual production routes have no fixture fallback. Through the built-in browser, exercised Replay selection → MCQ → free text → completion → GapCards generation/flip/local rating; inspected Transcript, Cohort and Autonomy. Checked 390×844 and 1280×800 layouts and light/dark themes. Found and fixed escaped table accessibility text causing mobile overflow, an Autonomy action squeezing the mobile concept title, and a malformed GitHub navigation link. The long-name confirmation dialog stays within a 390-pixel viewport. Preview uses a same-origin test proxy and does not prove production CORS, real STT, real provider results or real backend integration.
+
+Remaining: real PostgreSQL/pgvector/Redis/API setup, migration and transcript import, professor/public/student end-to-end scenarios, supported-browser/axe and manual assistive-technology checks, actual STT, final CI/team review, then P4's real-flow demo. Richer Cohort semester/title/structural-gap data and actual automatic AI publication require backend work. See `docs/handover/P1.md`.
+
+Final follow-up: clearing local history also records the highest allocated Signal sequence in the same IndexedDB transaction. Late accepted/duplicate acknowledgements and pending writes for earlier sequences cannot recreate erased signals; newly allocated signals still work. Confirmed the repaired mobile Autonomy titles use the full 308-pixel card content width at a 390-pixel viewport, instead of collapsing beside the action button. Final lint, TypeScript, 175 tests and production webpack build all passed after these fixes.
+
+Implementation commit: `5c81f32816085ce9c31e78a96204a0f62b9ba03f` — `feat(frontend): integrate transcript replay and learning workflows`. Preceded by Cohort/Autonomy `2f828d7` and P3 integration `6deb064`, on `feat/p1-frontend-experience`. The branch is prepared for a draft PR; real-infrastructure acceptance remains open.
+
+Publication attempt: `git push -u origin feat/p1-frontend-experience` failed because HTTPS Git could not obtain a username from this terminal. The authenticated GitHub connector could read the repository, but its first write attempt (create blob) returned HTTP 403, `Resource not accessible by integration`. No remote branch/commit/PR was created by that fallback, no remote CI ran for this P1 head, and main was not modified. All original local commits remain intact; a Git bundle, draft PR description and Russian completion report were prepared as local handoff artifacts. Publishing requires repository write authorization in Git or the connector.
+
+## P1 GitHub publication — 2026-11-26
+
+Resolved the earlier publication blocker after user-confirmed GitHub CLI device authentication. An initial credential save failed because the absent parent configuration directory could not be created; after granting the required filesystem access and repeating the device confirmation, authentication succeeded as `Nurzhigittt`. GitHub reports push permission for this repository. Configured the Git credential helper only in this repository, without changing global Git settings.
+
+`git push -u origin feat/p1-frontend-experience` succeeded. Verified the remote branch at `18f14e7b2d1e6a5f90d971063b9c65194a89f6d7`, preserving the original local commits and P3 ancestry. Created draft PR #4: <https://github.com/Nurzhigittt/project-darisai/pull/4>, targeting main. No merge or deployment was performed. This follow-up changes documentation only; the implementation verification remains the 175 tests/lint/types/webpack build recorded above. Remote CI and real-infrastructure acceptance must be assessed separately from those local results.
+
+First remote CI at `18f14e7`: frontend lint/types/tests/default production build, backend Ruff/mypy/unit/integration/security tests, and API/WebSocket contract drift checks passed in run <https://github.com/Nurzhigittt/project-darisai/actions/runs/45780544158>. E2E was still running when this entry was written. Secret scanning found one false positive: the literal mock Replay moment `fresh-signed-moment-12345678` in the network-recovery component test. Added only that exact commit/path/rule/line fingerprint to `.gitleaksignore`; no real credential, test directory or generic rule is exempted. The latest PR checks remain the authoritative final status.
+
+## P2 backend completion (`feat/p2-backend-completion`)
+
+- Integrated P3 at `c21446a` through the P2 branch; no history rewrite.
+- Added migration `300_p2_completion.sql` and applied it to the local database.
+- Clean database: 4 migrations, 19 public tables, pgvector 0.8.1.
+- Phase 1 schema upgraded through all 4 migrations successfully.
+- Added canonical concepts, insight decision history, generation deduplication, Handoff revoke/redeem counters and IP rate limit, autonomy eligibility, cohort structural gaps, and isolated demo sessions.
+- Backend tests: **121 passed**; Ruff/mypy clean; frontend lint/typecheck/tests/build clean.
+- 300-client load: 300/300, 0 errors, ack p95 14.71 ms, Signal-to-Ripple p95 396.84 ms, p99 468.60 ms; API working set ~164 MB and CPU ~13.8% of four cores during the sample.
+- No Docker or cloud deployment was executed.
+
+## P1 final integration and accessibility — 2026-11-26
+
+Merged P2 `f2a312f` (which contains P3 `c21446a`) into `feat/p1-frontend-experience` as `6ba8322`, preserving history and the P1 CORS `PUT` plus P3 `X-Replay-Token` allowances. Regenerated OpenAPI and TypeScript contracts.
+
+Completed the P2-facing UI: server decision history, Handoff link revocation and revoked state, Cohort structural gaps with canonical titles and explicit synthetic/observed/mixed provenance, autonomy eligibility/observation/whitelist timestamps and `AUTONOMY_NOT_ELIGIBLE` handling. Regenerated contracts are stable.
+
+Accessibility root causes fixed without disabling axe rules: transient colour interpolation during theme changes, native dialog close re-entrancy, and a pause/resume control response closing the end-lecture dialog. All 16 Playwright tests pass, including the three previously failing mobile light/dark axe checks.
+
+Actual verification:
+
+| Check | Result |
+| --- | --- |
+| Frontend ESLint / TypeScript | Passed |
+| Vitest | 187/187 in 17 files |
+| Production build | Passed |
+| Playwright E2E | 16/16 passed |
+| Axe mobile light/dark | Passed |
+| Backend Ruff / mypy / pytest | Passed; 125 tests |
+| Contracts | Stable |
+| Live P2 API | BriefNext/Handoff template, edit, approve, decisions, publish, redeem, revoke, structural gaps, autonomy eligibility, Replay, GapCards |
+| Live P2 UI | Brief history, structural gaps, autonomy eligibility rendered from real API |
+
+Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
+
+

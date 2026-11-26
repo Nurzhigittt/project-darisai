@@ -10,13 +10,17 @@ requires-python = ">=3.12"
 dependencies = [
   "asyncpg==0.32.0",
   "fastapi==0.136.1",
+  "huggingface-hub==1.33.0",
   "httpx==0.28.1",
+  "numpy==2.5.5",
+  "onnxruntime==1.32.0",
   "prometheus-client==0.24.1",
   "pydantic==2.13.4",
   "pydantic-settings==2.13.0",
   "PyJWT==2.10.1",
   "python-multipart==0.0.20",
   "redis==6.4.0",
+  "tokenizers==0.23.3",
   "uvicorn[standard]==0.47.0",
 ]
 
@@ -73,6 +77,6 @@ exclude = ["tests"]
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["asyncpg", "asyncpg.*", "redis", "redis.*", "prometheus_client", "prometheus_client.*"]
+module = ["asyncpg", "asyncpg.*", "redis", "redis.*", "prometheus_client", "prometheus_client.*", "onnxruntime", "onnxruntime.*", "tokenizers", "tokenizers.*", "huggingface_hub", "huggingface_hub.*"]
 ignore_missing_imports = true
 follow_imports = "skip"

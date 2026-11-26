@@ -37,6 +37,12 @@ def make_settings(**overrides: object) -> Settings:
         "replay_token_ttl_minutes": 180,
         "ripple_eval_interval_ms": 100,
         "ws_hello_timeout_seconds": 0.3,
+        "axiom_embedding_provider": "fake",
+        "axiom_llm_provider": "disabled",
+        "axiom_stt_provider": "disabled",
+        "axiom_similarity_floor": 0.0,
+        "rate_limit_auth_per_minute": 1000,
+        "rate_limit_join_per_minute": 1000,
     }
     values.update(overrides)
     return Settings(**values)

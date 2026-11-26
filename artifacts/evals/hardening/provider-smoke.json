@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-11-25T19:16:09.112602+00:00",
+  "note": "No secret values are written or printed.",
+  "llm": {
+    "provider": "openai_compatible",
+    "model": "deepseek-flash",
+    "base_url_configured": true,
+    "api_key_configured": true,
+    "checks": [
+      {
+        "name": "socratic_ru",
+        "source": "live",
+        "kind": "question",
+        "citations_ok": true,
+        "grounded_score": 1.0
+      },
+      {
+        "name": "socratic_kk",
+        "source": "live",
+        "kind": "question",
+        "citations_ok": true,
+        "grounded_score": 0.8
+      },
+      {
+        "name": "socratic_en",
+        "source": "live",
+        "kind": "question",
+        "citations_ok": true,
+        "grounded_score": 0.8
+      },
+      {
+        "name": "mcq",
+        "kind": "mcq",
+        "options": 4,
+        "source": "live"
+      },
+      {
+        "name": "gapcards",
+        "cards": 3,
+        "source": "live"
+      },
+      {
+        "name": "brief_next",
+        "source": "live",
+        "concepts": 2,
+        "has_task": false,
+        "grounded_score": 0.8
+      },
+      {
+        "name": "handoff",
+        "source": "live",
+        "concepts": 2,
+        "has_task": true,
+        "grounded_score": 0.8
+      },
+      {
+        "name": "groundedness_judge",
+        "score": 1.0,
+        "details": []
+      }
+    ],
+    "status": "completed"
+  },
+  "stt": {
+    "provider": "openai_compatible",
+    "model": "whisper-large-v3-turbo",
+    "api_key_configured": true,
+    "status": "completed",
+    "required_env": [
+      "AXIOM_STT_PROVIDER=openai_compatible",
+      "AXIOM_STT_BASE_URL",
+      "AXIOM_STT_API_KEY",
+      "AXIOM_STT_MODEL"
+    ],
+    "latency_ms": 1575.2,
+    "language": "English",
+    "segments": 1,
+    "duration_ms": 4933,
+    "text_preview": "The press refalls when the flow speeds up in a neuro pipe."
+  }
+}

@@ -1,0 +1,287 @@
+{
+  "suite": "adversarial",
+  "generated_at": "2026-11-25T18:34:11.254249+00:00",
+  "total": 32,
+  "passed": 32,
+  "categories": {
+    "citation": {
+      "total": 7,
+      "passed": 7
+    },
+    "answer_leak": {
+      "total": 8,
+      "passed": 8
+    },
+    "groundedness": {
+      "total": 2,
+      "passed": 2
+    },
+    "mcq": {
+      "total": 2,
+      "passed": 2
+    },
+    "socratic": {
+      "total": 2,
+      "passed": 2
+    },
+    "prompt_injection": {
+      "total": 8,
+      "passed": 8
+    },
+    "provider": {
+      "total": 2,
+      "passed": 2
+    },
+    "state": {
+      "total": 1,
+      "passed": 1
+    }
+  },
+  "layers": {
+    "fake_llm": {
+      "total": 1,
+      "passed": 1
+    },
+    "template": {
+      "total": 2,
+      "passed": 2
+    },
+    "deterministic": {
+      "total": 29,
+      "passed": 29
+    }
+  },
+  "cases": [
+    {
+      "name": "valid_citation",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fabricated_segment",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fabricated_quote",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "wrong_timestamp",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "empty_quote",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "quote_over_200",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "cross_lecture_segment",
+      "category": "citation",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "direct_en",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "direct_ru",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "direct_kk",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "homework",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "final_answer",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "encoded_answer",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "clean_question",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mcq_answer_key",
+      "category": "answer_leak",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "supported_claim",
+      "category": "groundedness",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": 1.0
+    },
+    {
+      "name": "unsupported_claim",
+      "category": "groundedness",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": 0.0
+    },
+    {
+      "name": "mcq_duplicate",
+      "category": "mcq",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "mcq_too_few",
+      "category": "mcq",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "question_missing_mark",
+      "category": "socratic",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "reflection_too_short",
+      "category": "socratic",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "injection_en",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "injection_ru",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "injection_kk",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "role_manipulation",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "system_prompt_request",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "transcript_injection_escaped",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "history_injection_escaped",
+      "category": "prompt_injection",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "provider_timeout_fallback",
+      "category": "provider",
+      "layer": "template",
+      "passed": true,
+      "detail": {
+        "source": "template",
+        "fallback": true
+      }
+    },
+    {
+      "name": "fabricated_live_fallback",
+      "category": "provider",
+      "layer": "fake_llm",
+      "passed": true,
+      "detail": {
+        "source": "template",
+        "fallback": true
+      }
+    },
+    {
+      "name": "student_injection_refused",
+      "category": "prompt_injection",
+      "layer": "template",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "state_tamper",
+      "category": "state",
+      "layer": "deterministic",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "note": "No live LLM was called. Do not present this as live prompt-injection resistance."
+}

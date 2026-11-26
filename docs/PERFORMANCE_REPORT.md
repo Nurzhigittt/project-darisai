@@ -105,3 +105,26 @@ The script requires the development professor seed (`DARIS-TEACH-2026` by defaul
 - Ack processing is fast (p95 ≈ 11 ms) because the signal path is an atomic Redis Lua operation plus an ACK write; no LLM or blocking external call is involved.
 - Ripple latency is dominated by the deliberate ≤ 2 Hz broadcast cadence and the 500 ms minimum spacing.
 - The 300-client result is close to the target and should be treated as an engineering measurement, not a capacity guarantee.
+
+## P2 completion load verification (26 November 2026)
+
+**Raw report:** `artifacts/loadtest/loadtest-20261126T075720Z.json`  
+**Environment:** same local stack; final P2 branch; one Uvicorn worker; Docker unavailable.
+
+| Metric | Result |
+| --- | ---: |
+| Connected students | 300/300 |
+| Failed connections | 0 |
+| Accepted signals | 400 |
+| Duplicate rejections | 400 |
+| Errors | 0 |
+| Ack p50 / p95 / p99 | 6.65 / 14.71 / 19.83 ms |
+| Signal-to-Ripple p50 / p95 / p99 | 159.22 / **396.84** / 468.60 ms |
+| Ripple broadcasts observed | 59 |
+| API working-set sample | ~164 MB |
+| CPU estimate during run | ~13.8% of 4 cores |
+
+The P2 changes add no work to the Signal/Ripple hot path. The 300-client p95 is
+below the 500 ms engineering target; this is one local synthetic run, not a
+capacity guarantee. AI provider latency is reported separately in
+`GUARDRAILS_REPORT.md`.

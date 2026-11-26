@@ -1,0 +1,52 @@
+{
+  "synthetic": true,
+  "label": "All participants and signals in this report are synthetic load.",
+  "generated_at": "2026-11-26T07:58:01.065480+00:00",
+  "started_at": "2026-11-26T07:57:20.636787+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.4",
+    "server_base_url": "http://127.0.0.1:8003",
+    "note": "Client-side run against the real local API, not a cloud benchmark."
+  },
+  "configuration": {
+    "students": 300,
+    "lectures": 1,
+    "duration_seconds": 20.0,
+    "signal_interval_seconds": 16.0,
+    "signal_stagger_seconds": 0.05,
+    "warmup_seconds": 2.0,
+    "reconnect_probes": 5,
+    "connect_concurrency": 25
+  },
+  "results": {
+    "wall_seconds": 40.43,
+    "expected_students": 300,
+    "connected_students": 300,
+    "connection_success_rate": 1.0,
+    "failed_connections": 0,
+    "accepted_signals": 400,
+    "rejected_signals": 0,
+    "duplicate_rejections": 400,
+    "reconnect_probes": 5,
+    "reconnect_duplicate_acks": 5,
+    "ack_latency_ms": {
+      "count": 400,
+      "p50": 6.65,
+      "p95": 14.71,
+      "p99": 19.83,
+      "max": 25.07
+    },
+    "signal_to_next_ripple_ms": {
+      "count": 300,
+      "p50": 159.22,
+      "p95": 396.84,
+      "p99": 468.6,
+      "max": 506.61,
+      "semantics": "Time from each synthetic participant's first accepted signal to the next Ripple broadcast. Later signals may not change an already saturated aggregate. Values are an upper bound, not per-signal causality."
+    },
+    "errors": [],
+    "error_count": 0,
+    "ripple_broadcasts_observed": 59
+  }
+}

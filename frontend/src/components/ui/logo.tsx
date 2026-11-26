@@ -15,7 +15,7 @@ export function Logo({
   const mark = (
     <span className="inline-flex items-center gap-2.5">
       <Image
-        src="/icons/icon-192.png"
+        src="/icons/daris-192.png"
         alt=""
         width={36}
         height={36}
@@ -27,7 +27,7 @@ export function Logo({
       />
       <span
         className={cn(
-          "text-lg font-extrabold tracking-[-0.04em]",
+          "text-lg font-semibold tracking-[-0.04em]",
           light ? "text-white" : "text-foreground",
         )}
       >

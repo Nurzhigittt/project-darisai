@@ -1,11 +1,11 @@
 /* DärisAI app-shell service worker. API responses and credentials are never cached. */
-const CACHE = "daris-shell-v3";
+const CACHE = "daris-shell-v5";
 const SHELL = [
   "/",
   "/offline",
   "/manifest.webmanifest",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
+  "/icons/daris-192.png",
+  "/icons/daris-512.png",
 ];
 
 self.addEventListener("install", (event) => {

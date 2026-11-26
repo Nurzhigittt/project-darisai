@@ -57,7 +57,7 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
 
   if (loading) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-[#121212]">
+      <div data-theme="dark" className="grid min-h-dvh place-items-center bg-background">
         <Skeleton className="h-96 w-96" />
       </div>
     );
@@ -80,7 +80,7 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#121212] text-[#F4F2F7]">
+    <div data-theme="dark" className="flex min-h-dvh flex-col bg-background text-foreground">
       <header className="flex items-center justify-between px-6 py-5">
         <Link
           href={`/p/${lectureId}`}
@@ -104,10 +104,10 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
         className="flex flex-1 flex-col items-center justify-center gap-8 px-6 pb-12 text-center"
       >
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.28em] text-white/50">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white/50">
             {t("prof.live.joinTitle")}
           </p>
-          <h1 className="mt-3 text-balance text-[clamp(2rem,4vw,3.5rem)] font-extrabold">
+          <h1 className="mt-3 text-balance text-[clamp(2rem,4vw,3.5rem)] font-semibold">
             {lecture.title}
           </h1>
           <p className="mt-2 text-white/60">{lecture.course_title ?? ""}</p>
@@ -118,17 +118,17 @@ export function PresentationScreen({ lectureId }: { lectureId: string }) {
             size={340}
             level="M"
             bgColor="#FFFFFF"
-            fgColor="#26233A"
+            fgColor="#122C34"
             marginSize={2}
             aria-label={`QR code joining ${lecture.title}`}
             role="img"
           />
         </div>
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.28em] text-white/50">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/50">
             {t("prof.live.code")}
           </p>
-          <p className="mt-2 font-mono text-[clamp(3rem,10vw,6rem)] font-extrabold tracking-[0.2em]">
+          <p className="mt-2 font-mono text-[clamp(3rem,10vw,6rem)] font-semibold tracking-[0.2em]">
             {lecture.join_code}
           </p>
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/60">

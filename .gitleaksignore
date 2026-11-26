@@ -1,0 +1,3 @@
+# Synthetic Replay moment returned only by mockApi in a component regression test.
+# This exact historical finding is not an API key or a usable signed capability.
+5c81f32816085ce9c31e78a96204a0f62b9ba03f:frontend/src/features/replay/replay-screen.test.tsx:generic-api-key:208

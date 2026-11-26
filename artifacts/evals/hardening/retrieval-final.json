@@ -1,0 +1,2056 @@
+{
+  "generated_at": "2026-11-25T18:36:12.309979+00:00",
+  "fixture": "backend\\app\\demo\\scenarios\\bernoulli_ru.json",
+  "limitations": [
+    "Synthetic lecture; labels authored by the project, not independent annotators.",
+    "Retrieval is exact in-memory cosine, not the PostgreSQL query path.",
+    "No live LLM or Whisper call was made."
+  ],
+  "retrieval": {
+    "suite": "retrieval_hardening",
+    "model": "intfloat/multilingual-e5-small",
+    "dimension": 384,
+    "corpus": "bernoulli_ru",
+    "method": "dense / BM25 / weighted RRF / temporal RRF",
+    "cases": 30,
+    "summary": {
+      "dense": {
+        "cases": 30.0,
+        "recall@4": 0.7,
+        "mrr": 0.5722
+      },
+      "lexical": {
+        "cases": 30.0,
+        "recall@4": 0.8,
+        "mrr": 0.7222
+      },
+      "hybrid": {
+        "cases": 30.0,
+        "recall@4": 0.8667,
+        "mrr": 0.6222
+      },
+      "hybrid_no_expansion": {
+        "cases": 30.0,
+        "recall@4": 0.6667,
+        "mrr": 0.525
+      },
+      "hybrid_temporal": {
+        "cases": 30.0,
+        "recall@4": 0.8667,
+        "mrr": 0.7
+      }
+    },
+    "by_language": {
+      "dense": {
+        "ru": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.9
+        },
+        "en": {
+          "cases": 10.0,
+          "recall@4": 0.6,
+          "mrr": 0.3917
+        },
+        "kk": {
+          "cases": 10.0,
+          "recall@4": 0.6,
+          "mrr": 0.425
+        }
+      },
+      "lexical": {
+        "ru": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.7833
+        },
+        "en": {
+          "cases": 10.0,
+          "recall@4": 0.6,
+          "mrr": 0.6
+        },
+        "kk": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.7833
+        }
+      },
+      "hybrid": {
+        "ru": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.825
+        },
+        "en": {
+          "cases": 10.0,
+          "recall@4": 0.8,
+          "mrr": 0.4417
+        },
+        "kk": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.6
+        }
+      },
+      "hybrid_no_expansion": {
+        "ru": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.7833
+        },
+        "en": {
+          "cases": 10.0,
+          "recall@4": 0.6,
+          "mrr": 0.3917
+        },
+        "kk": {
+          "cases": 10.0,
+          "recall@4": 0.5,
+          "mrr": 0.4
+        }
+      },
+      "hybrid_temporal": {
+        "ru": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.85
+        },
+        "en": {
+          "cases": 10.0,
+          "recall@4": 0.8,
+          "mrr": 0.575
+        },
+        "kk": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.675
+        }
+      }
+    },
+    "by_split": {
+      "dense": {
+        "tune": {
+          "cases": 20.0,
+          "recall@4": 0.75,
+          "mrr": 0.6458
+        },
+        "holdout": {
+          "cases": 10.0,
+          "recall@4": 0.6,
+          "mrr": 0.425
+        }
+      },
+      "lexical": {
+        "tune": {
+          "cases": 20.0,
+          "recall@4": 0.75,
+          "mrr": 0.6917
+        },
+        "holdout": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.7833
+        }
+      },
+      "hybrid": {
+        "tune": {
+          "cases": 20.0,
+          "recall@4": 0.85,
+          "mrr": 0.6333
+        },
+        "holdout": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.6
+        }
+      },
+      "hybrid_no_expansion": {
+        "tune": {
+          "cases": 20.0,
+          "recall@4": 0.75,
+          "mrr": 0.5875
+        },
+        "holdout": {
+          "cases": 10.0,
+          "recall@4": 0.5,
+          "mrr": 0.4
+        }
+      },
+      "hybrid_temporal": {
+        "tune": {
+          "cases": 20.0,
+          "recall@4": 0.85,
+          "mrr": 0.7125
+        },
+        "holdout": {
+          "cases": 10.0,
+          "recall@4": 0.9,
+          "mrr": 0.675
+        }
+      }
+    },
+    "best_method": "hybrid_temporal",
+    "parameters": {
+      "dense_candidates": 16,
+      "lexical_candidates": 16,
+      "rrf_k": 60,
+      "dense_weight": 1.0,
+      "lexical_weight": 1.0,
+      "temporal_weight": 0.35,
+      "before_ms": 90000,
+      "after_ms": 10000
+    },
+    "rows": [
+      {
+        "id": "ret-01",
+        "language": "ru",
+        "query": "Почему занавеска втягивается, когда включают воду?",
+        "relevant": [
+          0,
+          18
+        ],
+        "focus_ms": 5000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            0,
+            18,
+            10,
+            7
+          ],
+          "lexical": [
+            0,
+            18,
+            28
+          ],
+          "hybrid": [
+            0,
+            18,
+            10,
+            28
+          ],
+          "hybrid_no_expansion": [
+            0,
+            18,
+            10,
+            28
+          ],
+          "hybrid_temporal": [
+            0,
+            18,
+            10,
+            28
+          ]
+        },
+        "dense_scores": [
+          0.8617,
+          0.8537,
+          0.8344,
+          0.8275
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-02",
+        "language": "ru",
+        "query": "Что такое давление в жидкости?",
+        "relevant": [
+          1,
+          2
+        ],
+        "focus_ms": 14000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            1,
+            10,
+            9,
+            11
+          ],
+          "lexical": [
+            8,
+            7,
+            3,
+            11
+          ],
+          "hybrid": [
+            11,
+            7,
+            10,
+            1
+          ],
+          "hybrid_no_expansion": [
+            1,
+            10,
+            9,
+            7
+          ],
+          "hybrid_temporal": [
+            1,
+            11,
+            7,
+            10
+          ]
+        },
+        "dense_scores": [
+          0.8963,
+          0.8698,
+          0.8657,
+          0.8574
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.25,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-03",
+        "language": "ru",
+        "query": "Как связаны площадь сечения и скорость потока?",
+        "relevant": [
+          6,
+          7,
+          8
+        ],
+        "focus_ms": 59000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            7,
+            6,
+            8,
+            15
+          ],
+          "lexical": [
+            8,
+            23,
+            7,
+            15
+          ],
+          "hybrid": [
+            7,
+            8,
+            15,
+            23
+          ],
+          "hybrid_no_expansion": [
+            7,
+            8,
+            6,
+            15
+          ],
+          "hybrid_temporal": [
+            7,
+            6,
+            1,
+            3
+          ]
+        },
+        "dense_scores": [
+          0.8657,
+          0.8564,
+          0.8538,
+          0.8493
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-04",
+        "language": "ru",
+        "query": "Почему давление падает в узкой части трубы?",
+        "relevant": [
+          10,
+          11,
+          15,
+          29,
+          36,
+          38
+        ],
+        "focus_ms": 95000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            38,
+            10,
+            29,
+            36
+          ],
+          "lexical": [
+            29,
+            10,
+            38,
+            18
+          ],
+          "hybrid": [
+            38,
+            29,
+            10,
+            18
+          ],
+          "hybrid_no_expansion": [
+            38,
+            29,
+            10,
+            18
+          ],
+          "hybrid_temporal": [
+            10,
+            7,
+            38,
+            29
+          ]
+        },
+        "dense_scores": [
+          0.8866,
+          0.88,
+          0.8696,
+          0.861
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-05",
+        "language": "ru",
+        "query": "Какие допущения используются в уравнении Бернулли?",
+        "relevant": [
+          12,
+          13,
+          37
+        ],
+        "focus_ms": 113000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            27,
+            39,
+            16,
+            35
+          ],
+          "lexical": [
+            37,
+            39,
+            12,
+            11
+          ],
+          "hybrid": [
+            39,
+            27,
+            35,
+            11
+          ],
+          "hybrid_no_expansion": [
+            39,
+            27,
+            11,
+            16
+          ],
+          "hybrid_temporal": [
+            11,
+            13,
+            39,
+            27
+          ]
+        },
+        "dense_scores": [
+          0.8527,
+          0.8458,
+          0.8428,
+          0.838
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 0.0,
+        "hybrid_mrr": 0.0,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-06",
+        "language": "ru",
+        "query": "Что такое эффект Вентури?",
+        "relevant": [
+          14,
+          15
+        ],
+        "focus_ms": 131000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            14,
+            18,
+            6,
+            2
+          ],
+          "lexical": [
+            14,
+            36
+          ],
+          "hybrid": [
+            14,
+            36,
+            18,
+            6
+          ],
+          "hybrid_no_expansion": [
+            14,
+            18,
+            6,
+            2
+          ],
+          "hybrid_temporal": [
+            14,
+            36,
+            6,
+            9
+          ]
+        },
+        "dense_scores": [
+          0.9029,
+          0.799,
+          0.7845,
+          0.7802
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-07",
+        "language": "ru",
+        "query": "Почему давление не всасывает предмет?",
+        "relevant": [
+          17,
+          19,
+          20
+        ],
+        "focus_ms": 158000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            17,
+            18,
+            32,
+            7
+          ],
+          "lexical": [
+            17,
+            28,
+            32,
+            15
+          ],
+          "hybrid": [
+            17,
+            32,
+            7,
+            19
+          ],
+          "hybrid_no_expansion": [
+            17,
+            32,
+            19,
+            7
+          ],
+          "hybrid_temporal": [
+            17,
+            7,
+            15,
+            32
+          ]
+        },
+        "dense_scores": [
+          0.8797,
+          0.8631,
+          0.8591,
+          0.8514
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-08",
+        "language": "ru",
+        "query": "Почему объяснение подъёмной силы через одинаковое время неверно?",
+        "relevant": [
+          25,
+          26
+        ],
+        "focus_ms": 230000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            26,
+            27,
+            32,
+            6
+          ],
+          "lexical": [
+            6,
+            25,
+            26,
+            27
+          ],
+          "hybrid": [
+            26,
+            6,
+            27,
+            25
+          ],
+          "hybrid_no_expansion": [
+            27,
+            6,
+            26,
+            25
+          ],
+          "hybrid_temporal": [
+            26,
+            25,
+            6,
+            27
+          ]
+        },
+        "dense_scores": [
+          0.8666,
+          0.859,
+          0.8405,
+          0.839
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 0.5,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.3333,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-09",
+        "language": "ru",
+        "query": "Как измеряют давление в потоке?",
+        "relevant": [
+          33
+        ],
+        "focus_ms": 302000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            33,
+            34,
+            9,
+            23
+          ],
+          "lexical": [
+            33,
+            34,
+            36,
+            23
+          ],
+          "hybrid": [
+            33,
+            34,
+            23,
+            36
+          ],
+          "hybrid_no_expansion": [
+            33,
+            34,
+            23,
+            36
+          ],
+          "hybrid_temporal": [
+            33,
+            34,
+            23,
+            31
+          ]
+        },
+        "dense_scores": [
+          0.895,
+          0.8737,
+          0.8518,
+          0.8496
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-10",
+        "language": "ru",
+        "query": "Где уравнение Бернулли ограничено?",
+        "relevant": [
+          13,
+          27,
+          29,
+          39
+        ],
+        "focus_ms": 122000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            27,
+            39,
+            35,
+            11
+          ],
+          "lexical": [
+            11,
+            35,
+            39,
+            27
+          ],
+          "hybrid": [
+            27,
+            11,
+            39,
+            35
+          ],
+          "hybrid_no_expansion": [
+            35,
+            39,
+            27,
+            11
+          ],
+          "hybrid_temporal": [
+            11,
+            8,
+            12,
+            10
+          ]
+        },
+        "dense_scores": [
+          0.8645,
+          0.8599,
+          0.847,
+          0.8413
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 0.3333,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.5,
+        "hybrid_temporal_recall@4": 0.0,
+        "hybrid_temporal_mrr": 0.0
+      },
+      {
+        "id": "ret-11",
+        "language": "en",
+        "query": "why does a shower curtain move inward",
+        "relevant": [
+          0,
+          18
+        ],
+        "focus_ms": 5000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            30,
+            31,
+            18,
+            0
+          ],
+          "lexical": [],
+          "hybrid": [
+            30,
+            31,
+            18,
+            0
+          ],
+          "hybrid_no_expansion": [
+            30,
+            31,
+            18,
+            0
+          ],
+          "hybrid_temporal": [
+            0,
+            30,
+            31,
+            18
+          ]
+        },
+        "dense_scores": [
+          0.7928,
+          0.7879,
+          0.7875,
+          0.7818
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.3333,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.3333,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.3333,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-12",
+        "language": "en",
+        "query": "pressure as molecular collisions",
+        "relevant": [
+          2,
+          20
+        ],
+        "focus_ms": 23000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            9,
+            38,
+            28,
+            2
+          ],
+          "lexical": [
+            36,
+            8,
+            29,
+            34
+          ],
+          "hybrid": [
+            7,
+            3,
+            24,
+            10
+          ],
+          "hybrid_no_expansion": [
+            9,
+            38,
+            28,
+            2
+          ],
+          "hybrid_temporal": [
+            3,
+            1,
+            7,
+            24
+          ]
+        },
+        "dense_scores": [
+          0.8155,
+          0.8153,
+          0.8067,
+          0.8025
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.25,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 0.0,
+        "hybrid_mrr": 0.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.25,
+        "hybrid_temporal_recall@4": 0.0,
+        "hybrid_temporal_mrr": 0.0
+      },
+      {
+        "id": "ret-13",
+        "language": "en",
+        "query": "continuity equation for incompressible flow",
+        "relevant": [
+          6,
+          8
+        ],
+        "focus_ms": 59000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            37,
+            39,
+            8,
+            12
+          ],
+          "lexical": [
+            6,
+            7,
+            8,
+            15
+          ],
+          "hybrid": [
+            8,
+            6,
+            7,
+            31
+          ],
+          "hybrid_no_expansion": [
+            37,
+            39,
+            8,
+            12
+          ],
+          "hybrid_temporal": [
+            6,
+            7,
+            8,
+            31
+          ]
+        },
+        "dense_scores": [
+          0.796,
+          0.7948,
+          0.7892,
+          0.7866
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.3333,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.3333,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-14",
+        "language": "en",
+        "query": "why pressure drops in a narrowing pipe",
+        "relevant": [
+          7,
+          10,
+          11,
+          15
+        ],
+        "focus_ms": 68000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            10,
+            9,
+            30,
+            7
+          ],
+          "lexical": [
+            36,
+            14,
+            26,
+            27
+          ],
+          "hybrid": [
+            36,
+            7,
+            10,
+            24
+          ],
+          "hybrid_no_expansion": [
+            10,
+            9,
+            30,
+            7
+          ],
+          "hybrid_temporal": [
+            7,
+            36,
+            10,
+            24
+          ]
+        },
+        "dense_scores": [
+          0.801,
+          0.7981,
+          0.7947,
+          0.7935
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-15",
+        "language": "en",
+        "query": "assumptions of the Bernoulli equation",
+        "relevant": [
+          12,
+          13,
+          37
+        ],
+        "focus_ms": 113000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            39,
+            27,
+            35,
+            0
+          ],
+          "lexical": [
+            37,
+            39,
+            12,
+            11
+          ],
+          "hybrid": [
+            39,
+            37,
+            27,
+            35
+          ],
+          "hybrid_no_expansion": [
+            39,
+            27,
+            35,
+            0
+          ],
+          "hybrid_temporal": [
+            11,
+            12,
+            9,
+            8
+          ]
+        },
+        "dense_scores": [
+          0.8368,
+          0.8215,
+          0.8213,
+          0.8139
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-16",
+        "language": "en",
+        "query": "Venturi effect applications",
+        "relevant": [
+          14,
+          30,
+          31,
+          32
+        ],
+        "focus_ms": 131000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            14,
+            39,
+            0,
+            30
+          ],
+          "lexical": [
+            14,
+            36
+          ],
+          "hybrid": [
+            14,
+            36,
+            39,
+            0
+          ],
+          "hybrid_no_expansion": [
+            14,
+            39,
+            0,
+            30
+          ],
+          "hybrid_temporal": [
+            14,
+            36,
+            9,
+            13
+          ]
+        },
+        "dense_scores": [
+          0.8348,
+          0.7591,
+          0.7579,
+          0.7577
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-17",
+        "language": "en",
+        "query": "is low pressure the same as suction",
+        "relevant": [
+          17,
+          19,
+          20
+        ],
+        "focus_ms": 158000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            7,
+            39,
+            10,
+            30
+          ],
+          "lexical": [
+            17,
+            21,
+            32,
+            36
+          ],
+          "hybrid": [
+            36,
+            7,
+            32,
+            10
+          ],
+          "hybrid_no_expansion": [
+            7,
+            39,
+            10,
+            30
+          ],
+          "hybrid_temporal": [
+            7,
+            10,
+            36,
+            32
+          ]
+        },
+        "dense_scores": [
+          0.8066,
+          0.7924,
+          0.7896,
+          0.7895
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 0.0,
+        "hybrid_mrr": 0.0,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 0.0,
+        "hybrid_temporal_mrr": 0.0
+      },
+      {
+        "id": "ret-18",
+        "language": "en",
+        "query": "equal transit time fallacy for lift",
+        "relevant": [
+          25,
+          26
+        ],
+        "focus_ms": 230000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            37,
+            12,
+            13,
+            39
+          ],
+          "lexical": [
+            26,
+            25,
+            6,
+            27
+          ],
+          "hybrid": [
+            6,
+            37,
+            26,
+            12
+          ],
+          "hybrid_no_expansion": [
+            37,
+            12,
+            13,
+            39
+          ],
+          "hybrid_temporal": [
+            6,
+            26,
+            25,
+            19
+          ]
+        },
+        "dense_scores": [
+          0.7917,
+          0.7824,
+          0.777,
+          0.7758
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.3333,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-19",
+        "language": "en",
+        "query": "lift from downwash and circulation",
+        "relevant": [
+          24,
+          26,
+          27
+        ],
+        "focus_ms": 221000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            30,
+            18,
+            31,
+            0
+          ],
+          "lexical": [
+            26,
+            27
+          ],
+          "hybrid": [
+            30,
+            26,
+            18,
+            27
+          ],
+          "hybrid_no_expansion": [
+            30,
+            18,
+            31,
+            0
+          ],
+          "hybrid_temporal": [
+            18,
+            24,
+            21,
+            30
+          ]
+        },
+        "dense_scores": [
+          0.7884,
+          0.7809,
+          0.7784,
+          0.772
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-20",
+        "language": "en",
+        "query": "limitations for viscous and compressible flow",
+        "relevant": [
+          13,
+          29,
+          39
+        ],
+        "focus_ms": 122000,
+        "split": "tune",
+        "top4": {
+          "dense": [
+            13,
+            39,
+            12,
+            35
+          ],
+          "lexical": [
+            23,
+            34,
+            21,
+            36
+          ],
+          "hybrid": [
+            36,
+            31,
+            18,
+            13
+          ],
+          "hybrid_no_expansion": [
+            13,
+            39,
+            12,
+            35
+          ],
+          "hybrid_temporal": [
+            36,
+            31,
+            18,
+            13
+          ]
+        },
+        "dense_scores": [
+          0.8199,
+          0.8123,
+          0.8067,
+          0.8025
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.25,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.25
+      },
+      {
+        "id": "ret-21",
+        "language": "kk",
+        "query": "неге қысым азаяды",
+        "relevant": [
+          10,
+          11,
+          15,
+          29,
+          36
+        ],
+        "focus_ms": 95000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            7,
+            32,
+            18,
+            9
+          ],
+          "lexical": [
+            36,
+            8,
+            29,
+            34
+          ],
+          "hybrid": [
+            7,
+            36,
+            10,
+            19
+          ],
+          "hybrid_no_expansion": [
+            7,
+            32,
+            18,
+            9
+          ],
+          "hybrid_temporal": [
+            7,
+            10,
+            3,
+            36
+          ]
+        },
+        "dense_scores": [
+          0.8301,
+          0.8301,
+          0.8238,
+          0.8191
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-22",
+        "language": "kk",
+        "query": "Бернулли теңдеуінің шарттары",
+        "relevant": [
+          12,
+          13,
+          37
+        ],
+        "focus_ms": 113000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            35,
+            27,
+            11,
+            39
+          ],
+          "lexical": [
+            37,
+            39,
+            12,
+            11
+          ],
+          "hybrid": [
+            35,
+            39,
+            11,
+            37
+          ],
+          "hybrid_no_expansion": [
+            35,
+            27,
+            0,
+            11
+          ],
+          "hybrid_temporal": [
+            11,
+            12,
+            8,
+            9
+          ]
+        },
+        "dense_scores": [
+          0.8328,
+          0.8274,
+          0.8263,
+          0.823
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.25,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-23",
+        "language": "kk",
+        "query": "ағын үзіліссіздігі",
+        "relevant": [
+          6,
+          8
+        ],
+        "focus_ms": 59000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            21,
+            12,
+            18,
+            32
+          ],
+          "lexical": [
+            6,
+            7,
+            8,
+            15
+          ],
+          "hybrid": [
+            21,
+            7,
+            18,
+            6
+          ],
+          "hybrid_no_expansion": [
+            21,
+            12,
+            18,
+            32
+          ],
+          "hybrid_temporal": [
+            7,
+            6,
+            21,
+            18
+          ]
+        },
+        "dense_scores": [
+          0.7893,
+          0.7831,
+          0.7782,
+          0.7772
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.25,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.5
+      },
+      {
+        "id": "ret-24",
+        "language": "kk",
+        "query": "Вентури әсері",
+        "relevant": [
+          14,
+          15
+        ],
+        "focus_ms": 131000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            14,
+            18,
+            0,
+            6
+          ],
+          "lexical": [
+            14,
+            36
+          ],
+          "hybrid": [
+            14,
+            36,
+            18,
+            0
+          ],
+          "hybrid_no_expansion": [
+            14,
+            18,
+            0,
+            6
+          ],
+          "hybrid_temporal": [
+            14,
+            36,
+            6,
+            9
+          ]
+        },
+        "dense_scores": [
+          0.834,
+          0.801,
+          0.7895,
+          0.7879
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-25",
+        "language": "kk",
+        "query": "қанаттың көтеру күші",
+        "relevant": [
+          24,
+          26,
+          27,
+          29
+        ],
+        "focus_ms": 221000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            18,
+            24,
+            26,
+            36
+          ],
+          "lexical": [
+            26,
+            27
+          ],
+          "hybrid": [
+            26,
+            18,
+            24,
+            27
+          ],
+          "hybrid_no_expansion": [
+            18,
+            24,
+            26,
+            36
+          ],
+          "hybrid_temporal": [
+            26,
+            24,
+            18,
+            22
+          ]
+        },
+        "dense_scores": [
+          0.8018,
+          0.7893,
+          0.789,
+          0.7856
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.5,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.5,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-26",
+        "language": "kk",
+        "query": "қысым молекулалардың соқтығысуы",
+        "relevant": [
+          2,
+          20
+        ],
+        "focus_ms": 23000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            38,
+            2,
+            9,
+            18
+          ],
+          "lexical": [
+            17,
+            23,
+            1,
+            38
+          ],
+          "hybrid": [
+            38,
+            2,
+            23,
+            36
+          ],
+          "hybrid_no_expansion": [
+            38,
+            2,
+            23,
+            28
+          ],
+          "hybrid_temporal": [
+            2,
+            3,
+            38,
+            23
+          ]
+        },
+        "dense_scores": [
+          0.8166,
+          0.8151,
+          0.8138,
+          0.8121
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.5,
+        "lexical_recall@4": 0.0,
+        "lexical_mrr": 0.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 0.5,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-27",
+        "language": "kk",
+        "query": "сорғыш құбыр",
+        "relevant": [
+          31,
+          32,
+          33
+        ],
+        "focus_ms": 284000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            12,
+            18,
+            21,
+            36
+          ],
+          "lexical": [
+            17,
+            21,
+            32,
+            19
+          ],
+          "hybrid": [
+            21,
+            36,
+            10,
+            30
+          ],
+          "hybrid_no_expansion": [
+            12,
+            18,
+            21,
+            36
+          ],
+          "hybrid_temporal": [
+            21,
+            30,
+            36,
+            10
+          ]
+        },
+        "dense_scores": [
+          0.7726,
+          0.7706,
+          0.7688,
+          0.7676
+        ],
+        "dense_recall@4": 0.0,
+        "dense_mrr": 0.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 0.3333,
+        "hybrid_recall@4": 0.0,
+        "hybrid_mrr": 0.0,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 0.0,
+        "hybrid_temporal_mrr": 0.0
+      },
+      {
+        "id": "ret-28",
+        "language": "kk",
+        "query": "Пито түтігі",
+        "relevant": [
+          33
+        ],
+        "focus_ms": 302000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            33,
+            0,
+            18,
+            21
+          ],
+          "lexical": [
+            33,
+            14,
+            29,
+            30
+          ],
+          "hybrid": [
+            33,
+            6,
+            36,
+            38
+          ],
+          "hybrid_no_expansion": [
+            33,
+            0,
+            18,
+            21
+          ],
+          "hybrid_temporal": [
+            33,
+            30,
+            29,
+            6
+          ]
+        },
+        "dense_scores": [
+          0.8109,
+          0.8018,
+          0.801,
+          0.7963
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-29",
+        "language": "kk",
+        "query": "тұтқырлық әсері",
+        "relevant": [
+          13,
+          29,
+          36,
+          39
+        ],
+        "focus_ms": 122000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            36,
+            18,
+            30,
+            21
+          ],
+          "lexical": [
+            13,
+            22,
+            39
+          ],
+          "hybrid": [
+            36,
+            13,
+            18,
+            22
+          ],
+          "hybrid_no_expansion": [
+            36,
+            18,
+            30,
+            21
+          ],
+          "hybrid_temporal": [
+            13,
+            12,
+            6,
+            7
+          ]
+        },
+        "dense_scores": [
+          0.7866,
+          0.7841,
+          0.7798,
+          0.7763
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 1.0,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 1.0,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 1.0,
+        "hybrid_no_expansion_recall@4": 1.0,
+        "hybrid_no_expansion_mrr": 1.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 1.0
+      },
+      {
+        "id": "ret-30",
+        "language": "kk",
+        "query": "Бернулли қорытындысы",
+        "relevant": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "focus_ms": 329000,
+        "split": "holdout",
+        "top4": {
+          "dense": [
+            35,
+            0,
+            11,
+            39
+          ],
+          "lexical": [
+            11,
+            39,
+            27,
+            9
+          ],
+          "hybrid": [
+            11,
+            39,
+            27,
+            35
+          ],
+          "hybrid_no_expansion": [
+            35,
+            0,
+            16,
+            11
+          ],
+          "hybrid_temporal": [
+            27,
+            35,
+            11,
+            39
+          ]
+        },
+        "dense_scores": [
+          0.8044,
+          0.7933,
+          0.7933,
+          0.793
+        ],
+        "dense_recall@4": 1.0,
+        "dense_mrr": 0.25,
+        "lexical_recall@4": 1.0,
+        "lexical_mrr": 0.5,
+        "hybrid_recall@4": 1.0,
+        "hybrid_mrr": 0.5,
+        "hybrid_no_expansion_recall@4": 0.0,
+        "hybrid_no_expansion_mrr": 0.0,
+        "hybrid_temporal_recall@4": 1.0,
+        "hybrid_temporal_mrr": 0.25
+      }
+    ]
+  },
+  "guardrails": {
+    "suite": "guardrails",
+    "method": "deterministic checks; no live model",
+    "cases": 10,
+    "passed": 10,
+    "rows": [
+      {
+        "name": "valid_citation",
+        "passed": true,
+        "expected": true,
+        "errors": []
+      },
+      {
+        "name": "fabricated_segment",
+        "passed": true,
+        "expected": false,
+        "errors": [
+          "Citation 00000000-0000-0000-0000-000000000000 is not in the retrieval context."
+        ]
+      },
+      {
+        "name": "fabricated_quote",
+        "passed": true,
+        "expected": false,
+        "errors": [
+          "Citation aa9274bd-b9cf-578f-a176-b6ae48523bdb quote is not in the transcript."
+        ]
+      },
+      {
+        "name": "wrong_timestamp",
+        "passed": true,
+        "expected": false,
+        "errors": [
+          "Citation aa9274bd-b9cf-578f-a176-b6ae48523bdb timestamps are inconsistent."
+        ]
+      },
+      {
+        "name": "direct_answer",
+        "passed": true,
+        "expected_leak": true,
+        "actual_leak": true
+      },
+      {
+        "name": "russian_direct_answer",
+        "passed": true,
+        "expected_leak": true,
+        "actual_leak": true
+      },
+      {
+        "name": "clean_question",
+        "passed": true,
+        "expected_leak": false,
+        "actual_leak": false
+      },
+      {
+        "name": "prompt_injection_serialization",
+        "passed": true,
+        "note": "Transcript is escaped as data; live-model resistance is unverified."
+      },
+      {
+        "name": "grounded_transcript_answer",
+        "passed": true,
+        "score": 1.0
+      },
+      {
+        "name": "valid_mcq_structure",
+        "passed": true,
+        "errors": []
+      }
+    ]
+  }
+}

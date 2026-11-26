@@ -42,7 +42,7 @@ export function Sheet({ open, onClose, title, children, side = "right" }: SheetP
       )}
     >
       <div className="flex items-center justify-between border-b border-border px-6 py-4">
-        <h2 id={titleId} className="text-lg font-bold">
+        <h2 id={titleId} className="text-lg font-semibold">
           {title}
         </h2>
         <IconButton label="Close" onClick={onClose}>

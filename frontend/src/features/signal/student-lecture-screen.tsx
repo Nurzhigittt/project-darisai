@@ -315,7 +315,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
             action={
               <Link
                 href="/#join"
-                className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-white"
+                className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground"
               >
                 {t("join.cta")}
               </Link>
@@ -359,10 +359,10 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
         </div>
 
         <div className="mt-7 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             {ended ? t("student.ended") : waiting ? t("join.waiting") : t("student.live")}
           </p>
-          <h1 className="mt-2 text-balance text-[clamp(1.75rem,5vw,2.75rem)] font-extrabold leading-tight">
+          <h1 className="mt-2 text-balance text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-tight">
             {session.lecture.title || t("student.titleFallback")}
           </h1>
           <p className="mt-2 text-sm text-muted">
@@ -380,7 +380,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
               <div className="mx-auto grid size-20 place-items-center rounded-full bg-primary-soft">
                 <Clock3 aria-hidden className="size-9 text-primary" />
               </div>
-              <h2 className="mt-6 text-2xl font-extrabold">{t("student.waiting.title")}</h2>
+              <h2 className="mt-6 text-2xl font-semibold">{t("student.waiting.title")}</h2>
               <p className="mx-auto mt-3 max-w-sm leading-7 text-muted">
                 {t("student.waiting.body")}
               </p>
@@ -398,13 +398,13 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
               <div className="mx-auto grid size-20 place-items-center rounded-full bg-positive/15">
                 <CheckCircle2 aria-hidden className="size-10 text-positive" />
               </div>
-              <h2 className="mt-6 text-3xl font-extrabold">{t("student.ended")}</h2>
+              <h2 className="mt-6 text-3xl font-semibold">{t("student.ended")}</h2>
               <p className="mx-auto mt-3 max-w-md leading-7 text-muted">
                 {t("student.endedBody")}
               </p>
               <div className="mt-7 rounded-2xl border border-border bg-background p-4 text-left">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-bold">{t("student.history")}</p>
+                  <h3 className="font-semibold">{t("student.history")}</h3>
                   <BookmarkCheck aria-hidden className="size-5 text-primary" />
                 </div>
                 {history.length === 0 ? (
@@ -422,15 +422,10 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
                   </ul>
                 )}
               </div>
-              <div className="mt-7 rounded-2xl border border-dashed border-border p-4 text-left">
-                <div className="flex items-center gap-2 font-bold">
-                  <Sparkles aria-hidden className="size-4 text-primary" />
-                  {t("student.replaySoon")}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-muted">
-                  {t("student.replaySoonBody")}
-                </p>
-              </div>
+              <nav className="mt-7 flex flex-wrap justify-center gap-3" aria-label={t("learning.title")}>
+                <Link href={`/replay/${lectureId}`} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary px-5 font-semibold text-primary-foreground"><Sparkles aria-hidden className="size-4" />{t("learning.replay")}</Link>
+                <Link href={`/gapcards/${lectureId}`} className="inline-flex min-h-12 items-center rounded-xl border border-border px-5 font-semibold">{t("learning.cards")}</Link>
+              </nav>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <Button variant="secondary" onClick={() => setHistoryOpen(true)}>
                   <History aria-hidden className="size-4" />
@@ -438,7 +433,7 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
                 </Button>
                 <Link
                   href={session.joinCode ? `/join/${session.joinCode}` : "/#join"}
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
                 >
                   {t("student.rejoin")}
                 </Link>

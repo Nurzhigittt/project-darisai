@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.lock
 COPY app ./app
 
 COPY migrations ./migrations
-RUN chown -R daris:daris /app
+RUN mkdir -p /home/daris/.cache/daris && chown -R daris:daris /app /home/daris/.cache
 
 USER daris
 

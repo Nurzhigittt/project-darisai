@@ -26,7 +26,7 @@ function ListBlock({
         <div className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary">
           {icon}
         </div>
-        <h2 className="text-lg font-bold">{title}</h2>
+        <h2 className="text-lg font-semibold">{title}</h2>
       </div>
       <ul className="mt-4 space-y-2.5 text-sm leading-6 text-muted">
         {items.map((item) => (
@@ -72,7 +72,7 @@ export function PrivacyScreen() {
           <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
             <ShieldCheck aria-hidden className="size-6" />
           </div>
-          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-extrabold leading-[1.02]">
+          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-semibold leading-[1.02]">
             {t("privacy.title")}
           </h1>
           <p className="mt-5 text-lg leading-8 text-muted">{t("privacy.intro")}</p>
@@ -93,7 +93,7 @@ export function PrivacyScreen() {
               action={
                 <a
                   href={`${API_URL}/api/v1/privacy/manifest`}
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-white"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground"
                 >
                   {t("common.retry")}
                 </a>
@@ -103,7 +103,7 @@ export function PrivacyScreen() {
         ) : (
           <>
             <div className="mt-8 rounded-2xl border border-primary/20 bg-primary-soft/40 p-4 text-sm leading-6">
-              <span className="font-bold">{manifest.summary}</span>
+              <span className="font-semibold">{manifest.summary}</span>
               <span className="ml-2 text-muted">{t("privacy.source")}</span>
             </div>
 
@@ -133,12 +133,12 @@ export function PrivacyScreen() {
             <section className="mt-10">
               <div className="flex items-center gap-2">
                 <KeyRound aria-hidden className="size-5 text-primary" />
-                <h2 className="text-2xl font-extrabold">{t("privacy.credentials")}</h2>
+                <h2 className="text-2xl font-semibold">{t("privacy.credentials")}</h2>
               </div>
               <div className="mt-4 grid gap-4 lg:grid-cols-3">
                 {manifest.temporary_credentials.map((credential) => (
                   <Card key={credential.name}>
-                    <h3 className="font-bold">{credential.name}</h3>
+                    <h3 className="font-semibold">{credential.name}</h3>
                     <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">
                       {credential.lifetime}
                     </p>
@@ -152,7 +152,7 @@ export function PrivacyScreen() {
             <section className="mt-10">
               <div className="flex items-center gap-2">
                 <Database aria-hidden className="size-5 text-primary" />
-                <h2 className="text-2xl font-extrabold">{t("privacy.collected")}</h2>
+                <h2 className="text-2xl font-semibold">{t("privacy.collected")}</h2>
               </div>
               <p className="mt-2 text-sm text-muted">{t("privacy.source")}</p>
               <div className="mt-4 space-y-2">

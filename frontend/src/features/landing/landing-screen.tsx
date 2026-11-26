@@ -1,295 +1,292 @@
 "use client";
 
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  GraduationCap,
-  HeartHandshake,
-  LockKeyhole,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
+import { Check, ChevronDown, Menu, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { API_URL } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n";
+import { locales, type Locale } from "@/lib/i18n/dictionaries";
 import { isJoinCodeComplete, normalizeJoinCode } from "@/lib/utils";
 
-function RippleIllustration() {
-  const { t } = useI18n();
+import { landingCopy } from "./landing-copy";
+import styles from "./landing.module.css";
+
+const languageNames: Record<Locale, string> = { en: "EN", ru: "RU", kk: "ҚАЗ" };
+const navigationLabels: Record<Locale, string> = { en: "Main navigation", ru: "Основная навигация", kk: "Негізгі навигация" };
+const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/Nurzhigittt/project-darisai";
+
+function SignalChart({ active = false }: { active?: boolean }) {
   return (
-    <div
-      aria-hidden
-      className="relative mx-auto grid aspect-square w-full max-w-[430px] place-items-center"
-    >
-      <div className="absolute inset-[9%] rounded-full border border-primary/10" />
-      <div className="absolute inset-[19%] rounded-full border border-primary/15" />
-      <div className="absolute inset-[30%] rounded-full bg-ripple-low/10 blur-2xl" />
-      <div className="absolute inset-[30%] rounded-full border border-ripple-low/40" />
-      <div className="absolute size-28 rounded-full bg-ripple-low/90 shadow-[0_0_80px_-10px_var(--ripple-low)] motion-safe:animate-breathe" />
-      <div className="absolute right-[8%] top-[24%] size-3 rounded-full bg-accent" />
-      <div className="absolute bottom-[19%] left-[12%] size-2.5 rounded-full bg-primary/60" />
-      <div className="absolute right-[22%] bottom-[11%] size-2 rounded-full bg-ripple-low" />
-      <div className="absolute left-[24%] top-[9%] size-2 rounded-full bg-ripple-low/70" />
-      <div className="absolute inset-x-[16%] bottom-[11%] rounded-2xl border border-border bg-surface/90 px-4 py-3 text-left shadow-lift backdrop-blur">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
-          {t("landing.illustration.room")}
-        </p>
-        <p className="mt-0.5 text-sm font-bold text-foreground">
-          {t("landing.illustration.clarification")}
-        </p>
-        <p className="mt-0.5 text-xs text-muted">
-          {t("landing.illustration.caption")}
-        </p>
-      </div>
-    </div>
+    <svg data-signal-chart className={styles.signalChart} viewBox="0 0 400 130" fill="none" aria-hidden="true">
+      <path d="M0 28H400M0 68H400M0 108H400" className={styles.chartGrid} />
+      <path d="M276 6V118" className={styles.chartMarker} />
+      <path
+        d={active
+          ? "M0 106L22 106L30 102L39 106L74 106L84 94L93 103L110 103L122 88L132 96L150 96L163 77L174 92L190 90L204 70L216 82L231 65L244 45L256 56L267 29L278 42L289 18L300 35L313 24L325 40L340 36L353 55L368 60L385 68L400 68"
+          : "M0 106L22 106L30 102L39 106L74 106L84 94L93 103L110 103L122 98L132 103L150 103L163 89L174 103L190 103L204 97L216 103L231 101L244 93L256 103L267 96L278 103L289 88L300 103L313 101L325 103L340 103L353 98L368 103L385 103L400 103"}
+        stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ConversationSketch() {
+  return (
+    <svg className={styles.heroSketch} viewBox="0 0 320 106" fill="none" aria-hidden="true">
+      <path d="M18 21C14 8 36 4 60 7L101 11C121 13 124 24 120 45C117 62 98 63 79 61L60 77L60 59C28 58 13 51 18 21Z" fill="var(--background)" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M58 26C62 15 80 19 80 28C80 37 67 34 67 43M67 49V51" stroke="var(--primary)" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M137 48C166 84 204 81 223 54" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeDasharray="5 7" />
+      <path d="M242 23C256 15 279 17 288 29C302 46 293 68 278 73C260 79 239 69 235 52C232 40 232 30 242 23Z" fill="var(--surface)" stroke="currentColor" strokeWidth="2" />
+      <path d="M250 41L251 45M271 40L272 44M251 55C260 65 272 58 276 52" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M120 7L124 1M131 15L140 12" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 
 export function LandingScreen() {
-  const { t } = useI18n();
+  const { locale, setLocale, t } = useI18n();
+  const copy = landingCopy[locale];
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [hasCodeError, setHasCodeError] = useState(false);
+  const [demoActive, setDemoActive] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const codeInput = useRef<HTMLInputElement>(null);
 
   function handleJoin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalized = normalizeJoinCode(code);
     if (!isJoinCodeComplete(normalized)) {
-      setError(t("join.invalid.body"));
+      setHasCodeError(true);
+      codeInput.current?.focus();
       return;
     }
-    setError(null);
+    setHasCodeError(false);
     router.push(`/join/${normalized}`);
   }
 
+  function focusJoin() {
+    setMenuOpen(false);
+    requestAnimationFrame(() => {
+      codeInput.current?.focus({ preventScroll: true });
+    });
+  }
+
+  const nav = [
+    { href: "#how", label: copy.nav.how },
+    { href: "#teachers", label: copy.nav.teachers },
+    { href: "#questions", label: copy.nav.questions },
+  ];
+
   return (
-    <div className="min-h-dvh">
-      <SiteHeader />
+    <div className={styles.page}>
+      <header
+        className={styles.header}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && menuOpen) {
+            event.preventDefault();
+            setMenuOpen(false);
+            menuButton.current?.focus();
+          }
+        }}
+      >
+        <div className={`${styles.container} ${styles.headerInner}`}>
+          <Logo className={styles.logo} />
+          <nav className={styles.desktopNav} aria-label={navigationLabels[locale]}>
+            {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
+            <Link href="/gapcards">{t("learning.title")}</Link>
+          </nav>
+          <div className={styles.headerActions}>
+            <label className={styles.language}>
+              <span className="sr-only">{t("language.label")}</span>
+              <select value={locale} onChange={(event) => setLocale(event.target.value as Locale)}>
+                {locales.map((item) => <option key={item} value={item}>{languageNames[item]}</option>)}
+              </select>
+              <ChevronDown size={14} aria-hidden="true" />
+            </label>
+            <span className={styles.themeSwitch}><ThemeSwitcher /></span>
+            <Link href="/login" className={styles.headerLogin}>{copy.nav.login}</Link>
+            <button
+              ref={menuButton} type="button" className={styles.menuButton}
+              aria-label={menuOpen ? copy.nav.close : copy.nav.menu}
+              aria-expanded={menuOpen} aria-controls="landing-navigation"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+            </button>
+          </div>
+        </div>
+        {menuOpen && (
+          <nav
+            id="landing-navigation" className={styles.mobileNav} aria-label={navigationLabels[locale]}
+          >
+            {nav.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
+            <Link href="/gapcards" onClick={() => setMenuOpen(false)}>{t("learning.title")}</Link>
+            <a href="#join" onClick={focusJoin}>{copy.nav.students}</a>
+            <Link href="/login">{copy.nav.login}</Link>
+          </nav>
+        )}
+      </header>
+
       <main id="main">
-        <section className="grain relative overflow-hidden">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-40 -top-40 size-[620px] rounded-full bg-primary-soft/70 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-44 -left-44 size-[480px] rounded-full bg-accent/10 blur-3xl"
-          />
-          <div className="container-page relative grid items-center gap-14 pb-20 pt-14 lg:grid-cols-[1.08fr_0.92fr] lg:pb-28 lg:pt-24">
-            <div className="motion-safe:animate-fade-up">
-              <Badge tone="primary">
-                <Sparkles aria-hidden className="size-3.5" />
-                Signal &amp; Ripple · Phase 1
-              </Badge>
-              <h1 className="mt-6 text-balance text-[clamp(3rem,7.8vw,5.8rem)] font-extrabold leading-[0.95] tracking-[-0.055em]">
-                {t("landing.title")}
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-muted sm:text-xl">
-                {t("landing.support")}
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="#join"
-                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-lift transition-colors hover:bg-primary-strong"
-                >
-                  {t("landing.join.cta")}
-                  <ArrowRight aria-hidden className="size-4" />
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-border bg-surface px-6 py-3 font-semibold transition-colors hover:bg-primary-soft/60"
-                >
-                  <GraduationCap aria-hidden className="size-5" />
-                  {t("landing.teach.cta")}
-                </Link>
-              </div>
-              <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-border pt-6 text-sm">
-                <div>
-                  <dt className="font-bold text-foreground">
-                    {t("landing.stat.accounts")}
-                  </dt>
-                  <dd className="mt-1 text-muted">{t("landing.stat.accountsSub")}</dd>
-                </div>
-                <div>
-                  <dt className="font-bold text-foreground">
-                    {t("landing.stat.install")}
-                  </dt>
-                  <dd className="mt-1 text-muted">{t("landing.stat.installSub")}</dd>
-                </div>
-                <div>
-                  <dt className="font-bold text-foreground">{t("landing.stat.mic")}</dt>
-                  <dd className="mt-1 text-muted">{t("landing.stat.micSub")}</dd>
-                </div>
-              </dl>
+        <div className={styles.atmosphere}>
+        <section className={`${styles.container} ${styles.hero}`} aria-labelledby="hero-title">
+          <div id="join" className={styles.joinCard} role="region" aria-labelledby="join-title">
+            <div className={styles.joinCardHeader}>
+              <svg className={styles.joinIcon} viewBox="0 0 56 56" fill="none" aria-hidden="true">
+                <path d="M10 10L45 7L49 40L14 45Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M18 19L37 17M20 26L39 24M21 34L31 33M6 20L8 48L39 51" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <h2 id="join-title" className={styles.joinTitle}>{copy.join.title}</h2>
             </div>
-            <div className="relative">
-              <div className="absolute inset-10 -z-10 rounded-full bg-positive/10 blur-3xl" />
-              <RippleIllustration />
+            <form onSubmit={handleJoin} noValidate className={styles.joinForm}>
+              <label className={styles.joinLabel} htmlFor="lecture-code">{copy.join.label}</label>
+              <input
+                ref={codeInput} id="lecture-code" name="code" value={code}
+                onChange={(event) => { setCode(normalizeJoinCode(event.target.value)); setHasCodeError(false); }}
+                placeholder={copy.join.placeholder} autoComplete="off" autoCapitalize="characters"
+                spellCheck={false} maxLength={6} aria-invalid={hasCodeError}
+                aria-describedby={hasCodeError ? "code-error" : "code-hint"}
+              />
+              <p id="code-hint" className={styles.joinHint}>{copy.join.hint}</p>
+              {hasCodeError && <p id="code-error" role="alert" className={styles.joinError}>{t("join.invalid.body")}</p>}
+              <button type="submit">{copy.join.button}</button>
+            </form>
+            <p className={styles.joinHelp}>{copy.join.helper}</p>
+            <div className={styles.teacherEntry}>
+              <span>{copy.join.teacherPrompt}</span>
+              <Link href="/login">{copy.hero.teacherCta}</Link>
             </div>
+          </div>
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>{copy.hero.eyebrow}</p>
+            <h1 id="hero-title">{copy.hero.title} <span>{copy.hero.accent}<svg className={styles.underline} viewBox="0 0 430 17" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 11C115 0 274 4 426 8M10 15C155 5 315 9 402 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg></span></h1>
+            <p className={styles.heroBody}>{copy.hero.body}</p>
+            <ul className={styles.heroChips}>{copy.hero.chips.map((chip) => <li key={chip}><Check size={16} aria-hidden="true" />{chip}</li>)}</ul>
+            <ConversationSketch />
           </div>
         </section>
 
-        <section id="join" className="scroll-mt-20 bg-surface/60 py-16 sm:py-20">
-          <div className="container-page grid gap-6 md:grid-cols-2">
-            <div className="rounded-4xl border border-border bg-surface p-7 shadow-soft sm:p-9">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
-                <BookOpen aria-hidden className="size-6" />
+        <section className={`${styles.container} ${styles.demoSection}`}>
+          <div className={styles.demoIntro}>
+            <p className={styles.eyebrow}>{copy.statement.eyebrow}</p>
+            <h2>{copy.statement.title}</h2>
+            <p>{copy.statement.body}</p>
+          </div>
+          <figure className={styles.demo}>
+            <div className={styles.demoHeading}><span>{copy.demo.label}</span><span>DärisAI</span></div>
+            <div className={styles.lectureWindow}>
+              <div className={styles.lectureHeader}>
+                <span>{copy.demo.teacher}</span>
+                <span className={styles.demoTime}>18:24</span>
               </div>
-              <h2 className="mt-5 text-2xl font-extrabold">{t("landing.join.title")}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">{t("landing.join.body")}</p>
-              <form onSubmit={handleJoin} className="mt-6" noValidate>
-                <label htmlFor="lecture-code" className="text-sm font-semibold">
-                  {t("join.codeLabel")}
-                </label>
-                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                  <input
-                    id="lecture-code"
-                    name="code"
-                    value={code}
-                    onChange={(event) => {
-                      setCode(normalizeJoinCode(event.target.value));
-                      setError(null);
-                    }}
-                    placeholder={t("landing.join.placeholder")}
-                    autoComplete="off"
-                    autoCapitalize="characters"
-                    spellCheck={false}
-                    inputMode="text"
-                    maxLength={6}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={error ? "code-error" : "code-hint"}
-                    className="min-h-12 w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-xl font-bold uppercase tracking-[0.24em] outline-none focus:border-primary"
-                  />
-                  <Button type="submit" size="lg" className="shrink-0">
-                    {t("landing.join.cta")}
-                  </Button>
-                </div>
-                {error ? (
-                  <p id="code-error" role="alert" className="mt-2 text-sm font-medium text-ripple-warm">
-                    {error}
-                  </p>
-                ) : (
-                  <p id="code-hint" className="mt-2 text-xs text-muted">
-                    {t("landing.join.hint")}
-                  </p>
-                )}
-              </form>
-              <p className="mt-5 flex items-start gap-2 text-xs leading-5 text-muted">
-                <LockKeyhole aria-hidden className="mt-0.5 size-4 shrink-0" />
-                {t("join.anonymous")}
-              </p>
+              <div className={styles.lectureBody}>
+                <p className={styles.course}>{copy.demo.course}</p>
+                <h2>{copy.demo.topic}</h2>
+                <div className={styles.chartCaption}><span>{t("landing.illustration.room")}</span><span>{copy.demo.timer}</span></div>
+                <SignalChart active />
+                <div className={styles.chartAxis}><span>00:00</span><span>09:00</span><span>18:24</span></div>
+                <p className={`${styles.roomStatus} ${styles.roomStatusActive}`}>
+                  <span aria-hidden="true" className={styles.statusMark} />
+                  {copy.demo.after}
+                </p>
+              </div>
             </div>
-
-            <div className="rounded-4xl border border-border bg-primary-soft/45 p-7 sm:p-9">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-surface text-primary shadow-sm">
-                <GraduationCap aria-hidden className="size-6" />
-              </div>
-              <h2 className="mt-5 text-2xl font-extrabold">{t("landing.teach.title")}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">{t("landing.teach.body")}</p>
-              <Link
-                href="/login"
-                className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold hover:bg-surface-raised"
+            <div className={styles.studentWindow}>
+              <div><span className={styles.studentLabel}>{copy.demo.student}</span><span className={styles.studentDevice}>DärisAI</span></div>
+              <p>{copy.demo.topic}</p>
+              <button
+                type="button" onClick={() => setDemoActive(!demoActive)}
+                aria-pressed={demoActive}
+                aria-describedby="demo-caption"
+                title={demoActive ? copy.demo.reset : undefined}
+                className={styles.signalButton}
               >
-                {t("landing.teach.cta")}
-                <ArrowRight aria-hidden className="size-4" />
-              </Link>
-              <ul className="mt-7 space-y-3 text-sm">
-                {[
-                  t("landing.teach.bullet1"),
-                  t("landing.teach.bullet2"),
-                  t("landing.teach.bullet3"),
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <Check aria-hidden className="mt-0.5 size-4 text-positive" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+                {demoActive ? <Check size={20} aria-hidden="true" /> : <span aria-hidden="true" className={styles.signalSymbol}>?</span>}
+                {demoActive ? copy.demo.signalSent : copy.demo.signal}
+              </button>
             </div>
+            <figcaption id="demo-caption">{copy.demo.caption}</figcaption>
+          </figure>
+        </section>
+        </div>
+
+        <section id="how" className={`${styles.container} ${styles.process}`}>
+          <p className={styles.eyebrow}>{copy.process.eyebrow}</p>
+          <h2>{copy.process.title}</h2>
+          <div className={styles.steps}>
+            {copy.process.steps.map((step, index) => (
+              <article key={step.title}>
+                <div className={styles.stepVisual} aria-hidden="true">
+                  {index === 0 ? <div className={styles.codeVisual}>{"ABC123".split("").map((char) => <span key={char}>{char}</span>)}</div>
+                    : index === 1 ? <div className={styles.signalVisual}><span>?</span><span className={styles.visualLine} /><span>✓</span></div>
+                      : <SignalChart active />}
+                </div>
+                <h3>{step.title}</h3><p>{step.body}</p>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="container-page">
-            <div className="max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
-                {t("landing.how.eyebrow")}
-              </p>
-              <h2 className="mt-3 text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight">
-                {t("landing.how.title")}
-              </h2>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {[
-                {
-                  number: "01",
-                  title: t("landing.how.step1.title"),
-                  body: t("landing.how.step1.body"),
-                  icon: BookOpen,
-                },
-                {
-                  number: "02",
-                  title: t("landing.how.step2.title"),
-                  body: t("landing.how.step2.body"),
-                  icon: HeartHandshake,
-                },
-                {
-                  number: "03",
-                  title: t("landing.how.step3.title"),
-                  body: t("landing.how.step3.body"),
-                  icon: Sparkles,
-                },
-              ].map((step) => (
-                <div
-                  key={step.number}
-                  className="rounded-3xl border border-border bg-surface p-6 shadow-soft"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs font-bold tracking-widest text-primary">
-                      {step.number}
-                    </span>
-                    <step.icon aria-hidden className="size-5 text-muted" />
-                  </div>
-                  <h3 className="mt-8 text-xl font-bold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted">{step.body}</p>
-                </div>
-              ))}
-            </div>
+        <section className={styles.roles}>
+          <div className={`${styles.container} ${styles.rolesGrid}`}>
+            <article id="students" className={styles.studentRole}>
+              <p className={styles.eyebrow}>{copy.roles.studentLabel}</p>
+              <h2>{copy.roles.studentTitle}</h2>
+              <p className={styles.roleBody}>{copy.roles.studentBody}</p>
+              <ul>{copy.roles.studentPoints.map((point) => <li key={point}><Check size={17} aria-hidden="true" />{point}</li>)}</ul>
+              <a href="#join" onClick={focusJoin} className={styles.textLink}>{copy.hero.studentCta}</a>
+            </article>
+            <article id="teachers" className={styles.teacherRole}>
+              <p className={styles.eyebrow}>{copy.roles.teacherLabel}</p>
+              <h2>{copy.roles.teacherTitle}</h2>
+              <p className={styles.roleBody}>{copy.roles.teacherBody}</p>
+              <ul>{copy.roles.teacherPoints.map((point) => <li key={point}><Check size={17} aria-hidden="true" />{point}</li>)}</ul>
+              <Link href="/login" className={styles.textLink}>{copy.hero.teacherCta}</Link>
+            </article>
           </div>
         </section>
 
-        <section className="pb-20">
-          <div className="container-page overflow-hidden rounded-4xl border border-border bg-primary-soft/50">
-            <div className="grid gap-8 p-8 sm:p-12 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div className="max-w-2xl">
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-surface text-primary shadow-sm">
-                  <ShieldCheck aria-hidden className="size-6" />
-                </div>
-                <h2 className="mt-5 text-3xl font-extrabold">{t("landing.privacy.title")}</h2>
-                <p className="mt-3 leading-7 text-muted">{t("landing.privacy.body")}</p>
-              </div>
-              <Link
-                href="/privacy"
-                className="inline-flex min-h-11 items-center gap-2 self-start rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold hover:bg-surface-raised lg:self-center"
-              >
-                {t("landing.privacy.link")}
-                <ArrowRight aria-hidden className="size-4" />
-              </Link>
+        <section id="questions" className={`${styles.container} ${styles.faq}`}>
+          <h2>{copy.faq.title}</h2>
+          <div>{copy.faq.items.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}<Plus size={20} aria-hidden="true" /></summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}</div>
+        </section>
+
+        <section className={styles.closing}>
+          <div className={`${styles.container} ${styles.closingInner}`}>
+            <div><h2>{copy.closing.title}</h2><p>{copy.closing.body}</p></div>
+            <div className={styles.closingActions}>
+              <a href="#join" onClick={focusJoin} className={styles.lightButton}>{copy.closing.studentCta}</a>
+              <Link href="/login">{copy.closing.teacherCta}</Link>
             </div>
           </div>
-          <p className="container-page mt-6 text-sm text-muted">
-            {t("landing.footerNote")}
-          </p>
         </section>
       </main>
-      <SiteFooter />
+
+      <footer className={styles.footer}>
+        <div className={`${styles.container} ${styles.footerTop}`}>
+          <div><Logo className={styles.logo} /><p>{copy.footer.tagline}</p></div>
+          <nav aria-label={t("footer.product")}>
+            <Link href="/gapcards">{t("learning.title")}</Link>
+            <Link href="/privacy">{copy.footer.privacy}</Link>
+            <Link href="/status">{copy.footer.status}</Link>
+            <a href={`${API_URL}/api/v1/privacy/manifest`}>{t("footer.manifest")}</a>
+            <a href={`${API_URL}/api/v1/openapi.json`}>{t("footer.api")}</a>
+            <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
+          </nav>
+        </div>
+        <div className={`${styles.container} ${styles.footerBottom}`}><span>© {new Date().getFullYear()} DärisAI</span><span>{copy.footer.copyright}</span></div>
+      </footer>
     </div>
   );
 }

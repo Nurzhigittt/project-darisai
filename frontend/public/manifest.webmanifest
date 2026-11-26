@@ -6,25 +6,25 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#FAF8F3",
-  "theme_color": "#7053C6",
+  "background_color": "#EAF2EF",
+  "theme_color": "#912F56",
   "lang": "en",
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/daris-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/daris-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-maskable-512.png",
+      "src": "/icons/daris-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

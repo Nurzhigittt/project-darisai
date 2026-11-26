@@ -53,6 +53,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if resolved.auto_seed:
             await seed_development_data(ctx.db, resolved)
         app.state.ctx = ctx
+        if resolved.axiom_embedding_prewarm:
+            try:
+                await ctx.embeddings.warmup()
+                logger.info(
+                    "embedding model prewarmed",
+                    extra={"event": "embedding_prewarm", "component": "axiom"},
+                )
+            except Exception:
+                logger.warning(
+                    "embedding prewarm failed; lexical/temporal retrieval remains available",
+                    extra={"event": "embedding_prewarm_failed", "component": "axiom"},
+                )
         await ctx.event_bus.start()
         await ctx.ripple.start()
         try:
@@ -85,8 +97,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         CORSMiddleware,
         allow_origins=resolved.cors_origin_list,
         allow_credentials=False,
-        allow_methods=["GET", "POST", "OPTIONS"],
-        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+        allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+        allow_headers=[
+            "Authorization",
+            "Content-Type",
+            "X-Request-ID",
+            "X-Replay-Token",
+        ],
         expose_headers=["X-Request-ID"],
         max_age=600,
     )

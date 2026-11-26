@@ -11,6 +11,8 @@ const config: Config = {
         "surface-raised": "rgb(var(--surface-raised-rgb) / <alpha-value>)",
         foreground: "rgb(var(--foreground-rgb) / <alpha-value>)",
         primary: "rgb(var(--primary-rgb) / <alpha-value>)",
+        "primary-foreground": "rgb(var(--primary-foreground-rgb) / <alpha-value>)",
+        secondary: "rgb(var(--secondary-rgb) / <alpha-value>)",
         "primary-strong": "rgb(var(--primary-strong-rgb) / <alpha-value>)",
         "primary-soft": "rgb(var(--primary-soft-rgb) / <alpha-value>)",
         accent: "rgb(var(--accent-rgb) / <alpha-value>)",
@@ -22,11 +24,12 @@ const config: Config = {
         "ripple-warm": "rgb(var(--ripple-warm-rgb) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["IBM Plex Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ['"Source Serif 4"', "ui-serif", "Georgia", "serif"],
       },
       boxShadow: {
-        soft: "0 24px 70px -32px rgba(38, 35, 58, 0.28)",
-        lift: "0 12px 32px -18px rgba(38, 35, 58, 0.35)",
+        soft: "0 24px 70px -32px rgb(var(--shadow-color) / 0.28)",
+        lift: "0 12px 32px -18px rgb(var(--shadow-color) / 0.35)",
       },
       borderRadius: {
         "4xl": "2rem",

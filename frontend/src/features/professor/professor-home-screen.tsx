@@ -172,7 +172,7 @@ export function ProfessorHomeScreen() {
             <Sparkles aria-hidden className="size-3.5" />
             Teaching space
           </Badge>
-          <h1 className="mt-5 text-[clamp(2.4rem,5vw,3.8rem)] font-extrabold leading-[1.02]">
+          <h1 className="mt-5 text-[clamp(2.4rem,5vw,3.8rem)] font-semibold leading-[1.02]">
             {t("prof.home.title")}
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted">{t("prof.home.body")}</p>
@@ -184,7 +184,7 @@ export function ProfessorHomeScreen() {
               <div className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <Plus aria-hidden className="size-5" />
               </div>
-              <h2 className="text-xl font-bold">{t("prof.home.new")}</h2>
+              <h2 className="text-xl font-semibold">{t("prof.home.new")}</h2>
             </div>
             {loading ? (
               <div className="mt-6 space-y-4">
@@ -257,7 +257,7 @@ export function ProfessorHomeScreen() {
 
           <section className="rounded-3xl border border-border bg-surface p-6 shadow-soft sm:p-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">{t("prof.home.recent")}</h2>
+              <h2 className="text-xl font-semibold">{t("prof.home.recent")}</h2>
               <button
                 type="button"
                 onClick={() => session && void load(session)}
@@ -300,7 +300,7 @@ export function ProfessorHomeScreen() {
                   >
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate font-bold">{lecture.title}</p>
+                        <h3 className="truncate font-semibold">{lecture.title}</h3>
                         <Badge tone={statusTone[lecture.status]}>
                           {t(
                             lecture.status === "scheduled"
@@ -320,14 +320,24 @@ export function ProfessorHomeScreen() {
                           : new Date(lecture.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex flex-wrap gap-2 sm:justify-end">
+                      <Link href={`/transcript/${lecture.lecture_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
+                      <Link href={`/settings/autonomy/${lecture.lecture_id}`}
+                        className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">
+                        {t("teaching.autonomy")}
+                      </Link>
                       {lecture.status === "ended" ? (
+                        <>
                         <Link
                           href={`/summary/${lecture.lecture_id}`}
                           className="inline-flex min-h-10 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60"
                         >
                           {t("prof.home.summary")}
                         </Link>
+                        <Link href={`/brief/${lecture.lecture_id}`} className="inline-flex min-h-11 items-center rounded-xl bg-primary-soft px-3 text-sm font-semibold text-foreground">
+                          BriefNext
+                        </Link>
+                        </>
                       ) : (
                         <Link
                           href={`/p/${lecture.lecture_id}`}
@@ -349,6 +359,20 @@ export function ProfessorHomeScreen() {
             )}
           </section>
         </div>
+        {!loading && !error && courses.length > 0 ? (
+          <section className="mt-8" aria-labelledby="course-memory-title">
+            <h2 id="course-memory-title" className="text-2xl font-semibold">{t("teaching.courseMemory")}</h2>
+            <p className="mt-2 text-muted">{t("teaching.courseMemoryBody")}</p>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {courses.map((course) => <li key={course.id} className="min-w-0 rounded-2xl border border-border bg-surface p-5">
+                <h3 className="break-words text-xl font-semibold">{course.title}</h3>
+                <Link href={`/cohort/${course.id}`} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-primary hover:bg-primary-soft/60">
+                  {t("teaching.cohort")}<ArrowRight aria-hidden className="size-4 shrink-0" />
+                </Link>
+              </li>)}
+            </ul>
+          </section>
+        ) : null}
       </main>
     </div>
   );

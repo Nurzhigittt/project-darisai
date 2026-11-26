@@ -71,7 +71,7 @@ export function LoginScreen() {
           <div className="mt-6 flex size-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
             <GraduationCap aria-hidden className="size-7" />
           </div>
-          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-extrabold leading-[1.02]">
+          <h1 className="mt-6 text-[clamp(2.5rem,5.5vw,4rem)] font-semibold leading-[1.02]">
             {t("prof.login.title")}
           </h1>
           <p className="mt-4 max-w-lg text-lg leading-8 text-muted">

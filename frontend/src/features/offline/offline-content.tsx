@@ -19,11 +19,11 @@ export function OfflineContent() {
         >
           <span className="size-12 rounded-full border-4 border-dashed border-accent/70" />
         </div>
-        <h1 className="mt-7 text-3xl font-extrabold">{t("pwa.offline")}</h1>
+        <h1 className="mt-7 text-3xl font-semibold">{t("pwa.offline")}</h1>
         <p className="mt-3 leading-7 text-muted">{t("pwa.offlineBody")}</p>
         <Link
           href="/"
-          className="mt-7 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-white"
+          className="mt-7 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 font-semibold text-primary-foreground"
         >
           {t("common.back")}
         </Link>

@@ -3,7 +3,7 @@ PNPM ?= pnpm
 COMPOSE ?= docker compose
 LOADTEST_ARGS ?= --students 30 --duration 20
 
-.PHONY: help up down logs migrate seed test test-backend test-frontend test-integration lint typecheck contracts e2e smoke loadtest
+.PHONY: help up down logs migrate seed test test-backend test-frontend test-integration lint typecheck contracts e2e smoke loadtest eval
 
 help:
 	@echo "DärisAI developer commands"
@@ -19,6 +19,7 @@ help:
 	@echo "  make e2e         Run Playwright against an already-running app"
 	@echo "  make smoke       Run the development REST smoke flow"
 	@echo "  make loadtest    Run the synthetic WebSocket load test"
+	@echo "  make eval        Run the real-embedding Phase 7 evaluation suite"
 
 up:
 	$(COMPOSE) up --build
@@ -66,3 +67,6 @@ smoke:
 
 loadtest:
 	cd backend && $(PYTHON) ../scripts/loadtest.py $(LOADTEST_ARGS)
+
+eval:
+	cd backend && $(PYTHON) -m evals.runner

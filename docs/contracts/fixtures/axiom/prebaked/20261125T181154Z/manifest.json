@@ -1,0 +1,7 @@
+{
+  "captured_at": "2026-11-25T18:11:54.583771+00:00",
+  "lecture_id": "2dd678be-81cd-4235-8d56-2cada98f014b",
+  "warning": "Template responses are deterministic fallbacks, not live model output.",
+  "replay_source": "template",
+  "turn_source": "template"
+}

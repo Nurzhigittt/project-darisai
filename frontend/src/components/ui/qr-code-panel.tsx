@@ -55,7 +55,7 @@ export function QRCodePanel({
           size={size}
           level="M"
           bgColor="#FFFFFF"
-          fgColor="#26233A"
+          fgColor="#122C34"
           marginSize={2}
           aria-label={`QR code joining ${title}`}
           role="img"
@@ -66,7 +66,7 @@ export function QRCodePanel({
       </p>
       <p
         data-testid="join-code"
-        className="mt-1 font-mono text-[clamp(2rem,7vw,3rem)] font-extrabold tracking-[0.18em] text-foreground"
+        className="mt-1 font-mono text-[clamp(2rem,7vw,3rem)] font-semibold tracking-[0.18em] text-foreground"
       >
         {code}
       </p>

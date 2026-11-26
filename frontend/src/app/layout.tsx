@@ -1,8 +1,7 @@
-import "@fontsource/manrope/400.css";
-import "@fontsource/manrope/500.css";
-import "@fontsource/manrope/600.css";
-import "@fontsource/manrope/700.css";
-import "@fontsource/manrope/800.css";
+import "@fontsource/source-serif-4/600.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
 import "@/styles/globals.css";
 
 import type { Metadata, Viewport } from "next";
@@ -10,6 +9,7 @@ import type { ReactNode } from "react";
 
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { SkipLink } from "@/components/ui/skip-link";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   applicationName: "DärisAI",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
-    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+    icon: [{ url: "/icons/daris-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/icons/daris-apple-touch.png", sizes: "180x180" }],
   },
   appleWebApp: {
     capable: true,
@@ -61,8 +61,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAF8F3" },
-    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+    { media: "(prefers-color-scheme: light)", color: "#EAF2EF" },
+    { media: "(prefers-color-scheme: dark)", color: "#122C34" },
   ],
 };
 
@@ -70,13 +70,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>
-        <a
-          href="#main"
-          className="sr-only-focusable fixed left-3 top-3 z-[200] rounded-lg bg-primary px-4 py-2 font-semibold text-white"
-        >
-          Skip to content
-        </a>
         <Providers>
+          <SkipLink />
           <ServiceWorkerRegister />
           {children}
         </Providers>

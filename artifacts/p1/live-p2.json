@@ -1,0 +1,39 @@
+{
+  "lecture": {
+    "id": "7ac38725-0a5d-486d-8b7a-db71d0e1fa69",
+    "join": true,
+    "segments": 3,
+    "embedded": 3
+  },
+  "insights": {
+    "brief_source": "template",
+    "brief_status": "approved",
+    "decisions": [
+      "approve",
+      "edit"
+    ],
+    "handoff_source": "template",
+    "redeemed_title": "P1 live lecture 5b3613",
+    "revoked": 1,
+    "after_revoke": 404
+  },
+  "cohort": {
+    "concepts": 0,
+    "structural_gaps": 1,
+    "provenance": "synthetic"
+  },
+  "autonomy": {
+    "initial_eligible": false,
+    "denied_code": "AUTONOMY_NOT_ELIGIBLE",
+    "allowed_mode": "whitelisted",
+    "allowed_eligible": true
+  },
+  "replay": {
+    "moments": 1,
+    "source": "template",
+    "turn_kind": "question",
+    "turn_stage": "socratic",
+    "cards": 1,
+    "card_source": "template"
+  }
+}

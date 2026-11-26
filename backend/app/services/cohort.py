@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from itertools import pairwise
 from typing import Any
 from uuid import UUID
 
+from app.config import Settings
 from app.db import Database
 from app.errors import AppError
 from app.schemas.cohort import (
@@ -11,6 +13,7 @@ from app.schemas.cohort import (
     MIN_LECTURE_PARTICIPANTS,
     CohortConceptMetric,
     CohortMemoryOut,
+    CohortStructuralGap,
 )
 
 INTERPRETATION_NOTE = (
@@ -20,8 +23,9 @@ INTERPRETATION_NOTE = (
 
 
 class CohortMemoryService:
-    def __init__(self, db: Database) -> None:
+    def __init__(self, db: Database, settings: Settings | None = None) -> None:
         self._db = db
+        self._settings = settings
 
     async def for_course(
         self, course_id: UUID, professor_id: UUID, *, limit: int = 100
@@ -106,13 +110,79 @@ class CohortMemoryService:
             MIN_LECTURE_PARTICIPANTS,
             limit,
         )
+        structural_gaps = await self._structural_gaps(course_id) if self._settings else []
         return CohortMemoryOut(
             minimum_lectures_required=MIN_COHORT_LECTURES,
             minimum_participants_per_lecture=MIN_LECTURE_PARTICIPANTS,
             concepts=[self._public_metric(row) for row in rows],
+            structural_gaps=structural_gaps,
             generated_at=datetime.now(UTC),
             interpretation_note=INTERPRETATION_NOTE,
         )
+
+    async def _structural_gaps(self, course_id: UUID) -> list[CohortStructuralGap]:
+        assert self._settings is not None
+        rows = await self._db.fetch(
+            """
+            SELECT stats.concept_canonical_id,
+                   COALESCE(canonical.title, 'Unknown concept') AS concept_title,
+                   stats.term,
+                   stats.term_order,
+                   stats.confused_share,
+                   stats.lectures,
+                   stats.synthetic
+            FROM cohort_stats AS stats
+            LEFT JOIN canonical_concepts AS canonical
+              ON canonical.id = stats.concept_canonical_id
+            WHERE stats.course_id = $1
+            ORDER BY stats.concept_canonical_id, stats.term_order, stats.term
+            """,
+            course_id,
+        )
+        grouped: dict[UUID, list[dict[str, object]]] = {}
+        for row in rows:
+            grouped.setdefault(row["concept_canonical_id"], []).append(row)
+        result: list[CohortStructuralGap] = []
+        threshold = self._settings.cohort_structural_share
+        required_terms = self._settings.cohort_structural_terms
+        min_lectures = self._settings.cohort_min_lectures_per_term
+        for concept_id, items in grouped.items():
+            ordered = sorted(items, key=lambda item: (int(str(item["term_order"])), str(item["term"])))
+            for start in range(0, len(ordered) - required_terms + 1):
+                window = ordered[start : start + required_terms]
+                if any(
+                    float(str(item["confused_share"])) < threshold
+                    or int(str(item["lectures"])) < min_lectures
+                    for item in window
+                ):
+                    continue
+                orders = [int(str(item["term_order"])) for item in window]
+                if any(right != left + 1 for left, right in pairwise(orders)):
+                    continue
+                shares = [float(str(item["confused_share"])) for item in window]
+                provenance = self._provenance(window)
+                result.append(
+                    CohortStructuralGap(
+                        concept_canonical_id=concept_id,
+                        concept_title=str(window[0]["concept_title"]),
+                        terms=[str(item["term"]) for item in window],
+                        consecutive_terms=required_terms,
+                        min_confused_share=min(shares),
+                        max_confused_share=max(shares),
+                        provenance=provenance,
+                    )
+                )
+                break
+        return result
+
+    @staticmethod
+    def _provenance(rows: list[dict[str, object]]) -> str:
+        flags = {bool(row["synthetic"]) for row in rows}
+        if flags == {True}:
+            return "synthetic"
+        if flags == {False}:
+            return "observed"
+        return "mixed"
 
     @staticmethod
     def _public_metric(row: dict[str, Any]) -> CohortConceptMetric:

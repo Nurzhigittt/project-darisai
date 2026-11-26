@@ -8,7 +8,7 @@ type Tone = "info" | "warning" | "offline";
 const tones: Record<Tone, string> = {
   info: "border-primary/25 bg-primary-soft/55 text-foreground",
   warning:
-    "border-accent/50 bg-accent/15 text-[#6b4216] dark:text-[#f3c99d]",
+    "border-ripple-attention/50 bg-ripple-attention/15 text-foreground",
   offline:
     "border-ripple-warm/35 bg-ripple-warm/10 text-[#7c3013] dark:text-[#f0b69d]",
 };

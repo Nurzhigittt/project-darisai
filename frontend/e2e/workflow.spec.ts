@@ -102,6 +102,6 @@ test("landing page is keyboard reachable and localisable", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   await page.getByLabel("Language").selectOption("ru");
   await expect(
-    page.getByRole("heading", { name: "Сделайте понимание видимым." }),
+    page.getByRole("heading", { name: "Не всё понятно? Это нормально." }),
   ).toBeVisible();
 });

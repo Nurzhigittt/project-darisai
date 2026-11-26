@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-11-25T18:41:06Z",
+  "environment": "Windows CPU, local PostgreSQL 18 + pgvector, Redis 5, one Uvicorn worker",
+  "model": "intfloat/multilingual-e5-small/onnx/model_O4.onnx",
+  "measurements": {
+    "model_load_direct_s": 5.25,
+    "prewarm_ready_s": 12.3,
+    "embedding_40_passages_s": 0.912,
+    "cold_replay_turn_ms": 3870.1,
+    "warm_replay_turn_p50_ms": 26.0,
+    "warm_replay_turn_p95_ms": 106.9,
+    "warm_replay_turn_samples": 5,
+    "ai_workload_during_30_client_load_p50_ms": 32.6,
+    "ai_workload_during_30_client_load_p95_ms": 101.6,
+    "ai_workload_requests": 12,
+    "ai_workload_errors": 0,
+    "loadtest_30_clients_signal_to_ripple_p95_ms": 491.84,
+    "loadtest_30_clients_ack_p95_ms": 9.99,
+    "loadtest_30_clients_errors": 0,
+    "working_set_after_model_mb": 694,
+    "llm_latency": "verified live, 10 calls",
+    "stt_latency": "verified live, one 4.93s WAV",
+    "llm_latency_p50_ms": 3150,
+    "llm_latency_p95_ms": 6090,
+    "stt_latency_ms": 1575
+  },
+  "notes": [
+    "Cold turn includes lazy ONNX model load.",
+    "Prewarm readiness includes API startup, DB/Redis connection and model load.",
+    "Signal-to-Ripple p95 is an upper bound and was measured while 12 Replay turns were active.",
+    "The 300-client baseline remains 493.25 ms p95 from the Phase 1 report.",
+    "Live LLM/STT measurements come from artifacts/evals/hardening/live-provider-smoke.json."
+  ]
+}

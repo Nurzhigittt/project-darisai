@@ -67,7 +67,7 @@ export function StatusScreen() {
             <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
               <Activity aria-hidden className="size-6" />
             </div>
-            <h1 className="mt-6 text-[clamp(2.5rem,5vw,3.8rem)] font-extrabold leading-tight">
+            <h1 className="mt-6 text-[clamp(2.5rem,5vw,3.8rem)] font-semibold leading-tight">
               {t("status.title")}
             </h1>
             <p className="mt-3 max-w-2xl text-muted">{t("status.intro")}</p>
@@ -96,10 +96,10 @@ export function StatusScreen() {
           <>
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-border bg-surface p-6 shadow-soft">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                   {t("status.overall")}
                 </p>
-                <p className="mt-1 text-xl font-bold">{overallLabel}</p>
+                <p className="mt-1 text-xl font-semibold">{overallLabel}</p>
               </div>
               <div className="flex items-center gap-3">
                 <Badge tone={tone[status.status]}>{status.status}</Badge>
@@ -126,7 +126,7 @@ export function StatusScreen() {
                       ) : (
                         <Radio aria-hidden className="size-5 text-primary" />
                       )}
-                      <h2 className="font-bold">{component.name}</h2>
+                      <h2 className="font-semibold">{component.name}</h2>
                     </div>
                     <Badge tone={componentTone[component.status]}>
                       {component.status}
@@ -136,7 +136,7 @@ export function StatusScreen() {
                     {component.detail ?? t("status.probe")}
                   </p>
                   {typeof component.latency_ms === "number" ? (
-                    <p className="mt-3 font-mono text-2xl font-bold tabular-nums">
+                    <p className="mt-3 font-mono text-2xl font-semibold tabular-nums">
                       {component.latency_ms.toFixed(1)}
                       <span className="ml-1 text-xs font-normal text-muted">ms</span>
                     </p>
@@ -149,38 +149,38 @@ export function StatusScreen() {
 
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl border border-border bg-surface p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
                   {t("status.connections")}
                 </p>
-                <p className="mt-2 font-mono text-3xl font-extrabold">
+                <p className="mt-2 font-mono text-3xl font-semibold">
                   {status.websocket_connections}
                 </p>
               </div>
               <div className="rounded-3xl border border-border bg-surface p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
                   {t("status.signals")}
                 </p>
-                <p className="mt-2 font-mono text-3xl font-extrabold">
+                <p className="mt-2 font-mono text-3xl font-semibold">
                   {status.accepted_signals_total}
                 </p>
               </div>
               <div className="rounded-3xl border border-border bg-surface p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
                   {t("status.rejected")}
                 </p>
-                <p className="mt-2 font-mono text-3xl font-extrabold">
+                <p className="mt-2 font-mono text-3xl font-semibold">
                   {status.rejected_signals_total}
                 </p>
               </div>
             </div>
 
             <section className="mt-8 rounded-3xl border border-border bg-surface p-6">
-              <h2 className="text-lg font-bold">{t("status.limits")}</h2>
+              <h2 className="text-lg font-semibold">{t("status.limits")}</h2>
               <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {Object.entries(status.limits ?? {}).map(([key, value]) => (
                   <div key={key} className="flex items-baseline justify-between gap-3 border-b border-border/70 pb-2">
                     <dt className="font-mono text-xs text-muted">{key}</dt>
-                    <dd className="font-mono text-sm font-bold">{String(value)}</dd>
+                    <dd className="font-mono text-sm font-semibold">{String(value)}</dd>
                   </div>
                 ))}
               </dl>

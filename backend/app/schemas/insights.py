@@ -6,6 +6,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
+from app.axiom.models import Citation
 from app.schemas.common import ApiModel, Language
 
 InsightKind = Literal["brief_next", "handoff"]
@@ -17,6 +18,10 @@ InsightSource = Literal["live", "prebaked", "template", "manual"]
 class InsightConcept(ApiModel):
     title: str = Field(min_length=1, max_length=160)
     detail: str = Field(min_length=1, max_length=1_000)
+    citations: list[Citation] = Field(default_factory=list, max_length=8)
+    window_start_ms: int | None = Field(default=None, ge=0)
+    window_end_ms: int | None = Field(default=None, ge=0)
+    unique_signals: int | None = Field(default=None, ge=0)
 
     @field_validator("title", "detail")
     @classmethod
@@ -31,6 +36,7 @@ class InsightTask(ApiModel):
     title: str = Field(min_length=1, max_length=160)
     instructions: str = Field(min_length=1, max_length=4_000)
     duration_minutes: int | None = Field(default=None, ge=1, le=180)
+    grounded_in: list[Citation] = Field(default_factory=list, max_length=8)
 
     @field_validator("title", "instructions")
     @classmethod
@@ -94,6 +100,7 @@ class InsightReject(ApiModel):
 
 class InsightOut(ApiModel):
     insight_id: UUID
+    concept_canonical_id: UUID | None = None
     lecture_id: UUID
     kind: InsightKind
     audience: InsightAudience
@@ -104,6 +111,35 @@ class InsightOut(ApiModel):
     created_at: datetime
     updated_at: datetime
     decided_at: datetime | None = None
+
+
+class InsightDecisionOut(ApiModel):
+    decision_id: UUID
+    insight_id: UUID
+    action: Literal["approve", "edit", "reject", "publish", "revoke"]
+    from_status: str
+    to_status: str
+    reason: str | None = None
+    concept_canonical_id: UUID | None = None
+    created_at: datetime
+
+
+class HandoffRevokeRequest(ApiModel):
+    reason: str = Field(min_length=1, max_length=200)
+
+    @field_validator("reason")
+    @classmethod
+    def trim_reason(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("A reason is required.")
+        return value
+
+
+class HandoffRevokeOut(ApiModel):
+    insight_id: UUID
+    revoked: int
+    status: InsightStatus
 
 
 class HandoffLinkOut(ApiModel):

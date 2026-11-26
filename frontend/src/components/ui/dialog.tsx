@@ -19,6 +19,7 @@ type DialogProps = {
   children?: ReactNode;
   footer?: ReactNode;
   className?: string;
+  closeLabel?: string;
 };
 
 export function Dialog({
@@ -29,8 +30,10 @@ export function Dialog({
   children,
   footer,
   className,
+  closeLabel = "Close",
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const pendingControlledCloses = useRef(0);
   const titleId = useId();
   const descriptionId = useId();
 
@@ -38,7 +41,12 @@ export function Dialog({
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (!open && dialog.open) {
+      // close() queues its native event. The parent has already closed this
+      // cycle, so that event must not close a subsequently reopened dialog.
+      pendingControlledCloses.current += 1;
+      dialog.close();
+    }
   }, [open]);
 
   return (
@@ -46,7 +54,20 @@ export function Dialog({
       ref={ref}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
-      onClose={onClose}
+      onClose={(event) => {
+        if (event.target !== event.currentTarget) return;
+        if (pendingControlledCloses.current > 0) {
+          pendingControlledCloses.current -= 1;
+          return;
+        }
+        // A native close from outside this controlled effect still notifies
+        // the parent, unless its event belongs to an already reopened cycle.
+        if (!event.currentTarget.open) onClose();
+      }}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -57,17 +78,17 @@ export function Dialog({
       )}
     >
       <div className="flex items-start justify-between gap-4 p-6 pb-4">
-        <div>
-          <h2 id={titleId} className="text-xl font-bold">
+        <div className="min-w-0">
+          <h2 id={titleId} className="break-words text-xl font-semibold">
             {title}
           </h2>
           {description ? (
-            <p id={descriptionId} className="mt-2 text-sm leading-6 text-muted">
+            <p id={descriptionId} className="mt-2 break-words text-sm leading-6 text-muted">
               {description}
             </p>
           ) : null}
         </div>
-        <IconButton label="Close" onClick={onClose} className="-mr-2 -mt-2">
+        <IconButton label={closeLabel} onClick={onClose} className="-mr-2 -mt-2">
           <X aria-hidden className="size-5" />
         </IconButton>
       </div>
