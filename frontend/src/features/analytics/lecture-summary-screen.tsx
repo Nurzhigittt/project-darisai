@@ -43,9 +43,9 @@ function Stat({
     <div className="rounded-3xl border border-border bg-surface p-5">
       <div className="flex items-center gap-2 text-muted">
         {icon}
-        <span className="text-xs font-bold uppercase tracking-[0.12em]">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-[0.12em]">{label}</span>
       </div>
-      <p className="mt-3 font-mono text-3xl font-extrabold tabular-nums">{value}</p>
+      <p className="mt-3 font-mono text-3xl font-semibold tabular-nums">{value}</p>
     </div>
   );
 }
@@ -136,7 +136,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
               </Badge>
               <Badge tone="primary">{t("summary.factual")}</Badge>
             </div>
-            <h1 className="mt-4 text-[clamp(2.2rem,5vw,3.8rem)] font-extrabold leading-tight">
+            <h1 className="mt-4 text-[clamp(2.2rem,5vw,3.8rem)] font-semibold leading-tight">
               {summary.title}
             </h1>
             <p className="mt-2 text-muted">{t("summary.title")}</p>
@@ -174,7 +174,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
             <section className="mt-8 rounded-4xl border border-border bg-surface p-6 shadow-soft sm:p-8">
               <div className="flex items-center gap-2">
                 <BarChart3 aria-hidden className="size-5 text-primary" />
-                <h2 className="text-xl font-bold">{t("summary.timeline")}</h2>
+                <h2 className="text-xl font-semibold">{t("summary.timeline")}</h2>
               </div>
               {summary.timeline.length === 0 ? (
                 <div className="mt-5">
@@ -212,7 +212,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                           key={item.minute_start_ms}
                           className="group relative flex h-full min-w-10 max-w-16 flex-1 flex-col items-center justify-end"
                         >
-                          <span className="mb-1 font-mono text-[10px] font-bold text-muted">
+                          <span className="mb-1 font-mono text-[10px] font-semibold text-muted">
                             {item.signals}
                           </span>
                           <div
@@ -240,7 +240,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
               <div className="rounded-4xl border border-border bg-surface p-6 shadow-soft sm:p-8">
                 <div className="flex items-center gap-2">
                   <Waves aria-hidden className="size-5 text-ripple-warm" />
-                  <h2 className="text-xl font-bold">{t("summary.moments")}</h2>
+                  <h2 className="text-xl font-semibold">{t("summary.moments")}</h2>
                 </div>
                 {summary.clarification_moments.length === 0 ? (
                   <p className="mt-4 text-sm leading-6 text-muted">
@@ -254,7 +254,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                         className="rounded-2xl border border-border bg-background p-4"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
-                          <p className="font-mono text-lg font-bold tabular-nums">
+                          <p className="font-mono text-lg font-semibold tabular-nums">
                             {formatOffset(cluster.start_ms)} –{" "}
                             {cluster.end_ms ? formatOffset(cluster.end_ms) : t("student.live")}
                           </p>
@@ -279,7 +279,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
                 <div className="flex size-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
                   <Sparkles aria-hidden className="size-5" />
                 </div>
-                <h2 className="mt-5 text-xl font-bold">{t("brief.title")}</h2>
+                <h2 className="mt-5 text-xl font-semibold">{t("brief.title")}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted">
                   {t("brief.subtitle")}
                 </p>

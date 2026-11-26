@@ -115,7 +115,7 @@ export function RippleOrb({
         </svg>
       </div>
       <div className="text-center">
-        <p className="text-[clamp(1.35rem,4vw,2rem)] font-extrabold tracking-tight">
+        <p className="text-[clamp(1.35rem,4vw,2rem)] font-semibold tracking-tight">
           {label}
         </p>
         <p className="mt-1 text-sm text-muted">{t("prof.live.updated")}</p>

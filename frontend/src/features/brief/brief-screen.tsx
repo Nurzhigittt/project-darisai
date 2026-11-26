@@ -196,7 +196,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
       <div className="mt-5 flex flex-wrap items-start justify-between gap-5">
         <div className="min-w-0 max-w-3xl">
           {lecture ? <p className="mb-2 break-words text-sm font-semibold text-muted">{lecture.title}</p> : null}
-          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight">{t("brief.title")}</h1>
+          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight">{t("brief.title")}</h1>
           <p className="mt-3 max-w-2xl text-lg text-muted">{t("brief.subtitle")}</p>
         </div>
         <Button variant="secondary" disabled={disabled || loading} onClick={() => void load()}>

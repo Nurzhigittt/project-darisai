@@ -64,7 +64,7 @@ export function Dialog({
     >
       <div className="flex items-start justify-between gap-4 p-6 pb-4">
         <div>
-          <h2 id={titleId} className="text-xl font-bold">
+          <h2 id={titleId} className="text-xl font-semibold">
             {title}
           </h2>
           {description ? (

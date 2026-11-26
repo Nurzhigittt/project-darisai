@@ -200,7 +200,7 @@ export function JoinScreen({ code }: { code: string }) {
             {state === "ready" && preview ? (
               <>
                 <div className="mt-8">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     {t("join.course")}
                   </p>
                   <p className="mt-1 text-sm text-muted">
@@ -208,11 +208,11 @@ export function JoinScreen({ code }: { code: string }) {
                   </p>
                   <h1
                     data-testid="lecture-title"
-                    className="mt-3 text-[clamp(2rem,5vw,3rem)] font-extrabold leading-tight"
+                    className="mt-3 text-[clamp(2rem,5vw,3rem)] font-semibold leading-tight"
                   >
                     {preview.lecture.title}
                   </h1>
-                  <p className="mt-2 font-mono text-sm font-bold tracking-[0.22em] text-muted">
+                  <p className="mt-2 font-mono text-sm font-semibold tracking-[0.22em] text-muted">
                     {normalized}
                   </p>
                 </div>

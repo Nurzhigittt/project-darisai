@@ -27,7 +27,7 @@ export function Logo({
       />
       <span
         className={cn(
-          "text-lg font-extrabold tracking-[-0.04em]",
+          "text-lg font-semibold tracking-[-0.04em]",
           light ? "text-white" : "text-foreground",
         )}
       >

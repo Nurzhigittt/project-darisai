@@ -153,7 +153,7 @@ export function SignalButton({
         ) : null}
         <span className="flex flex-col items-center gap-3 px-8 text-center">
           {icon}
-          <span className="text-balance text-[clamp(1.25rem,5vw,1.75rem)] font-extrabold leading-tight tracking-tight">
+          <span className="text-balance text-[clamp(1.25rem,5vw,1.75rem)] font-semibold leading-tight tracking-tight">
             {label}
           </span>
           {state === "cooldown" && cooldownRemainingMs > 0 ? (

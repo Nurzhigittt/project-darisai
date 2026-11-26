@@ -53,7 +53,7 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
       </div>
       <InsightContentView content={insight.content} />
       {insight.decision_reason ? <div className="mt-5 border-l-2 border-border pl-4">
-        <p className="text-sm font-bold">{t("insight.reason")}</p>
+        <p className="text-sm font-semibold">{t("insight.reason")}</p>
         <p className="mt-1 whitespace-pre-wrap break-words text-muted">{insight.decision_reason}</p>
       </div> : null}
       {insight.status !== "rejected" ? <div className="mt-6 flex flex-wrap gap-3 border-t border-border pt-5">

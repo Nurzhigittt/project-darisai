@@ -24,7 +24,7 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted">
             {t("footer.product")}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
@@ -46,7 +46,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted">
             {t("footer.trust")}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
@@ -66,7 +66,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted">
             {t("footer.build")}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">

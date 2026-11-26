@@ -172,7 +172,7 @@ export function ProfessorHomeScreen() {
             <Sparkles aria-hidden className="size-3.5" />
             Teaching space
           </Badge>
-          <h1 className="mt-5 text-[clamp(2.4rem,5vw,3.8rem)] font-extrabold leading-[1.02]">
+          <h1 className="mt-5 text-[clamp(2.4rem,5vw,3.8rem)] font-semibold leading-[1.02]">
             {t("prof.home.title")}
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted">{t("prof.home.body")}</p>
@@ -184,7 +184,7 @@ export function ProfessorHomeScreen() {
               <div className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <Plus aria-hidden className="size-5" />
               </div>
-              <h2 className="text-xl font-bold">{t("prof.home.new")}</h2>
+              <h2 className="text-xl font-semibold">{t("prof.home.new")}</h2>
             </div>
             {loading ? (
               <div className="mt-6 space-y-4">
@@ -257,7 +257,7 @@ export function ProfessorHomeScreen() {
 
           <section className="rounded-3xl border border-border bg-surface p-6 shadow-soft sm:p-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">{t("prof.home.recent")}</h2>
+              <h2 className="text-xl font-semibold">{t("prof.home.recent")}</h2>
               <button
                 type="button"
                 onClick={() => session && void load(session)}
@@ -300,7 +300,7 @@ export function ProfessorHomeScreen() {
                   >
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate font-bold">{lecture.title}</p>
+                        <h3 className="truncate font-semibold">{lecture.title}</h3>
                         <Badge tone={statusTone[lecture.status]}>
                           {t(
                             lecture.status === "scheduled"

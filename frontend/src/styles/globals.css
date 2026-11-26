@@ -18,7 +18,7 @@
     min-height: 100dvh;
     background: var(--background);
     color: var(--foreground);
-    font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    @apply font-sans font-normal;
     font-size: 16px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -28,9 +28,23 @@
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  h5,
+  h6 {
+    @apply font-serif font-semibold;
     text-wrap: balance;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
+  }
+
+  b,
+  strong {
+    font-weight: 600;
+  }
+
+  button,
+  [role="button"],
+  nav {
+    @apply font-sans font-medium;
   }
 
   p {

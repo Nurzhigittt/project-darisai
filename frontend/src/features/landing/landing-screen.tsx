@@ -38,10 +38,10 @@ function RippleIllustration() {
       <div className="absolute right-[22%] bottom-[11%] size-2 rounded-full bg-ripple-low" />
       <div className="absolute left-[24%] top-[9%] size-2 rounded-full bg-ripple-low/70" />
       <div className="absolute inset-x-[16%] bottom-[11%] rounded-2xl border border-border bg-surface/90 px-4 py-3 text-left shadow-lift backdrop-blur">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
           {t("landing.illustration.room")}
         </p>
-        <p className="mt-0.5 text-sm font-bold text-foreground">
+        <p className="mt-0.5 text-sm font-semibold text-foreground">
           {t("landing.illustration.clarification")}
         </p>
         <p className="mt-0.5 text-xs text-muted">
@@ -88,7 +88,7 @@ export function LandingScreen() {
                 <Sparkles aria-hidden className="size-3.5" />
                 Signal &amp; Ripple · Phase 1
               </Badge>
-              <h1 className="mt-6 text-balance text-[clamp(3rem,7.8vw,5.8rem)] font-extrabold leading-[0.95] tracking-[-0.055em]">
+              <h1 className="mt-6 text-balance text-[clamp(3rem,7.8vw,5.8rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
                 {t("landing.title")}
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-muted sm:text-xl">
@@ -112,19 +112,19 @@ export function LandingScreen() {
               </div>
               <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-border pt-6 text-sm">
                 <div>
-                  <dt className="font-bold text-foreground">
+                  <dt className="font-semibold text-foreground">
                     {t("landing.stat.accounts")}
                   </dt>
                   <dd className="mt-1 text-muted">{t("landing.stat.accountsSub")}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-foreground">
+                  <dt className="font-semibold text-foreground">
                     {t("landing.stat.install")}
                   </dt>
                   <dd className="mt-1 text-muted">{t("landing.stat.installSub")}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-foreground">{t("landing.stat.mic")}</dt>
+                  <dt className="font-semibold text-foreground">{t("landing.stat.mic")}</dt>
                   <dd className="mt-1 text-muted">{t("landing.stat.micSub")}</dd>
                 </div>
               </dl>
@@ -142,7 +142,7 @@ export function LandingScreen() {
               <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
                 <BookOpen aria-hidden className="size-6" />
               </div>
-              <h2 className="mt-5 text-2xl font-extrabold">{t("landing.join.title")}</h2>
+              <h2 className="mt-5 text-2xl font-semibold">{t("landing.join.title")}</h2>
               <p className="mt-2 text-sm leading-6 text-muted">{t("landing.join.body")}</p>
               <form onSubmit={handleJoin} className="mt-6" noValidate>
                 <label htmlFor="lecture-code" className="text-sm font-semibold">
@@ -165,7 +165,7 @@ export function LandingScreen() {
                     maxLength={6}
                     aria-invalid={Boolean(error)}
                     aria-describedby={error ? "code-error" : "code-hint"}
-                    className="min-h-12 w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-xl font-bold uppercase tracking-[0.24em] outline-none focus:border-primary"
+                    className="min-h-12 w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-xl font-semibold uppercase tracking-[0.24em] outline-none focus:border-primary"
                   />
                   <Button type="submit" size="lg" className="shrink-0">
                     {t("landing.join.cta")}
@@ -191,7 +191,7 @@ export function LandingScreen() {
               <div className="flex size-12 items-center justify-center rounded-2xl bg-surface text-primary shadow-sm">
                 <GraduationCap aria-hidden className="size-6" />
               </div>
-              <h2 className="mt-5 text-2xl font-extrabold">{t("landing.teach.title")}</h2>
+              <h2 className="mt-5 text-2xl font-semibold">{t("landing.teach.title")}</h2>
               <p className="mt-2 text-sm leading-6 text-muted">{t("landing.teach.body")}</p>
               <Link
                 href="/login"
@@ -219,10 +219,10 @@ export function LandingScreen() {
         <section className="py-20">
           <div className="container-page">
             <div className="max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
                 {t("landing.how.eyebrow")}
               </p>
-              <h2 className="mt-3 text-[clamp(2rem,4vw,3rem)] font-extrabold leading-tight">
+              <h2 className="mt-3 text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight">
                 {t("landing.how.title")}
               </h2>
             </div>
@@ -252,12 +252,12 @@ export function LandingScreen() {
                   className="rounded-3xl border border-border bg-surface p-6 shadow-soft"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs font-bold tracking-widest text-primary">
+                    <span className="font-mono text-xs font-semibold tracking-widest text-primary">
                       {step.number}
                     </span>
                     <step.icon aria-hidden className="size-5 text-muted" />
                   </div>
-                  <h3 className="mt-8 text-xl font-bold">{step.title}</h3>
+                  <h3 className="mt-8 text-xl font-semibold">{step.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{step.body}</p>
                 </div>
               ))}
@@ -272,7 +272,7 @@ export function LandingScreen() {
                 <div className="flex size-12 items-center justify-center rounded-2xl bg-surface text-primary shadow-sm">
                   <ShieldCheck aria-hidden className="size-6" />
                 </div>
-                <h2 className="mt-5 text-3xl font-extrabold">{t("landing.privacy.title")}</h2>
+                <h2 className="mt-5 text-3xl font-semibold">{t("landing.privacy.title")}</h2>
                 <p className="mt-3 leading-7 text-muted">{t("landing.privacy.body")}</p>
               </div>
               <Link

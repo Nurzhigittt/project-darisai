@@ -346,7 +346,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                 }
               />
             </div>
-            <h1 className="mt-3 text-[clamp(2rem,4.5vw,3.25rem)] font-extrabold leading-tight">
+            <h1 className="mt-3 text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-tight">
               {lecture.title}
             </h1>
             <p className="mt-1 text-sm text-muted">{lecture.course_title ?? ""}</p>
@@ -354,10 +354,10 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
           <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3">
             <Clock3 aria-hidden className="size-5 text-primary" />
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
                 {t("prof.live.elapsed")}
               </p>
-              <p className="font-mono text-xl font-bold tabular-nums">
+              <p className="font-mono text-xl font-semibold tabular-nums">
                 {formatDuration(elapsed)}
               </p>
             </div>
@@ -399,7 +399,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                   <dt className="text-[10px] uppercase tracking-wider text-muted">
                     {t("prof.live.uniqueWindow")}
                   </dt>
-                  <dd data-testid="ripple-unique" className="mt-1 font-mono text-lg font-bold">
+                  <dd data-testid="ripple-unique" className="mt-1 font-mono text-lg font-semibold">
                     {ripple.unique}
                   </dd>
                 </div>
@@ -407,7 +407,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                   <dt className="text-[10px] uppercase tracking-wider text-muted">
                     {t("prof.live.active")}
                   </dt>
-                  <dd data-testid="ripple-active" className="mt-1 font-mono text-lg font-bold">
+                  <dd data-testid="ripple-active" className="mt-1 font-mono text-lg font-semibold">
                     {ripple.active}
                   </dd>
                 </div>
@@ -415,7 +415,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                   <dt className="text-[10px] uppercase tracking-wider text-muted">
                     {t("prof.live.threshold")}
                   </dt>
-                  <dd className="mt-1 font-mono text-lg font-bold">{ripple.threshold}</dd>
+                  <dd className="mt-1 font-mono text-lg font-semibold">{ripple.threshold}</dd>
                 </div>
               </dl>
               <p className="mt-3 text-xs text-muted">{t("prof.live.detailsNote")}</p>
@@ -425,7 +425,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
           <section className="flex flex-col gap-5">
             <div className="rounded-4xl border border-border bg-surface p-6 shadow-soft">
               <div className="flex items-center justify-between gap-2">
-                <h2 className="text-lg font-bold">{t("prof.live.joinTitle")}</h2>
+                <h2 className="text-lg font-semibold">{t("prof.live.joinTitle")}</h2>
                 <Link
                   href={`/p/${lectureId}/present`}
                   className="inline-flex min-h-10 items-center gap-1.5 rounded-xl px-2.5 text-sm font-semibold text-primary hover:bg-primary-soft"
@@ -502,7 +502,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
             </div>
 
             <div className="rounded-4xl border border-dashed border-border p-5">
-              <div className="flex items-center gap-2 text-sm font-bold">
+              <div className="flex items-center gap-2 text-sm font-semibold">
                 <BarChart3 aria-hidden className="size-4 text-primary" />
                 {t("prof.live.details")}
               </div>

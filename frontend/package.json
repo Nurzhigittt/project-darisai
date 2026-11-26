@@ -14,7 +14,8 @@
     "contracts": "openapi-typescript ../docs/contracts/openapi.json -o src/lib/api/types.gen.ts"
   },
   "dependencies": {
-    "@fontsource/manrope": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/source-serif-4": "5.3.1",
     "clsx": "2.1.1",
     "idb": "8.0.4",
     "lucide-react": "1.80.0",

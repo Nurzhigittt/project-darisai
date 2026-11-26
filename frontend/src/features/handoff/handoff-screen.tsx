@@ -112,7 +112,7 @@ export function HandoffScreen() {
         <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
           <BookOpen aria-hidden className="size-6" />
         </div>
-        <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">
+        <h1 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
           {t("handoff.title")}
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
@@ -146,7 +146,7 @@ export function HandoffScreen() {
                   <Check aria-hidden className="size-4 shrink-0" />
                   {t("handoff.published")}
                 </p>
-                <p lang={view.handoff.language} className="mt-4 break-words text-lg font-bold">
+                <p lang={view.handoff.language} className="mt-4 break-words text-lg font-semibold">
                   {view.handoff.lecture_title}
                 </p>
                 <p className="mt-1 text-sm leading-6 text-muted">

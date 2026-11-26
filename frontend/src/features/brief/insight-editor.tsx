@@ -57,7 +57,7 @@ export function InsightEditor({ initial, kind, busy, onSave, onCancel }: {
       <Input label={t("insight.readSeconds")} type="number" required min={1} max={60} step={1}
         value={content.read_time_sec || ""} onChange={(event) => setContent({ ...content, read_time_sec: Number(event.target.value) })} />
       <div className="space-y-3">
-        <h3 className="font-bold">{t("insight.concepts")}</h3>
+        <h3 className="font-semibold">{t("insight.concepts")}</h3>
         {concepts.map((concept, index) => <div key={index} className="space-y-3 rounded-2xl border border-border p-4">
           <Input label={`${t("insight.conceptTitle")} ${index + 1}`} required maxLength={160} value={concept.title}
             onChange={(event) => setContent({ ...content, concepts: concepts.map((item, i) => i === index ? { ...item, title: event.target.value } : item) })} />
