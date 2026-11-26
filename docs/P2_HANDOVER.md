@@ -135,6 +135,102 @@ idempotent.
 - Reset between runs; cleanup expired runs when needed.
 - All demo data is labeled synthetic and isolated by `demo_sessions`.
 
+## Actual request/response examples
+
+### Create an isolated demo (P4)
+
+```http
+POST /api/v1/demo/lectures
+Authorization: Bearer <professor-jwt>
+Content-Type: application/json
+
+{"scenario": "bernoulli_ru"}
+```
+
+```json
+{
+  "lecture_id": "d0f4f4ef-2a3f-4ff5-9e31-8d8f7c1cf001",
+  "course_id": "f3a1c1bc-6bf8-4fa8-b28f-7208b84ef002",
+  "title": "Bernoulli: pressure and flow",
+  "language": "ru",
+  "status": "scheduled",
+  "join_code": "7K4M2Q",
+  "join_url": "http://localhost:3000/join/7K4M2Q",
+  "synthetic": true,
+  "scenario": "bernoulli_ru",
+  "transcript_segments": 40,
+  "expires_at": "2026-11-26T10:30:00Z"
+}
+```
+
+Then P4 starts the lecture with the ordinary control endpoint, joins 40 synthetic
+students, and connects them to `/ws`. No demo-specific WebSocket is used.
+
+### Insight decision history
+
+```http
+GET /api/v1/lectures/{lecture_id}/insights/{insight_id}/decisions
+Authorization: Bearer <professor-jwt>
+```
+
+```json
+[
+  {
+    "decision_id": "0d8f2e62-6b2e-4e68-9ca1-5b82f9a2c003",
+    "insight_id": "c35a8c40-cb5d-4d30-93a2-bc8e21d9a004",
+    "action": "approve",
+    "from_status": "pending_approval",
+    "to_status": "approved",
+    "reason": null,
+    "concept_canonical_id": "b0f6d4a6-5b9c-4c1f-9c8d-2e1e6a3f3005",
+    "created_at": "2026-11-26T09:00:00Z"
+  }
+]
+```
+
+### Cohort structural gap
+
+```json
+{
+  "minimum_lectures_required": 5,
+  "minimum_participants_per_lecture": 3,
+  "concepts": [],
+  "structural_gaps": [
+    {
+      "concept_canonical_id": "b0f6d4a6-5b9c-4c1f-9c8d-2e1e6a3f3005",
+      "concept_title": "Pressure and flow",
+      "terms": ["2025-Fall", "2026-Spring", "2026-Fall"],
+      "consecutive_terms": 3,
+      "min_confused_share": 0.66,
+      "max_confused_share": 0.74,
+      "provenance": "synthetic",
+      "note": "Structural-gap rule: at least three consecutive terms ..."
+    }
+  ],
+  "generated_at": "2026-11-26T09:00:00Z",
+  "interpretation_note": "Signal and Ripple cluster metrics are observed events..."
+}
+```
+
+### Autonomy response
+
+```json
+{
+  "lecture_id": "d0f4f4ef-2a3f-4ff5-9e31-8d8f7c1cf001",
+  "course_id": "f3a1c1bc-6bf8-4fa8-b28f-7208b84ef002",
+  "concept_canonical_id": "b0f6d4a6-5b9c-4c1f-9c8d-2e1e6a3f3005",
+  "concept_title": "Pressure and flow",
+  "mode": "locked",
+  "approvals": 0,
+  "rejections": 0,
+  "eligible": false,
+  "observation_started_at": "2026-11-26T09:00:00Z",
+  "whitelisted_at": null,
+  "policy_reason": null,
+  "updated_at": "2026-11-26T09:00:00Z"
+}
+```
+
 ## Known limitations
 
 - Demo reset keeps the transcript and embeddings; it does not re-record audio.
