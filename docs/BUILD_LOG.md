@@ -280,16 +280,16 @@ Merged P2 `f2a312f` (which contains P3 `c21446a`) into `feat/p1-frontend-experie
 
 Completed the P2-facing UI: server decision history, Handoff link revocation and revoked state, Cohort structural gaps with canonical titles and explicit synthetic/observed/mixed provenance, autonomy eligibility/observation/whitelist timestamps and `AUTONOMY_NOT_ELIGIBLE` handling. Regenerated contracts are stable.
 
-Accessibility root causes fixed without disabling axe rules: transient colour interpolation during theme changes, native dialog close re-entrancy, and a pause/resume control response closing the end-lecture dialog. All 13 Playwright tests pass, including the three previously failing mobile light/dark axe checks.
+Accessibility root causes fixed without disabling axe rules: transient colour interpolation during theme changes, native dialog close re-entrancy, and a pause/resume control response closing the end-lecture dialog. All 16 Playwright tests pass, including the three previously failing mobile light/dark axe checks.
 
 Actual verification:
 
 | Check | Result |
 | --- | --- |
 | Frontend ESLint / TypeScript | Passed |
-| Vitest | 178/178 in 15 files |
+| Vitest | 187/187 in 17 files |
 | Production build | Passed |
-| Playwright E2E | 13/13 passed |
+| Playwright E2E | 16/16 passed |
 | Axe mobile light/dark | Passed |
 | Backend Ruff / mypy / pytest | Passed; 125 tests |
 | Contracts | Stable |
