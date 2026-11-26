@@ -253,4 +253,5 @@ Authorization: Bearer <professor-jwt>
 | `1d9e4b9` | P2 handover, verification matrix, load evidence |
 | `ca8b1e3` | Final secret-scan allowlist for a synthetic frontend test fixture |
 
-The P2 pull request head is `ca8b1e3`; all CI and E2E checks are green.
+The CI-verified P2 code commit is `ca8b1e3`; this handover-only update follows it and
+does not change backend behavior.
