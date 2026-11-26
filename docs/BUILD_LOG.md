@@ -1,4 +1,4 @@
-# Build log
+﻿# Build log
 
 Timezone: Asia/Qyzylorda (UTC+05:00). Date: 25 November 2026.
 This log records what was actually run. It does not reconstruct work that did not happen.
@@ -262,3 +262,14 @@ Resolved the earlier publication blocker after user-confirmed GitHub CLI device 
 `git push -u origin feat/p1-frontend-experience` succeeded. Verified the remote branch at `18f14e7b2d1e6a5f90d971063b9c65194a89f6d7`, preserving the original local commits and P3 ancestry. Created draft PR #4: <https://github.com/Nurzhigittt/project-darisai/pull/4>, targeting main. No merge or deployment was performed. This follow-up changes documentation only; the implementation verification remains the 175 tests/lint/types/webpack build recorded above. Remote CI and real-infrastructure acceptance must be assessed separately from those local results.
 
 First remote CI at `18f14e7`: frontend lint/types/tests/default production build, backend Ruff/mypy/unit/integration/security tests, and API/WebSocket contract drift checks passed in run <https://github.com/Nurzhigittt/project-darisai/actions/runs/45780544158>. E2E was still running when this entry was written. Secret scanning found one false positive: the literal mock Replay moment `fresh-signed-moment-12345678` in the network-recovery component test. Added only that exact commit/path/rule/line fingerprint to `.gitleaksignore`; no real credential, test directory or generic rule is exempted. The latest PR checks remain the authoritative final status.
+
+## P2 backend completion (`feat/p2-backend-completion`)
+
+- Integrated P3 at `c21446a` through the P2 branch; no history rewrite.
+- Added migration `300_p2_completion.sql` and applied it to the local database.
+- Clean database: 4 migrations, 19 public tables, pgvector 0.8.1.
+- Phase 1 schema upgraded through all 4 migrations successfully.
+- Added canonical concepts, insight decision history, generation deduplication, Handoff revoke/redeem counters and IP rate limit, autonomy eligibility, cohort structural gaps, and isolated demo sessions.
+- Backend tests: **121 passed**; Ruff/mypy clean; frontend lint/typecheck/tests/build clean.
+- 300-client load: 300/300, 0 errors, ack p95 14.71 ms, Signal-to-Ripple p95 396.84 ms, p99 468.60 ms; API working set ~164 MB and CPU ~13.8% of four cores during the sample.
+- No Docker or cloud deployment was executed.

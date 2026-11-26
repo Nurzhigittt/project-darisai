@@ -7,6 +7,7 @@ from app.api.v1 import (
     autonomy,
     cohort,
     courses,
+    demo,
     gapcards,
     insights,
     intelligence,
@@ -23,6 +24,7 @@ api_router.include_router(auth.router)
 api_router.include_router(autonomy.router)
 api_router.include_router(cohort.router)
 api_router.include_router(courses.router)
+api_router.include_router(demo.router)
 api_router.include_router(gapcards.router)
 api_router.include_router(insights.router)
 api_router.include_router(intelligence.router)

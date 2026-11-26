@@ -66,15 +66,23 @@ CONCEPTS: tuple[ConceptTerm, ...] = (
 
 
 def concept_title(text: str, language: str = "en") -> str:
-    lowered = text.lower()
     for concept in CONCEPTS:
-        if any(keyword in lowered for keyword in concept.keywords):
+        if any(keyword in text.lower() for keyword in concept.keywords):
             if language == "ru":
                 return concept.title_ru
             if language == "kk":
                 return concept.title_kk
             return concept.title_en
     return {"ru": "Ключевая идея", "kk": "Негізгі идея"}.get(language, "Key idea")
+
+
+def concept_key(text: str) -> str | None:
+    """Return a stable lecture concept key, independent of display language."""
+
+    for concept in CONCEPTS:
+        if any(keyword in text.lower() for keyword in concept.keywords):
+            return concept.key
+    return None
 
 
 def concept_for_segments(texts: list[str], language: str = "en") -> str:

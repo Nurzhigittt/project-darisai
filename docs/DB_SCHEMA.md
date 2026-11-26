@@ -114,3 +114,33 @@ python -m app.migrate
 ```
 
 The runner is idempotent and safe to rerun. It is also invoked before API startup when `RUN_MIGRATIONS=true`; Compose uses a dedicated `migrate` service instead.
+
+## P2 completion additions (migration 300)
+
+### `canonical_concepts`
+
+Course-level concept identity: `id`, `course_id`, `normalized_key`, `title`, `created_at`; unique `(course_id, normalized_key)`. `concepts.canonical_id` is populated by the deterministic concept catalog; existing rows are preserved.
+
+### `insight_decisions`
+
+Append-only audit: `id`, `insight_id`, `lecture_id`, `professor_id`, `concept_canonical_id`, `action` (`approve|edit|reject|publish|revoke`), `from_status`, `to_status`, `reason`, `content_hash`, `created_at`. No raw student content.
+
+### `insights` additions
+
+`concept_canonical_id` (nullable FK), `generation_key` (unique per lecture/kind when present). Deduplicates repeated generation for the same evidence set.
+
+### `handoff_links` additions
+
+`redeemed_at`, `redeem_count`, `last_redeemed_at`, `revoked_reason`. Raw magic tokens remain unhashed only in the response; the database stores SHA-256 hashes.
+
+### `concept_autonomy` additions
+
+`observation_started_at`, `whitelisted_at`, `whitelisted_by_professor_id`, `policy_reason`. `mode` remains `locked|whitelisted`.
+
+### `cohort_stats.term_order`
+
+Numeric ordering for consecutive-semester structural-gap detection. `synthetic=true` is retained.
+
+### `demo_sessions`
+
+`id`, `lecture_id` (unique), `professor_id`, `scenario`, `synthetic`, `expires_at`, `created_at`, `last_reset_at`. Demo reset/delete is scoped through this table.

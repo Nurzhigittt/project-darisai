@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 from collections.abc import Sequence
 from typing import Any
@@ -49,11 +50,13 @@ class TranscriptService:
         settings: Settings,
         embeddings: Any,
         stt: SttProvider | None,
+        concepts: Any | None = None,
     ) -> None:
         self._db = db
         self._settings = settings
         self._embeddings = embeddings
         self._stt = stt
+        self._concepts = concepts
 
     async def get_owned_lecture(self, lecture_id: UUID, professor_id: UUID) -> dict[str, Any]:
         row = await self._db.fetchrow(
@@ -167,6 +170,9 @@ class TranscriptService:
                 degraded,
             )
         assert updated_run is not None
+        if self._concepts is not None:
+            with contextlib.suppress(Exception):
+                await self._concepts.ensure_for_lecture(lecture_id)
         return TranscriptImportOut(
             lecture_id=lecture_id,
             run=_run_out(dict(updated_run)),

@@ -131,3 +131,14 @@ flowchart LR
 6. Prompt-injection defenses are interfaces and documented design, not implemented LLM behavior.
 7. Docker images and remote CI have not been executed in the build environment; see the handover.
 8. Service-worker caching is intentionally limited to the app shell; API responses and credentials are never cached.
+
+## P2 completion controls
+
+- Canonical concepts/decision history store aggregate metadata and professor decisions only; no student identity or dialogue.
+- Handoff links store SHA-256 hashes, enforce expiry/revocation, revoke older links on republish/edit/reject, count redemptions and rate-limit the public redeem route.
+- Insight decisions are append-only audit rows; content hashes are for integrity, not content storage.
+- Demo lectures require an owned `demo_sessions` row and `is_demo=true`; reset/delete cannot touch real lectures. Expiry cleanup is scoped to the professor.
+- Autonomy is locked by default; whitelisting requires explicit professor action plus 30-day observation, 5 approvals, at most 2 rejections and 5 decisions. No automatic publication path bypasses approval.
+- Cohort structural gaps are labeled `synthetic`, `observed` or `mixed`; synthetic seed rows are not presented as real institutional history.
+- All new queries are parameterized and ownership-scoped.
+- Remaining risks: signed Replay state is replayable until expiry except the single-use nonce; a Replay Token is pseudonymous, not a unique person; provider retention is outside backend control.

@@ -100,6 +100,7 @@ class InsightReject(ApiModel):
 
 class InsightOut(ApiModel):
     insight_id: UUID
+    concept_canonical_id: UUID | None = None
     lecture_id: UUID
     kind: InsightKind
     audience: InsightAudience
@@ -110,6 +111,35 @@ class InsightOut(ApiModel):
     created_at: datetime
     updated_at: datetime
     decided_at: datetime | None = None
+
+
+class InsightDecisionOut(ApiModel):
+    decision_id: UUID
+    insight_id: UUID
+    action: Literal["approve", "edit", "reject", "publish", "revoke"]
+    from_status: str
+    to_status: str
+    reason: str | None = None
+    concept_canonical_id: UUID | None = None
+    created_at: datetime
+
+
+class HandoffRevokeRequest(ApiModel):
+    reason: str = Field(min_length=1, max_length=200)
+
+    @field_validator("reason")
+    @classmethod
+    def trim_reason(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("A reason is required.")
+        return value
+
+
+class HandoffRevokeOut(ApiModel):
+    insight_id: UUID
+    revoked: int
+    status: InsightStatus
 
 
 class HandoffLinkOut(ApiModel):

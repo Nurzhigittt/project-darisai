@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from uuid import UUID
 
 from app.axiom.concepts import concept_title
@@ -18,6 +19,7 @@ from app.schemas.insights import (
     InsightTask,
 )
 from app.services.analytics import AnalyticsService
+from app.services.concepts import ConceptCatalogService
 from app.services.insights import InsightService
 
 
@@ -52,6 +54,7 @@ class IntelligenceService:
         insights: InsightService,
         budget: GenerationBudget,
         axiom: AxiomEngine,
+        concept_catalog: ConceptCatalogService,
     ) -> None:
         self._db = db
         self._settings = settings
@@ -60,6 +63,7 @@ class IntelligenceService:
         self._insights = insights
         self._budget = budget
         self._axiom = axiom
+        self._concept_catalog = concept_catalog
         self._citations = DeterministicCitationValidator()
 
     async def generate(
@@ -255,6 +259,16 @@ class IntelligenceService:
                     **live_validation.model_dump(),
                     "statistics": stats,
                 }
+        primary_concept = content.concepts[0].title if content.concepts else "Key idea"
+        concept_canonical_id = await self._concept_catalog.resolve_or_create(
+            UUID(str(lecture["course_id"])), primary_concept
+        )
+        generation_key = hashlib.sha256(
+            (
+                f"v1|{kind}|{lecture_id}|{max_concepts}|"
+                + ",".join(str(cluster.cluster_id) for cluster in clusters)
+            ).encode("utf-8")
+        ).hexdigest()
         insight = await self._insights.create_generated(
             lecture_id=lecture_id,
             professor_id=professor_id,
@@ -262,9 +276,11 @@ class IntelligenceService:
             content=content,
             source=source,
             validation=validation,
+            concept_canonical_id=concept_canonical_id,
+            generation_key=generation_key,
         )
         return IntelligenceGenerateResponse(
             insight=insight,
             selection=f"persisted_clusters={len(clusters)}; selected={len(concepts)}",
-            source=source,
+            source=insight.source,
         )

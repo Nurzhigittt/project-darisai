@@ -17,5 +17,6 @@ paths = [
   '''\.hypothesis''',
   '''\.pip-tools-cache''',
   '''docs/contracts/fixtures/axiom''',
+  '''frontend/src/features/replay/replay-screen.test.tsx''',
   '''artifacts/evals/hardening''',
 ]

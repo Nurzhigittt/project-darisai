@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, Request, status
 
-from app.api.deps import ContextDep, ProfessorDep
+from app.api.deps import ContextDep, ProfessorDep, client_ip
 from app.schemas.insights import (
     HandoffLinkOut,
     HandoffPublicOut,
     HandoffRedeemRequest,
+    HandoffRevokeOut,
+    HandoffRevokeRequest,
     InsightCreate,
+    InsightDecisionOut,
     InsightEdit,
     InsightKind,
     InsightOut,
@@ -105,9 +108,42 @@ async def publish_handoff(
     )
 
 
+@router.get(
+    "/lectures/{lecture_id}/insights/{insight_id}/decisions",
+    response_model=list[InsightDecisionOut],
+)
+async def list_insight_decisions(
+    lecture_id: UUID,
+    insight_id: UUID,
+    ctx: ContextDep,
+    professor: ProfessorDep,
+) -> list[InsightDecisionOut]:
+    return await ctx.insights.list_decisions(
+        lecture_id, insight_id, professor.professor_id
+    )
+
+
+@router.post(
+    "/lectures/{lecture_id}/insights/{insight_id}/handoff/revoke",
+    response_model=HandoffRevokeOut,
+)
+async def revoke_handoff(
+    lecture_id: UUID,
+    insight_id: UUID,
+    body: HandoffRevokeRequest,
+    ctx: ContextDep,
+    professor: ProfessorDep,
+) -> HandoffRevokeOut:
+    return await ctx.insights.revoke_handoff(
+        lecture_id, insight_id, professor.professor_id, body.reason
+    )
+
+
 @router.post("/handoff/redeem", response_model=HandoffPublicOut)
 async def redeem_handoff(
     body: HandoffRedeemRequest,
+    request: Request,
     ctx: ContextDep,
 ) -> HandoffPublicOut:
+    await ctx.rate_limiter.enforce_handoff(client_ip(request))
     return await ctx.insights.redeem_handoff(body.token)
