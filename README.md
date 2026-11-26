@@ -148,7 +148,7 @@ The realtime path is deterministic and browser-free. No LLM sits in the Signal �
 | Check | Actual local result |
 | --- | --- |
 | Backend | **125 tests passed** · Ruff and mypy clean |
-| Frontend | **187 unit tests passed** in 17 files |
+| Frontend | **188 unit tests passed** in 17 files |
 | Browser | **16/16 Playwright E2E** including real API Signal → Ripple and axe |
 | Signal acknowledgement | p95 **14.71 ms** |
 | Signal → Ripple | p95 **396.84 ms**, p99 468.60 ms · target ≤ 500 ms |

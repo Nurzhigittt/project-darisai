@@ -68,7 +68,7 @@ DärisAI — слой Classroom Intelligence для момента, когда �
 | Проверка | Фактический локальный результат |
 | --- | --- |
 | Backend | **125 тестов** · Ruff и mypy чистые |
-| Frontend | **187 unit-тестов** в 17 файлах |
+| Frontend | **188 unit-тестов** в 17 файлах |
 | Playwright | **16/16 E2E**, включая реальный Signal → Ripple и axe |
 | Signal acknowledgement | p95 **14.71 мс** |
 | Signal → Ripple | p95 **396.84 мс**, p99 468.60 мс |

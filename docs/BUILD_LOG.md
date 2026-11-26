@@ -287,7 +287,7 @@ Actual verification:
 | Check | Result |
 | --- | --- |
 | Frontend ESLint / TypeScript | Passed |
-| Vitest | 187/187 in 17 files |
+| Vitest | 188/188 in 17 files |
 | Production build | Passed |
 | Playwright E2E | 16/16 passed |
 | Axe mobile light/dark | Passed |
@@ -314,6 +314,6 @@ Added:
 
 Replaced the orange danger/attention tokens with Vintage Berry/Rose Kiss so the product UI stays inside the official palette.
 
-Verification after the change: frontend ESLint, TypeScript, **187 unit tests**, production build and **16/16 Playwright E2E** passed, including axe light/dark and the real API Signal → Ripple workflow. Backend regression remained 125 tests. The screenshot run used synthetic lecture/student data and the template AI path.
+Verification after the change: frontend ESLint, TypeScript, **188 unit tests**, production build and **16/16 Playwright E2E** passed, including axe light/dark and the real API Signal → Ripple workflow. Backend regression remained 125 tests. The screenshot run used synthetic lecture/student data and the template AI path.
 
 Repository description/topics/social-preview settings were prepared but the authenticated API token returned 404 for repository administration, so remote metadata was not changed. The social preview asset is committed at `brand/social/social-preview-light.png` (1280×640); it still needs to be uploaded in GitHub repository settings by a maintainer with admin access. No deployment was performed.
