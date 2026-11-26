@@ -93,11 +93,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
 
     app.middleware("http")(observability_middleware)
+    app.state.settings = resolved
     app.add_middleware(
         CORSMiddleware,
         allow_origins=resolved.cors_origin_list,
         allow_credentials=False,
-        allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=[
             "Authorization",
             "Content-Type",
@@ -128,6 +129,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.websocket("/ws")
     async def ws(websocket: WebSocket) -> None:
+        if resolved.deployment_mode == "supabase":
+            await websocket.close(code=4403, reason="Use Supabase Realtime")
+            return
         await websocket_endpoint(websocket)
 
     return app

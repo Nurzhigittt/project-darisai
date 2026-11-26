@@ -46,6 +46,75 @@
         }
       }
     },
+    "/api/v1/lectures/{lecture_id}/realtime": {
+      "post": {
+        "tags": [
+          "realtime"
+        ],
+        "summary": "Realtime Command",
+        "operationId": "realtime_command_api_v1_lectures__lecture_id__realtime_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RealtimeCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtimeSession"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/professor": {
       "post": {
         "tags": [
@@ -1477,6 +1546,73 @@
                 "schema": {
                   "$ref": "#/components/schemas/IntelligenceGenerateResponse"
                 }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/insights/generate/stream": {
+      "post": {
+        "tags": [
+          "intelligence"
+        ],
+        "summary": "Stream Intelligence",
+        "operationId": "stream_intelligence_api_v1_lectures__lecture_id__insights_generate_stream_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntelligenceGenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           },
@@ -4680,6 +4816,121 @@
         ],
         "title": "PublicLecture"
       },
+      "RealtimeCommand": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "professor"
+            ],
+            "title": "Role"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "connect",
+              "sync",
+              "signal",
+              "leave"
+            ],
+            "title": "Action",
+            "default": "sync"
+          },
+          "signal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StudentSignalPayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "title": "RealtimeCommand"
+      },
+      "RealtimeSession": {
+        "properties": {
+          "events": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "realtime_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Realtime Url"
+          },
+          "publishable_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publishable Key"
+          },
+          "channel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Channel"
+          },
+          "access_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "recovery_interval_ms": {
+            "type": "integer",
+            "title": "Recovery Interval Ms",
+            "default": 5000
+          }
+        },
+        "type": "object",
+        "required": [
+          "events"
+        ],
+        "title": "RealtimeSession"
+      },
       "ReplayHistoryItem": {
         "properties": {
           "role": {
@@ -5078,6 +5329,39 @@
           "rejected_signals_total"
         ],
         "title": "StatusResponse"
+      },
+      "StudentSignalPayload": {
+        "properties": {
+          "client_seq": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Client Seq"
+          },
+          "kind": {
+            "type": "string",
+            "const": "lost",
+            "title": "Kind",
+            "default": "lost"
+          },
+          "client_ts_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Ts Ms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "client_seq"
+        ],
+        "title": "StudentSignalPayload"
       },
       "TableManifest": {
         "properties": {

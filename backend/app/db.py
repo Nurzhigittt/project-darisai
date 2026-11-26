@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections.abc import AsyncIterator, Sequence
 from contextlib import asynccontextmanager
+from contextvars import ContextVar
 from typing import Any
 
 import asyncpg
@@ -31,6 +32,9 @@ class Database:
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
         self._pool: asyncpg.Pool[Any] | None = None
+        self._connection: ContextVar[asyncpg.Connection[Any] | None] = ContextVar(
+            "daris_transaction", default=None
+        )
 
     @property
     def pool(self) -> asyncpg.Pool[Any]:
@@ -47,6 +51,7 @@ class Database:
             max_size=self._settings.db_pool_max_size,
             init=_init_connection,
             command_timeout=10,
+            statement_cache_size=self._settings.db_statement_cache_size,
         )
 
     async def disconnect(self) -> None:
@@ -60,7 +65,7 @@ class Database:
         *args: object,
         timeout: float | None = None,
     ) -> list[dict[str, Any]]:
-        rows = await self.pool.fetch(query, *args, timeout=timeout)
+        rows = await (self._connection.get() or self.pool).fetch(query, *args, timeout=timeout)
         return [dict(row) for row in rows]
 
     async def fetchrow(
@@ -69,7 +74,7 @@ class Database:
         *args: object,
         timeout: float | None = None,
     ) -> dict[str, Any] | None:
-        row = await self.pool.fetchrow(query, *args, timeout=timeout)
+        row = await (self._connection.get() or self.pool).fetchrow(query, *args, timeout=timeout)
         return dict(row) if row is not None else None
 
     async def fetchval(
@@ -78,18 +83,26 @@ class Database:
         *args: object,
         timeout: float | None = None,
     ) -> Any:
-        return await self.pool.fetchval(query, *args, timeout=timeout)
+        return await (self._connection.get() or self.pool).fetchval(query, *args, timeout=timeout)
 
     async def execute(self, query: str, *args: object, timeout: float | None = None) -> str:
-        return str(await self.pool.execute(query, *args, timeout=timeout))
+        return str(await (self._connection.get() or self.pool).execute(query, *args, timeout=timeout))
 
     async def executemany(self, query: str, args: Sequence[Sequence[object]]) -> None:
-        await self.pool.executemany(query, args)
+        await (self._connection.get() or self.pool).executemany(query, args)
 
     @asynccontextmanager
     async def transaction(self) -> AsyncIterator[asyncpg.Connection[Any]]:
+        current = self._connection.get()
+        if current is not None:
+            yield current
+            return
         async with self.pool.acquire() as connection, connection.transaction():
-            yield connection
+            token = self._connection.set(connection)
+            try:
+                yield connection
+            finally:
+                self._connection.reset(token)
 
     async def health(self) -> tuple[bool, float | None]:
         import time

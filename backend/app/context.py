@@ -23,6 +23,8 @@ from app.realtime.ripple_runtime import RippleRuntime
 from app.realtime.signals import SignalProcessor
 from app.redis_client import RedisClient
 from app.security import TokenCodec
+from app.serverless.realtime import DurableRipple, SupabaseEventBus
+from app.serverless.store import PostgresState
 from app.services.analytics import AnalyticsService
 from app.services.auth import AuthService
 from app.services.autonomy import ConceptAutonomyService
@@ -72,19 +74,25 @@ class AppContext:
     @classmethod
     def build(cls, settings: Settings) -> AppContext:
         db = Database(settings)
-        redis_client = RedisClient(settings)
+        redis_client = (
+            PostgresState(settings, db) if settings.deployment_mode == "supabase" else RedisClient(settings)
+        )
         codec = TokenCodec(settings)
         counters = OperationalCounters()
         manager = ConnectionManager()
-        event_bus = LectureEventBus(redis_client, manager)
+        event_bus = (
+            SupabaseEventBus(db) if settings.deployment_mode == "supabase"
+            else LectureEventBus(redis_client, manager)
+        )
         analytics = AnalyticsService(db, redis_client, settings)
         signals = SignalProcessor(db, redis_client, settings, counters)
-        ripple = RippleRuntime(db, redis_client, settings, signals, analytics, event_bus)
+        runtime_type = DurableRipple if settings.deployment_mode == "supabase" else RippleRuntime
+        ripple = runtime_type(db, redis_client, settings, signals, analytics, event_bus)
         student_tokens = StudentTokenService(redis_client, codec, settings)
         insights = InsightService(db, settings)
         embeddings = cast(EmbeddingProvider, build_embedding_provider(settings))
         retrieval = TemporalRetriever(db, settings, embeddings)
-        axiom = AxiomEngine(settings, build_llm_client(settings))
+        axiom = AxiomEngine(settings, build_llm_client(settings, redis_client))
         axiom_state = AxiomTokenCodec(settings)
         concept_catalog = ConceptCatalogService(db)
         courses = CourseService(db)

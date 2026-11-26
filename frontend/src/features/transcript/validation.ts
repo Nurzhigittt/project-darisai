@@ -1,6 +1,7 @@
 import type { TranscriptImportRequest } from "@/lib/api/client";
 
-export const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
+export const MAX_AUDIO_BYTES = process.env.NEXT_PUBLIC_REALTIME_TRANSPORT === "supabase"
+  ? 4_000_000 : 25 * 1024 * 1024;
 export const MAX_JSON_BYTES = 20 * 1024 * 1024;
 // Conservative client limit matches the backend default configuration.
 export const MAX_TRANSCRIPT_SEGMENTS = 400;

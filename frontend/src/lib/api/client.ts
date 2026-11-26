@@ -63,6 +63,39 @@ export class ApiError extends Error {
   }
 }
 
+async function streamIntelligence(lectureId: string, token: string, body: IntelligenceGenerateRequest, signal?: AbortSignal): Promise<IntelligenceGenerateResponse> {
+  const response = await fetch(`${API_URL}/api/v1/lectures/${lectureId}/insights/generate/stream`, {
+    method: "POST", cache: "no-store", signal,
+    headers: { "Content-Type": "application/json", Accept: "text/event-stream", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok || !response.body) throw new ApiError(response.status, "GENERATION_FAILED", "Generation could not start.");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      if (buffer.length > 1_000_000) throw new ApiError(502, "INVALID_RESPONSE", "Generation response is too large.");
+      let boundary: number;
+      while ((boundary = buffer.indexOf("\n\n")) >= 0) {
+        const frame = buffer.slice(0, boundary); buffer = buffer.slice(boundary + 2);
+        const lines = frame.split("\n");
+        const event = lines.find(line => line.startsWith("event:"))?.slice(6).trim();
+        const data = lines.filter(line => line.startsWith("data:")).map(line => line.slice(5).trimStart()).join("\n");
+        if (event === "result") return JSON.parse(data) as IntelligenceGenerateResponse;
+        if (event === "error") {
+          const error = JSON.parse(data) as { code: string; message: string };
+          throw new ApiError(502, error.code, error.message);
+        }
+      }
+    }
+    throw new ApiError(502, "STREAM_INTERRUPTED", "Generation stream was interrupted.");
+  } finally { await reader.cancel(); }
+}
+
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT";
   body?: unknown;
@@ -237,7 +270,9 @@ export const api = {
     request<AudioChunk>(`/api/v1/lectures/${lectureId}/audio-chunks`, { method: "POST", token, formData, signal }),
 
   generateInsight: (token: string, lectureId: string, body: IntelligenceGenerateRequest, signal?: AbortSignal) =>
-    request<IntelligenceGenerateResponse>(`/api/v1/lectures/${lectureId}/insights/generate`, { method: "POST", token, body, signal }),
+    process.env.NEXT_PUBLIC_REALTIME_TRANSPORT === "supabase"
+      ? streamIntelligence(lectureId, token, body, signal)
+      : request<IntelligenceGenerateResponse>(`/api/v1/lectures/${lectureId}/insights/generate`, { method: "POST", token, body, signal }),
 
   getCohortMemory: (token: string, courseId: string, signal?: AbortSignal) =>
     request<CohortMemory>(`/api/v1/courses/${courseId}/cohort-memory?limit=200`, { token, signal }),

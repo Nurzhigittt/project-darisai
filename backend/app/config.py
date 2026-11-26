@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
+from tempfile import gettempdir
 from typing import Literal
 from urllib.parse import urlsplit
 
@@ -29,6 +31,17 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     log_level: str = "INFO"
     run_migrations: bool = False
+    deployment_mode: Literal["local", "supabase"] = "local"
+    migration_database_url: str = ""
+    db_statement_cache_size: int = Field(default=100, ge=0)
+    supabase_url: str = ""
+    supabase_publishable_key: str = ""
+    supabase_jwt_secret: str = ""
+    realtime_ticket_seconds: int = Field(default=120, ge=30, le=300)
+    serverless_tick_ms: int = Field(default=1000, ge=500, le=5000)
+    axiom_daily_token_budget: int = Field(default=100_000, ge=0)
+    axiom_llm_max_input_chars: int = Field(default=24_000, ge=1000, le=100_000)
+    axiom_llm_streaming: bool = False
 
     database_url: str = "postgresql://daris:daris@localhost:55432/daris"
     db_pool_min_size: int = 1
@@ -146,6 +159,23 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_production_safety(self) -> Settings:
+        if self.deployment_mode == "supabase":
+            if self.run_migrations or self.auto_seed:
+                raise ValueError("Supabase mode requires RUN_MIGRATIONS=false and AUTO_SEED=false")
+            if not self.supabase_url.startswith("https://") or not self.supabase_publishable_key:
+                raise ValueError("Supabase HTTPS URL and publishable key are required")
+            if len(self.supabase_jwt_secret) < 32:
+                raise ValueError("A server-only Supabase JWT signing secret is required")
+            if self.axiom_llm_provider == "ollama":
+                raise ValueError("Ollama requires the local persistent-server mode")
+            self.db_statement_cache_size = 0
+            self.db_pool_min_size = 0
+            self.db_pool_max_size = min(self.db_pool_max_size, 2)
+            self.axiom_embedding_prewarm = False
+            self.axiom_llm_streaming = True
+            self.axiom_embedding_cache_dir = str(Path(gettempdir()) / "daris-models")
+            self.axiom_local_stt_download_root = str(Path(gettempdir()) / "daris-whisper")
+            self.axiom_stt_max_file_bytes = min(self.axiom_stt_max_file_bytes, 4_000_000)
         if self.environment != "production":
             return self
         if not self.app_base_url.startswith("https://"):
