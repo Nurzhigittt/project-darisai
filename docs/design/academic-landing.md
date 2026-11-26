@@ -10,7 +10,7 @@ After reviewing the inner screens, the user explicitly requested the landing's d
 
 The design covers lecturer login/home, join, student Signal, lecturer Ripple, presentation, summary, Replay, GapCards/library, Brief, Handoff, transcript, Cohort, Autonomy, privacy, service status, offline, error and not-found screens. Signal remains one large green action; Ripple retains deterministic green-to-orange state semantics. Presentation uses the corresponding dark palette. No data, privacy, authentication or publication behavior is simulated by these production styles.
 
-The supplied Geologica asset and license are reused; no dependencies, lockfiles or contracts change. Visual fixtures stay in a separate scratch preview with a visible demo-data banner. Local and remote verification evidence is recorded in the build log and PR.
+The supplied Geologica asset and license are reused; no dependencies, lockfiles or contracts change. Visual fixtures stay in a separate scratch preview with a visible demo-data banner. Local and remote verification evidence is recorded in the build log and [design PR #5](https://github.com/Nurzhigittt/project-darisai/pull/5). Implementation merge: `5c66b8a`; all concurrent P2/P1 behavior from `e9dea4c` is preserved.
 
 ## Visual direction
 
