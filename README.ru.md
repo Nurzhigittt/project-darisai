@@ -37,12 +37,12 @@ DärisAI — слой Classroom Intelligence для момента, когда �
 
 <table>
 <tr>
-<td width="60%"><img src="brand/screenshots/landing-light.png" alt="Лендинг DärisAI" /><br /><sub>Студенческий лендинг: вход по коду без аккаунта.</sub></td>
-<td width="40%"><img src="brand/screenshots/student-signal-mobile.png" alt="Экран Signal на телефоне" /><br /><sub>Одно тихое действие и локальное подтверждение.</sub></td>
+<td width="60%"><img src="brand/readme/gallery/landing-light.png" alt="Лендинг DärisAI" /><br /><sub>Студенческий лендинг: вход по коду без аккаунта.</sub></td>
+<td width="40%"><img src="brand/readme/gallery/student-signal-mobile.png" alt="Экран Signal на телефоне" /><br /><sub>Одно тихое действие и локальное подтверждение.</sub></td>
 </tr>
 <tr>
-<td><img src="brand/screenshots/professor-live.png" alt="Экран преподавателя во время лекции" /><br /><sub>QR, код и агрегированный Ripple.</sub></td>
-<td><img src="brand/screenshots/summary.png" alt="Итоги лекции" /><br /><sub>Фактические агрегаты, а не оценка понимания.</sub></td>
+<td><img src="brand/readme/gallery/professor-live.png" alt="Экран преподавателя во время лекции" /><br /><sub>QR, код и агрегированный Ripple.</sub></td>
+<td><img src="brand/readme/gallery/summary.png" alt="Итоги лекции" /><br /><sub>Фактические агрегаты, а не оценка понимания.</sub></td>
 </tr>
 </table>
 
@@ -67,7 +67,7 @@ DärisAI — слой Classroom Intelligence для момента, когда �
 
 | Проверка | Фактический локальный результат |
 | --- | --- |
-| Backend | **125 тестов** · Ruff и mypy чистые |
+| Backend | **126 тестов** · Ruff и mypy чистые |
 | Frontend | **188 unit-тестов** в 17 файлах |
 | Playwright | **16/16 E2E**, включая реальный Signal → Ripple и axe |
 | Signal acknowledgement | p95 **14.71 мс** |
@@ -103,7 +103,7 @@ pnpm dev
 - [Архитектура](ARCHITECTURE.md) · [API](docs/API_CONTRACTS.md) · [База данных](docs/DB_SCHEMA.md)
 - [Безопасность и приватность](docs/SECURITY_PRIVACY.md)
 - [P1 frontend](docs/handover/P1.md) · [P2 backend](docs/P2_HANDOVER.md) · [P3 Axiom](docs/P3_HANDOVER.md)
-- [Онбординг](docs/ONBOARDING.md) · [Локальный AI](docs/AI_PROVIDER_SETUP.md)
+- [Онбординг](docs/ONBOARDING.md) · [Локальный AI](docs/LOCAL_AI.md) · [Настройка провайдеров](docs/AI_PROVIDER_SETUP.md)
 - [Бренд](docs/BRAND.md) · [Build log](docs/BUILD_LOG.md)
 
 ## Приватность

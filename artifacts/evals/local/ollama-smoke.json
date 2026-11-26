@@ -1,0 +1,22 @@
+﻿{
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434/v1",
+  "model": "qwen2.5:1.5b",
+  "api_key_used": false,
+  "network_isolation": "Ollama localhost endpoint; no cloud API key configured",
+  "endpoint": "/api/v1/lectures/7ac38725-0a5d-486d-8b7a-db71d0e1fa69/insights/generate",
+  "kind": "brief_next",
+  "max_concepts": 3,
+  "status": "success",
+  "source": "live",
+  "duration_seconds": 33.69,
+  "insight_id": "0ec7b574-d08f-4961-8cd8-a099cf3aec89",
+  "citation_count": 1,
+  "headline": "Pressure Changes in Constricted Pipes",
+  "validated": true,
+  "stt": {
+    "local": false,
+    "reason": "faster-whisper is not installed and no local Whisper model is provisioned; cloud Groq remains separately verified."
+  },
+  "note": "Actual local generation through the integrated FastAPI endpoint. The host was online, but no external LLM API key was configured."
+}

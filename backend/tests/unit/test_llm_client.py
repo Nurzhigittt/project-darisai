@@ -51,3 +51,26 @@ async def test_provider_error_is_sanitized() -> None:
         await client.complete_json(system_prompt="system", user_prompt="user")
     assert error.value.code == "LLM_PROVIDER_ERROR"
     assert "key" not in str(error.value).lower()
+
+
+async def test_ollama_uses_local_endpoint_without_cloud_key() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert str(request.url) == "http://127.0.0.1:11434/v1/chat/completions"
+        assert "authorization" not in request.headers
+        payload = __import__("json").loads(request.read())
+        assert payload["model"] == "qwen2.5:1.5b"
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": '{"text": "local"}'}}]},
+        )
+
+    client = OpenAICompatibleLLMClient(
+        _settings(
+            axiom_llm_provider="ollama",
+            axiom_llm_api_key="",
+            axiom_local_llm_base_url="http://127.0.0.1:11434/v1",
+            axiom_local_llm_model="qwen2.5:1.5b",
+        ),
+        transport=httpx.MockTransport(handler),
+    )
+    assert await client.complete_json(system_prompt="system", user_prompt="user") == {"text": "local"}

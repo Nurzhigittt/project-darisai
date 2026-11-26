@@ -60,26 +60,18 @@ Aggregate events only. Confirmed moments stay in the student’s browser. Profes
 
 ## What it looks like
 
-These are actual production-build screenshots from a local synthetic demonstration run. The people, lecture titles and counts are test data.
+These are actual production-build screenshots from a local synthetic demonstration run. The people, lecture titles and counts are test data. Screenshot frames, shadows and spacing are baked into the PNG assets for GitHub.
+
+<img src="brand/readme/gallery/experience-composite.png" alt="DärisAI professor live view and student Signal screen" width="100%" />
 
 <table>
 <tr>
 <td width="60%" valign="top">
-  <img src="brand/screenshots/landing-light.png" alt="DärisAI student-first landing page in mint and berry" />
+  <img src="brand/readme/gallery/landing-light.png" alt="DärisAI student-first landing page in mint and berry" />
   <br /><sub><strong>Student-first landing</strong> — join with a code, no account.</sub>
 </td>
 <td width="40%" valign="top">
-  <img src="brand/screenshots/student-signal-mobile.png" alt="Student Signal screen on mobile" />
-  <br /><sub><strong>One quiet action</strong> — the student sees a confirmed local moment.</sub>
-</td>
-</tr>
-<tr>
-<td valign="top">
-  <img src="brand/screenshots/professor-live.png" alt="Professor live lecture with QR code and Ripple status" />
-  <br /><sub><strong>Professor live view</strong> — join code, QR and aggregate Ripple.</sub>
-</td>
-<td valign="top">
-  <img src="brand/screenshots/summary.png" alt="Factual post-lecture summary" />
+  <img src="brand/readme/gallery/summary.png" alt="Factual post-lecture summary" />
   <br /><sub><strong>After the lecture</strong> — factual aggregates, not inferred understanding.</sub>
 </td>
 </tr>
@@ -88,23 +80,52 @@ These are actual production-build screenshots from a local synthetic demonstrati
 <table>
 <tr>
 <td width="50%" valign="top">
-  <img src="brand/screenshots/briefnext-handoff.png" alt="BriefNext and Handoff review screen" />
+  <img src="brand/readme/gallery/briefnext-handoff.png" alt="BriefNext and Handoff review screen" />
   <br /><sub><strong>BriefNext / Handoff</strong> — evidence, decisions and approval before publication.</sub>
 </td>
 <td width="50%" valign="top">
-  <img src="brand/screenshots/cohort-memory.png" alt="Cohort Memory with structural gaps" />
+  <img src="brand/readme/gallery/cohort-memory.png" alt="Cohort Memory with structural gaps" />
   <br /><sub><strong>Cohort Memory</strong> — observed signals, structural gaps and explicit provenance.</sub>
 </td>
 </tr>
 <tr>
 <td colspan="2" valign="top">
-  <img src="brand/screenshots/autonomy.png" alt="Server-authoritative AI autonomy settings" />
+  <img src="brand/readme/gallery/autonomy.png" alt="Server-authoritative AI autonomy settings" />
   <br /><sub><strong>Staged autonomy</strong> — locked by default; eligibility is server-authoritative.</sub>
 </td>
 </tr>
 </table>
 
-<p align="center"><sub>Also see the landing in <a href="brand/screenshots/landing-dark.png">dark mode</a> and <a href="brand/screenshots/landing-mobile.png">mobile</a>.</sub></p>
+<p align="center"><sub>Also see the landing in <a href="brand/readme/gallery/landing-dark.png">dark mode</a> and <a href="brand/readme/gallery/landing-mobile.png">mobile</a>.</sub></p>
+
+<table>
+<tr>
+<td width="50%" valign="top">
+  <img src="brand/readme/gallery/join.png" alt="Anonymous lecture join screen" />
+  <br /><sub><strong>Join</strong> — code first, no account.</sub>
+</td>
+<td width="50%" valign="top">
+  <img src="brand/readme/gallery/transcript.png" alt="Timestamped transcript interface" />
+  <br /><sub><strong>Transcript</strong> — grounded lecture context for Replay and Axiom.</sub>
+</td>
+</tr>
+<tr>
+<td valign="top">
+  <img src="brand/readme/gallery/gapcards-library.png" alt="Local GapCards learning library" />
+  <br /><sub><strong>Learning library</strong> — local cards, offline review and deletion.</sub>
+</td>
+<td valign="top">
+  <img src="brand/readme/gallery/handoff.png" alt="Public Handoff seminar material" />
+  <br /><sub><strong>Handoff</strong> — fragment credential, no account, no teacher data.</sub>
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top">
+  <img src="brand/readme/gallery/replay.png" alt="Socratic Replay moment selection screen" />
+  <br /><sub><strong>Socratic Replay</strong> — revisit a confirmed local moment and work through a grounded question.</sub>
+</td>
+</tr>
+</table>
 
 ## The product loop
 
@@ -147,7 +168,7 @@ The realtime path is deterministic and browser-free. No LLM sits in the Signal �
 
 | Check | Actual local result |
 | --- | --- |
-| Backend | **125 tests passed** · Ruff and mypy clean |
+| Backend | **126 tests passed** · Ruff and mypy clean |
 | Frontend | **188 unit tests passed** in 17 files |
 | Browser | **16/16 Playwright E2E** including real API Signal → Ripple and axe |
 | Signal acknowledgement | p95 **14.71 ms** |
@@ -197,7 +218,7 @@ The Compose files are committed, but Docker was not available in the verificatio
 
 ### Local AI
 
-The core lecture loop does not call an LLM. To enable transcript-grounded live generation, configure the optional providers in [`docs/AI_PROVIDER_SETUP.md`](docs/AI_PROVIDER_SETUP.md). The default template path stays available and is labelled honestly.
+The core lecture loop does not call an LLM. For local generation, DärisAI supports Ollama on a localhost endpoint; no cloud key is required and the adapter does not silently switch to an external provider. The default template path stays available and is labelled honestly. See [`docs/LOCAL_AI.md`](docs/LOCAL_AI.md) for the actual local `qwen2.5:1.5b` smoke result, latency and STT limitation.
 
 ## Repository map
 
@@ -219,10 +240,13 @@ artifacts/  raw synthetic load and evaluation evidence
 - [P1 frontend handover](docs/handover/P1.md) — screens, accessibility, real integration
 - [P2 backend handover](docs/P2_HANDOVER.md) — cohort, autonomy, Handoff, demo backend
 - [P3 Axiom handover](docs/P3_HANDOVER.md) — retrieval, providers, guardrails
+- [Local AI](docs/LOCAL_AI.md) — Ollama, local run evidence and STT limit
 - [AI production readiness](docs/AI_PRODUCTION_READINESS.md) — prewarm, cache, cost, limits
 - [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology
 - [Retrieval benchmark](docs/RETRIEVAL_BENCHMARK.md) — dense vs lexical vs hybrid
 - [Developer onboarding](docs/ONBOARDING.md) — setup, tests and contribution path
+- [Deployment](docs/DEPLOYMENT.md) — Docker, environment and current infrastructure blocker
+- [Smartphone acceptance](docs/SMARTPHONE_ACCEPTANCE.md) — manual device checklist
 - [Brand guide](docs/BRAND.md) — palette, logo, typography and asset rules
 - [Build log](docs/BUILD_LOG.md) — actual commands and results
 - [Русский README](README.ru.md) · [Қазақша README](README.kk.md)
@@ -242,7 +266,8 @@ The official mark is the stylized lowercase **ä** in Vintage Berry on Mint Crea
 ## Status and limits
 
 - ✅ Core lecture loop, anonymous join, Signal/Ripple, transcript, Replay, GapCards, BriefNext/Handoff, Cohort and autonomy are implemented and tested.
-- ✅ Live DeepSeek and Groq provider smoke checks passed; template fallback remains deterministic.
+- ✅ Live DeepSeek and Groq provider smoke checks passed; local Ollama `qwen2.5:1.5b` generation was verified through the integrated API (33.69 s, `source=live`); template fallback remains deterministic.
+- ⚠️ Local Faster-Whisper STT is not provisioned; cloud Groq STT remains separately verified.
 - ⚠️ Broad live adversarial safety evaluation and human learning-outcome studies are not established.
 - ⚠️ No deployment, cloud hosting, multi-worker evaluator coordination or real-device screen-reader audit is claimed.
 - ⚠️ P4 owns the 40-student judge simulator and 90-second orchestration.
@@ -250,5 +275,9 @@ The official mark is the stylized lowercase **ä** in Vintage Berry on Mint Crea
 ## Contributing
 
 Read [`docs/ONBOARDING.md`](docs/ONBOARDING.md), keep the privacy invariants, add tests for behaviour, regenerate contracts, and run the local checks before opening a PR. Security reports: see [`SECURITY.md`](SECURITY.md).
+
+## Team and license
+
+Built by the DärisAI team. Released under the [MIT License](LICENSE). No institutional adoption, funding or customer claims are made.
 
 <div align="center"><sub>DärisAI · Local-first intelligence. Human-centered education.</sub></div>

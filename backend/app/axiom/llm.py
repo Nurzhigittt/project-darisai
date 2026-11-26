@@ -57,11 +57,22 @@ class OpenAICompatibleLLMClient:
         user_prompt: str,
         timeout_seconds: float = 8.0,
     ) -> dict[str, object]:
-        if not self._settings.axiom_llm_api_key:
+        local = self._settings.axiom_llm_provider == "ollama"
+        if not local and not self._settings.axiom_llm_api_key:
             raise LLMError("LLM_NOT_CONFIGURED", "The language model is not configured.")
-        url = self._settings.axiom_llm_base_url.rstrip("/") + "/chat/completions"
+        base_url = (
+            self._settings.axiom_local_llm_base_url
+            if local
+            else self._settings.axiom_llm_base_url
+        )
+        model = (
+            self._settings.axiom_local_llm_model
+            if local
+            else self._settings.axiom_llm_model
+        )
+        url = base_url.rstrip("/") + "/chat/completions"
         body: dict[str, object] = {
-            "model": self._settings.axiom_llm_model,
+            "model": model,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -77,10 +88,9 @@ class OpenAICompatibleLLMClient:
             # DeepSeek reasoning tokens otherwise consume max_tokens and can
             # return an empty JSON body. This flag is provider-specific.
             body["thinking"] = {"type": "disabled"}
-        headers = {
-            "Authorization": f"Bearer {self._settings.axiom_llm_api_key}",
-            "Content-Type": "application/json",
-        }
+        headers = {"Content-Type": "application/json"}
+        if not local:
+            headers["Authorization"] = f"Bearer {self._settings.axiom_llm_api_key}"
         timeout = min(timeout_seconds, self._settings.axiom_llm_timeout_seconds)
         last_error: Exception | None = None
         async with self._semaphore:
@@ -177,6 +187,8 @@ class FakeLLMClient:
 def build_llm_client(settings: Settings) -> OpenAICompatibleLLMClient | FakeLLMClient | None:
     if settings.axiom_llm_provider == "disabled":
         return None
+    if settings.axiom_llm_provider == "ollama":
+        return OpenAICompatibleLLMClient(settings)
     if settings.axiom_llm_provider == "fake":
         if settings.environment == "production":
             raise RuntimeError("Fake LLM is forbidden in production.")

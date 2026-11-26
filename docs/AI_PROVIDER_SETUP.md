@@ -11,7 +11,7 @@ AXIOM_STT_PROVIDER=disabled
 - Embeddings are real; the model is downloaded lazily.
 - Replay, GapCards and teacher intelligence use transcript-only template fallbacks.
 - No external LLM or STT request is made.
-- This is the only mode verified end-to-end in this environment.
+- Local Ollama generation is verified separately in [LOCAL_AI.md](LOCAL_AI.md); local Faster-Whisper is not provisioned.
 
 ## Embeddings
 
@@ -59,7 +59,18 @@ AXIOM_RRF_K=60
 AXIOM_QUERY_EXPANSION=true
 ```
 
-## LLM
+## Local LLM (Ollama)
+
+```dotenv
+AXIOM_LLM_PROVIDER=ollama
+AXIOM_LOCAL_LLM_BASE_URL=http://127.0.0.1:11434/v1
+AXIOM_LOCAL_LLM_MODEL=qwen2.5:1.5b
+```
+
+This is a genuinely local path: no cloud API key is read and there is no automatic
+cloud fallback. See [LOCAL_AI.md](LOCAL_AI.md) for the verified run and limits.
+
+## Cloud LLM
 
 The adapter is OpenAI-compatible and has no tools/web access.
 

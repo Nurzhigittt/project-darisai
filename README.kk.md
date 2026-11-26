@@ -37,12 +37,12 @@ DärisAI — студент түсіндірудің байланысын жоғ
 
 <table>
 <tr>
-<td width="60%"><img src="brand/screenshots/landing-light.png" alt="DärisAI студенттік беті" /><br /><sub>Код арқылы кіру, аккаунтсыз.</sub></td>
-<td width="40%"><img src="brand/screenshots/student-signal-mobile.png" alt="Телефондағы Signal экраны" /><br /><sub>Бір тыныш әрекет және жергілікті растау.</sub></td>
+<td width="60%"><img src="brand/readme/gallery/landing-light.png" alt="DärisAI студенттік беті" /><br /><sub>Код арқылы кіру, аккаунтсыз.</sub></td>
+<td width="40%"><img src="brand/readme/gallery/student-signal-mobile.png" alt="Телефондағы Signal экраны" /><br /><sub>Бір тыныш әрекет және жергілікті растау.</sub></td>
 </tr>
 <tr>
-<td><img src="brand/screenshots/professor-live.png" alt="Оқытушының тікелей экраны" /><br /><sub>QR, код және жиынтық Ripple.</sub></td>
-<td><img src="brand/screenshots/summary.png" alt="Дәріс қорытындысы" /><br /><sub>Нақты жиынтықтар, түсінуді бағалау емес.</sub></td>
+<td><img src="brand/readme/gallery/professor-live.png" alt="Оқытушының тікелей экраны" /><br /><sub>QR, код және жиынтық Ripple.</sub></td>
+<td><img src="brand/readme/gallery/summary.png" alt="Дәріс қорытындысы" /><br /><sub>Нақты жиынтықтар, түсінуді бағалау емес.</sub></td>
 </tr>
 </table>
 
@@ -67,7 +67,7 @@ DärisAI — студент түсіндірудің байланысын жоғ
 
 | Тексеру | Нақты жергілікті нәтиже |
 | --- | --- |
-| Backend | **125 тест** · Ruff және mypy таза |
+| Backend | **126 тест** · Ruff және mypy таза |
 | Frontend | **188 unit-тест**, 17 файл |
 | Playwright | **16/16 E2E**, нақты Signal → Ripple және axe қоса |
 | Signal acknowledgement | p95 **14.71 мс** |
@@ -103,7 +103,7 @@ pnpm dev
 - [Архитектура](ARCHITECTURE.md) · [API](docs/API_CONTRACTS.md) · [Дерекқор](docs/DB_SCHEMA.md)
 - [Қауіпсіздік және құпиялылық](docs/SECURITY_PRIVACY.md)
 - [P1 frontend](docs/handover/P1.md) · [P2 backend](docs/P2_HANDOVER.md) · [P3 Axiom](docs/P3_HANDOVER.md)
-- [Онбординг](docs/ONBOARDING.md) · [Жергілікті AI](docs/AI_PROVIDER_SETUP.md)
+- [Онбординг](docs/ONBOARDING.md) · [Жергілікті AI](docs/LOCAL_AI.md) · [Провайдерлер](docs/AI_PROVIDER_SETUP.md)
 - [Бренд](docs/BRAND.md) · [Build log](docs/BUILD_LOG.md)
 
 ## Құпиялылық
