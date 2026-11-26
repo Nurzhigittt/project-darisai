@@ -19,7 +19,7 @@ const navigationLabels: Record<Locale, string> = { en: "Main navigation", ru: "�
 
 function SignalChart({ active = false }: { active?: boolean }) {
   return (
-    <svg className={styles.signalChart} viewBox="0 0 400 130" fill="none" aria-hidden="true">
+    <svg data-signal-chart className={styles.signalChart} viewBox="0 0 400 130" fill="none" aria-hidden="true">
       <path d="M0 28H400M0 68H400M0 108H400" className={styles.chartGrid} />
       <path d="M276 6V118" className={styles.chartMarker} />
       <path
@@ -28,6 +28,19 @@ function SignalChart({ active = false }: { active?: boolean }) {
           : "M0 106L22 106L30 102L39 106L74 106L84 94L93 103L110 103L122 98L132 103L150 103L163 89L174 103L190 103L204 97L216 103L231 101L244 93L256 103L267 96L278 103L289 88L300 103L313 101L325 103L340 103L353 98L368 103L385 103L400 103"}
         stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function ConversationSketch() {
+  return (
+    <svg className={styles.heroSketch} viewBox="0 0 320 106" fill="none" aria-hidden="true">
+      <path d="M18 21C14 8 36 4 60 7L101 11C121 13 124 24 120 45C117 62 98 63 79 61L60 77L60 59C28 58 13 51 18 21Z" fill="var(--background)" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M58 26C62 15 80 19 80 28C80 37 67 34 67 43M67 49V51" stroke="var(--primary)" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M137 48C166 84 204 81 223 54" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeDasharray="5 7" />
+      <path d="M242 23C256 15 279 17 288 29C302 46 293 68 278 73C260 79 239 69 235 52C232 40 232 30 242 23Z" fill="var(--surface)" stroke="currentColor" strokeWidth="2" />
+      <path d="M250 41L251 45M271 40L272 44M251 55C260 65 272 58 276 52" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M120 7L124 1M131 15L140 12" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -117,11 +130,17 @@ export function LandingScreen() {
       </header>
 
       <main id="main">
-        <section id="join" className={styles.joinStrip} aria-label={copy.join.label}>
-          <div className={`${styles.container} ${styles.joinInner}`}>
-            <p>{copy.join.label}</p>
+        <section className={`${styles.container} ${styles.hero}`} aria-labelledby="hero-title">
+          <div id="join" className={styles.joinCard} role="region" aria-labelledby="join-title">
+            <div className={styles.joinCardHeader}>
+              <svg className={styles.joinIcon} viewBox="0 0 56 56" fill="none" aria-hidden="true">
+                <path d="M10 10L45 7L49 40L14 45Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M18 19L37 17M20 26L39 24M21 34L31 33M6 20L8 48L39 51" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <h2 id="join-title" className={styles.joinTitle}>{copy.join.title}</h2>
+            </div>
             <form onSubmit={handleJoin} noValidate className={styles.joinForm}>
-              <label className="sr-only" htmlFor="lecture-code">{t("join.codeLabel")}</label>
+              <label className={styles.joinLabel} htmlFor="lecture-code">{copy.join.label}</label>
               <input
                 ref={codeInput} id="lecture-code" name="code" value={code}
                 onChange={(event) => { setCode(normalizeJoinCode(event.target.value)); setError(null); }}
@@ -129,25 +148,31 @@ export function LandingScreen() {
                 spellCheck={false} maxLength={6} aria-invalid={Boolean(error)}
                 aria-describedby={error ? "code-error" : "code-hint"}
               />
+              <p id="code-hint" className={styles.joinHint}>{copy.join.hint}</p>
+              {error && <p id="code-error" role="alert" className={styles.joinError}>{error}</p>}
               <button type="submit">{copy.join.button}</button>
             </form>
-            <p id="code-hint" className={styles.joinHint}>{copy.join.hint}</p>
+            <p className={styles.joinHelp}>{copy.join.helper}</p>
+            <div className={styles.teacherEntry}>
+              <span>{copy.join.teacherPrompt}</span>
+              <Link href="/login">{copy.hero.teacherCta}</Link>
+            </div>
           </div>
-          {error && <p id="code-error" role="alert" className={`${styles.container} ${styles.joinError}`}>{error}</p>}
-        </section>
-
-        <section className={`${styles.container} ${styles.hero}`} aria-labelledby="hero-title">
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>{copy.hero.eyebrow}</p>
-            <h1 id="hero-title">{copy.hero.title} <span>{copy.hero.accent}</span></h1>
+            <h1 id="hero-title">{copy.hero.title} <span>{copy.hero.accent}<svg className={styles.underline} viewBox="0 0 430 17" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 11C115 0 274 4 426 8M10 15C155 5 315 9 402 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg></span></h1>
             <p className={styles.heroBody}>{copy.hero.body}</p>
-            <div className={styles.heroActions}>
-              <Link className={styles.primaryButton} href="/login">{copy.hero.teacherCta}</Link>
-              <a className={styles.textLink} href="#join" onClick={focusJoin}>{copy.hero.studentCta}</a>
-            </div>
-            <p className={styles.heroNote}>{copy.hero.note}</p>
+            <ul className={styles.heroChips}>{copy.hero.chips.map((chip) => <li key={chip}><Check size={16} aria-hidden="true" />{chip}</li>)}</ul>
+            <ConversationSketch />
           </div>
+        </section>
 
+        <section className={`${styles.container} ${styles.demoSection}`}>
+          <div className={styles.demoIntro}>
+            <p className={styles.eyebrow}>{copy.statement.eyebrow}</p>
+            <h2>{copy.statement.title}</h2>
+            <p>{copy.statement.body}</p>
+          </div>
           <figure className={styles.demo}>
             <div className={styles.demoHeading}><span>{copy.demo.label}</span><span>DärisAI</span></div>
             <div className={styles.lectureWindow}>
@@ -185,9 +210,21 @@ export function LandingScreen() {
           </figure>
         </section>
 
-        <section className={`${styles.container} ${styles.statement}`}>
-          <p className={styles.eyebrow}>{copy.statement.eyebrow}</p>
-          <div><h2>{copy.statement.title}</h2><p>{copy.statement.body}</p></div>
+        <section id="how" className={`${styles.container} ${styles.process}`}>
+          <p className={styles.eyebrow}>{copy.process.eyebrow}</p>
+          <h2>{copy.process.title}</h2>
+          <div className={styles.steps}>
+            {copy.process.steps.map((step, index) => (
+              <article key={step.title}>
+                <div className={styles.stepVisual} aria-hidden="true">
+                  {index === 0 ? <div className={styles.codeVisual}>{"ABC123".split("").map((char) => <span key={char}>{char}</span>)}</div>
+                    : index === 1 ? <div className={styles.signalVisual}><span>?</span><span className={styles.visualLine} /><span>✓</span></div>
+                      : <SignalChart active />}
+                </div>
+                <h3>{step.title}</h3><p>{step.body}</p>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section className={styles.roles}>
@@ -209,23 +246,6 @@ export function LandingScreen() {
           </div>
         </section>
 
-        <section id="how" className={`${styles.container} ${styles.process}`}>
-          <p className={styles.eyebrow}>{copy.process.eyebrow}</p>
-          <h2>{copy.process.title}</h2>
-          <div className={styles.steps}>
-            {copy.process.steps.map((step, index) => (
-              <article key={step.title}>
-                <div className={styles.stepVisual} aria-hidden="true">
-                  {index === 0 ? <div className={styles.codeVisual}>{"ABC123".split("").map((char) => <span key={char}>{char}</span>)}</div>
-                    : index === 1 ? <div className={styles.signalVisual}><span>?</span><span className={styles.visualLine} /><span>✓</span></div>
-                      : <SignalChart active />}
-                </div>
-                <h3>{step.title}</h3><p>{step.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section id="questions" className={`${styles.container} ${styles.faq}`}>
           <h2>{copy.faq.title}</h2>
           <div>{copy.faq.items.map((item) => (
@@ -240,8 +260,8 @@ export function LandingScreen() {
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><h2>{copy.closing.title}</h2><p>{copy.closing.body}</p></div>
             <div className={styles.closingActions}>
-              <Link href="/login" className={styles.lightButton}>{copy.closing.teacherCta}</Link>
-              <a href="#join" onClick={focusJoin}>{copy.closing.studentCta}</a>
+              <a href="#join" onClick={focusJoin} className={styles.lightButton}>{copy.closing.studentCta}</a>
+              <Link href="/login">{copy.closing.teacherCta}</Link>
             </div>
           </div>
         </section>

@@ -22,7 +22,7 @@ describe("landing interactions", () => {
 
   it("explains an incomplete code and returns focus to the code field", () => {
     renderLanding();
-    const input = screen.getByLabelText("Lecture code");
+    const input = screen.getByLabelText(landingCopy.en.join.label);
     fireEvent.change(input, { target: { value: "ab" } });
     fireEvent.click(screen.getByRole("button", { name: landingCopy.en.join.button }));
     expect(screen.getByRole("alert")).toBeVisible();
@@ -33,7 +33,7 @@ describe("landing interactions", () => {
 
   it("normalizes a complete code and uses the existing join route", () => {
     renderLanding();
-    fireEvent.change(screen.getByLabelText("Lecture code"), { target: { value: "abc123" } });
+    fireEvent.change(screen.getByLabelText(landingCopy.en.join.label), { target: { value: "abc123" } });
     fireEvent.click(screen.getByRole("button", { name: landingCopy.en.join.button }));
     expect(navigation.push).toHaveBeenCalledWith("/join/ABC123");
   });
@@ -41,7 +41,7 @@ describe("landing interactions", () => {
   it("keeps the student example local and does not change the audience chart", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
     const { container } = renderLanding();
-    const chart = container.querySelector("figure svg path:last-child");
+    const chart = container.querySelector("figure svg[data-signal-chart] path:last-child");
     const pathBefore = chart?.getAttribute("d");
     fireEvent.click(screen.getByRole("button", { name: landingCopy.en.demo.signal }));
     const selected = screen.getByRole("button", { name: landingCopy.en.demo.signalSent });

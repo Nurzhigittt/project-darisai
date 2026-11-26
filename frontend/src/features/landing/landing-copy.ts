@@ -16,8 +16,17 @@ export interface LandingCopy {
     teacherCta: string;
     studentCta: string;
     note: string;
+    chips: string[];
   };
-  join: { label: string; placeholder: string; button: string; hint: string };
+  join: {
+    title: string;
+    label: string;
+    placeholder: string;
+    button: string;
+    hint: string;
+    helper: string;
+    teacherPrompt: string;
+  };
   demo: {
     label: string;
     course: string;
@@ -60,113 +69,121 @@ export const landingCopy: Record<"en" | "ru" | "kk", LandingCopy> = {
       students: "For students",
       teachers: "For lecturers",
       questions: "Questions",
-      login: "Log in",
+      login: "Lecturer login",
       menu: "Open menu",
-      close: "Close menu",
+      close: "Close menu"
     },
     hero: {
-      eyebrow: "Feedback during the lecture",
-      title: "Understanding starts",
-      accent: "with a single signal.",
-      body: "A student taps when something is unclear. The lecturer sees the audience’s combined signal and can pause to explain.",
-      teacherCta: "I’m a lecturer",
-      studentCta: "Join a lecture",
-      note: "In your browser. No student account needed.",
+      eyebrow: "For the moments you lose the thread",
+      title: "Something unclear?",
+      accent: "That’s okay.",
+      body: "Join your lecture and tap “I’m not following” when you need an explanation. Your lecturer sees the audience’s combined signal.",
+      teacherCta: "Lecturer login",
+      studentCta: "Enter a code",
+      note: "Your lecturer will share the code.",
+      chips: [
+        "No account",
+        "In your browser",
+        "One tap"
+      ]
     },
     join: {
-      label: "Already in a lecture?",
-      placeholder: "Lecture code",
-      button: "Join",
-      hint: "Enter the six-character code from your lecturer.",
+      title: "In a lecture?",
+      label: "Code from your lecturer",
+      placeholder: "6 characters",
+      button: "Join the lecture",
+      hint: "6 characters: letters and numbers.",
+      helper: "No code yet? Ask your lecturer.",
+      teacherPrompt: "Teaching a class?"
     },
     demo: {
-      label: "An example of the interaction",
+      label: "Try it here",
       course: "Introduction to statistics",
       topic: "Correlation and causation",
-      student: "Student’s screen",
+      student: "Your screen",
       teacher: "Lecturer’s screen",
       timer: "During the lecture",
       signal: "I’m not following",
-      signalSent: "Example shown",
+      signalSent: "That was an example",
       before: "Few signals",
       after: "Clarification may help",
-      caption: "Try the button. The chart illustrates the audience’s combined signal, not a live lecture.",
-      reset: "Try again",
+      caption: "You can try the button. This is an example, not a live lecture. The chart shows a combined audience signal, not the result of a single tap.",
+      reset: "Try again"
     },
     statement: {
-      eyebrow: "A little room for a question",
-      title: "Silence doesn’t always mean understanding.",
-      body: "Speaking up in a full lecture hall can be difficult. A simple signal gives students another way to say they need an explanation.",
+      eyebrow: "When raising your hand feels difficult",
+      title: "Asking can be harder than it looks.",
+      body: "A new topic, a quick explanation, an unfamiliar example. It happens. One tap lets you say you need a little more explanation."
     },
     roles: {
       studentLabel: "For students",
-      studentTitle: "Say it’s unclear. Keep listening.",
-      studentBody: "You don’t have to find the right words or interrupt the lecture. Tap the button when you need a little more explanation.",
+      studentTitle: "Lost the thread? Say so.",
+      studentBody: "You don’t need a perfectly worded question. Tap “I’m not following” and keep listening.",
       studentPoints: [
         "Join with a code or QR",
-        "No account, name or email required",
-        "One clear action during the lecture",
+        "No name, email or account needed",
+        "Send a signal without interrupting"
       ],
       teacherLabel: "For lecturers",
-      teacherTitle: "Notice when it’s worth pausing.",
-      teacherBody: "Follow the audience’s combined signal while you teach. You decide when to slow down, offer an example or explain the idea again.",
+      teacherTitle: "Know when to explain a little more.",
+      teacherBody: "The audience’s combined signal helps you notice when clarification may be useful. You decide whether to pause, give an example or go over an idea again.",
       teacherPoints: [
         "Share a lecture code or QR",
         "See feedback from the audience as a whole",
-        "Review signal activity after the lecture",
-      ],
+        "Review signal activity after class"
+      ]
     },
     process: {
-      eyebrow: "From a signal to an explanation",
-      title: "Three steps. One shared lecture.",
+      eyebrow: "Getting started",
+      title: "Get the code. Join. Tap when you need to.",
       steps: [
         {
-          title: "Open the lecture",
-          body: "The lecturer starts a session and shares its code or QR. Students join in their browser.",
+          title: "Enter the code",
+          body: "Get the six-character code from your lecturer, or scan the QR on their screen."
         },
         {
-          title: "Send a signal",
-          body: "When something is unclear, a student taps the button. No message to compose, no account to create.",
+          title: "Tap if you get stuck",
+          body: "Your lecture has a button: “I’m not following”. Use it when you need an explanation."
         },
         {
-          title: "Make room to explain",
-          body: "The lecturer sees the combined audience signal and chooses how to respond.",
-        },
-      ],
+          title: "Your lecturer sees the bigger picture",
+          body: "The lecturer sees the audience’s combined signal and chooses when to explain more."
+        }
+      ]
     },
     faq: {
-      title: "Before the first lecture",
+      title: "Good to know",
       items: [
         {
-          question: "Do students need to register?",
-          answer: "No. Enter the lecture code or scan the QR shared by your lecturer. DärisAI works in your browser; no installation is required.",
+          question: "Do I need an account?",
+          answer: "No. Enter the lecture code or scan your lecturer’s QR. It works in your browser, so there’s nothing to install."
         },
         {
-          question: "Can the lecturer see who pressed the button?",
-          answer: "The lecturer’s screen shows combined audience activity, not an individual student’s signals. Joining does not require your name or email. See the privacy page for details about data handling.",
+          question: "Can the lecturer see that I pressed the button?",
+          answer: "Their screen shows combined audience activity, not your individual signals. You don’t need to enter your name or email. The privacy page explains how data is handled."
         },
         {
-          question: "Does a quiet screen mean everyone understands?",
-          answer: "No. Few signals only mean that few signals have been sent. Students may stay quiet for many reasons, so DärisAI does not turn silence into a measure of understanding.",
+          question: "Do fewer signals mean everyone understands?",
+          answer: "No. People can stay quiet for lots of reasons. DärisAI shows signal activity; it doesn’t treat silence as proof of understanding."
         },
         {
-          question: "How does a lecturer get started?",
-          answer: "Sign in with your lecturer invite code, create a course and a lecture, then share the lecture code with your students.",
-        },
-      ],
+          question: "How can a lecturer start using it?",
+          answer: "Sign in with a lecturer invite code, create a course and a lecture, then share the lecture code with students."
+        }
+      ]
     },
     closing: {
-      title: "Leave room for understanding.",
-      body: "Make it easier for your students to say when they need an explanation.",
-      teacherCta: "Open lecturer workspace",
-      studentCta: "Join with a code",
+      title: "Got your lecture code?",
+      body: "Enter it and join your class.",
+      teacherCta: "Lecturer login",
+      studentCta: "Enter a code"
     },
     footer: {
-      tagline: "A signal worth listening to.",
+      tagline: "A simple way to say “I’m not following”.",
       privacy: "Privacy",
       status: "Service status",
-      copyright: "Қазақша · Русский · English",
-    },
+      copyright: "Қазақша · Русский · English"
+    }
   },
   ru: {
     nav: {
@@ -174,113 +191,121 @@ export const landingCopy: Record<"en" | "ru" | "kk", LandingCopy> = {
       students: "Студентам",
       teachers: "Преподавателям",
       questions: "Вопросы",
-      login: "Войти",
+      login: "Вход для преподавателя",
       menu: "Открыть меню",
-      close: "Закрыть меню",
+      close: "Закрыть меню"
     },
     hero: {
-      eyebrow: "Обратная связь во время лекции",
-      title: "Понимание начинается",
-      accent: "с одного сигнала.",
-      body: "Студент нажимает кнопку, когда что-то непонятно. Преподаватель видит общий сигнал аудитории и может остановиться, чтобы пояснить.",
-      teacherCta: "Я преподаватель",
-      studentCta: "Присоединиться к лекции",
-      note: "Работает в браузере. Студентам не нужен аккаунт.",
+      eyebrow: "Когда потерял нить на лекции",
+      title: "Не всё понятно?",
+      accent: "Это нормально.",
+      body: "Подключись к лекции и нажми «Мне непонятно», когда нужно пояснение. Преподаватель увидит общий сигнал аудитории.",
+      teacherCta: "Вход для преподавателя",
+      studentCta: "Ввести код",
+      note: "Код лекции подскажет преподаватель.",
+      chips: [
+        "Без аккаунта",
+        "В браузере",
+        "Одно касание"
+      ]
     },
     join: {
-      label: "Вы уже на лекции?",
-      placeholder: "Код лекции",
+      title: "Ты на лекции?",
+      label: "Код от преподавателя",
+      placeholder: "6 символов",
       button: "Присоединиться",
-      hint: "Введите код из шести символов, который дал преподаватель.",
+      hint: "6 символов: буквы и цифры.",
+      helper: "Нет кода? Попроси его у преподавателя.",
+      teacherPrompt: "Ведёте занятие?"
     },
     demo: {
-      label: "Пример взаимодействия",
+      label: "Попробуй прямо здесь",
       course: "Введение в статистику",
       topic: "Корреляция и причинность",
-      student: "Экран студента",
+      student: "Твой экран",
       teacher: "Экран преподавателя",
       timer: "Во время лекции",
       signal: "Мне непонятно",
-      signalSent: "Пример показан",
+      signalSent: "Это был пример",
       before: "Мало сигналов",
       after: "Возможно, стоит пояснить",
-      caption: "Попробуйте кнопку. На графике — пример общего сигнала аудитории, а не данные настоящей лекции.",
-      reset: "Попробовать ещё раз",
+      caption: "Кнопку можно нажать. Это пример, а не настоящая лекция. График показывает общий сигнал аудитории, а не результат одного нажатия.",
+      reset: "Попробовать ещё раз"
     },
     statement: {
-      eyebrow: "Место для вопроса",
-      title: "Тишина не всегда означает понимание.",
-      body: "В большой аудитории бывает трудно поднять руку. Простой сигнал даёт студенту ещё один способ сказать, что ему нужно пояснение.",
+      eyebrow: "Когда не хочется поднимать руку",
+      title: "Спросить бывает сложнее, чем кажется.",
+      body: "Новая тема, быстрый темп, сложный пример — потерять нить может каждый. Одно касание поможет сказать, что тебе нужно пояснение."
     },
     roles: {
       studentLabel: "Студентам",
-      studentTitle: "Скажите, что непонятно. Продолжайте слушать.",
-      studentBody: "Не нужно подбирать слова или прерывать лекцию. Нажмите кнопку, когда хочется чуть больше объяснений.",
+      studentTitle: "Потерял нить? Дай знать.",
+      studentBody: "Необязательно сразу формулировать вопрос. Нажми «Мне непонятно» и продолжай слушать.",
       studentPoints: [
-        "Вход по коду или QR",
-        "Без аккаунта, имени и email",
-        "Одно понятное действие во время лекции",
+        "Подключись по коду или QR",
+        "Без имени, email и аккаунта",
+        "Подай сигнал, не прерывая лекцию"
       ],
       teacherLabel: "Преподавателям",
-      teacherTitle: "Замечайте, когда стоит остановиться.",
-      teacherBody: "Следите за общим сигналом аудитории по ходу лекции. Вы решаете, когда замедлиться, привести пример или объяснить мысль ещё раз.",
+      teacherTitle: "Замечайте, когда нужно пояснение.",
+      teacherBody: "Общий сигнал аудитории помогает заметить, когда стоит остановиться. Привести пример или разобрать мысль ещё раз — решаете вы.",
       teacherPoints: [
         "Поделитесь кодом или QR лекции",
         "Получайте общую обратную связь от аудитории",
-        "Посмотрите сводку сигналов после занятия",
-      ],
+        "Посмотрите сводку сигналов после занятия"
+      ]
     },
     process: {
-      eyebrow: "От сигнала к пояснению",
-      title: "Три шага. Одна общая лекция.",
+      eyebrow: "С чего начать",
+      title: "Код. Лекция. Одна кнопка.",
       steps: [
         {
-          title: "Откройте лекцию",
-          body: "Преподаватель начинает занятие и показывает код или QR. Студенты подключаются в браузере.",
+          title: "Введи код",
+          body: "Попроси у преподавателя код из шести символов или отсканируй QR на экране."
         },
         {
-          title: "Подайте сигнал",
-          body: "Если что-то непонятно, студент нажимает кнопку. Не нужно писать сообщение или создавать аккаунт.",
+          title: "Нажми, если запутался",
+          body: "На экране лекции есть кнопка «Мне непонятно». Нажми её, когда нужно пояснение."
         },
         {
-          title: "Дайте место объяснению",
-          body: "Преподаватель видит общий сигнал аудитории и выбирает, как на него отреагировать.",
-        },
-      ],
+          title: "Преподаватель увидит общую картину",
+          body: "Сигналы студентов складываются в общий сигнал аудитории. Преподаватель решает, когда пояснить подробнее."
+        }
+      ]
     },
     faq: {
-      title: "Перед первой лекцией",
+      title: "Что ещё нужно знать",
       items: [
         {
-          question: "Студентам нужно регистрироваться?",
-          answer: "Нет. Достаточно ввести код лекции или отсканировать QR от преподавателя. DärisAI работает в браузере, устанавливать приложение не нужно.",
+          question: "Мне нужен аккаунт?",
+          answer: "Нет. Введи код лекции или отсканируй QR от преподавателя. Всё работает в браузере, устанавливать приложение не нужно."
         },
         {
-          question: "Преподаватель увидит, кто нажал кнопку?",
-          answer: "На экране преподавателя отображается общая активность аудитории, а не сигналы отдельных студентов. Для входа не нужны имя или email. Подробнее об обработке данных — в разделе «Конфиденциальность».",
+          question: "Преподаватель увидит, что кнопку нажал я?",
+          answer: "На его экране видна общая активность аудитории, а не твои отдельные сигналы. Вводить имя или email не нужно. Подробнее об обработке данных — в разделе «Конфиденциальность»."
         },
         {
-          question: "Если сигналов мало, значит, всем всё понятно?",
-          answer: "Нет. Мало сигналов означает только то, что их мало отправили. У молчания могут быть разные причины, поэтому DärisAI не считает его показателем понимания.",
+          question: "Мало сигналов — значит, всем всё понятно?",
+          answer: "Нет. Молчать можно по разным причинам. DärisAI показывает активность сигналов и не считает тишину доказательством понимания."
         },
         {
-          question: "Как преподавателю начать работу?",
-          answer: "Войдите по коду приглашения преподавателя, создайте курс и лекцию, затем поделитесь кодом лекции со студентами.",
-        },
-      ],
+          question: "Как начать работу преподавателю?",
+          answer: "Войдите по коду приглашения преподавателя, создайте курс и лекцию, затем поделитесь кодом лекции со студентами."
+        }
+      ]
     },
     closing: {
-      title: "Оставьте место для понимания.",
-      body: "Дайте студентам простой способ сообщить, что им нужно пояснение.",
-      teacherCta: "Открыть кабинет преподавателя",
-      studentCta: "Войти по коду",
+      title: "Код лекции уже есть?",
+      body: "Введи его и присоединяйся к занятию.",
+      teacherCta: "Вход для преподавателя",
+      studentCta: "Ввести код"
     },
     footer: {
-      tagline: "Сигнал, к которому стоит прислушаться.",
+      tagline: "Простой способ сказать «Мне непонятно».",
       privacy: "Конфиденциальность",
       status: "Состояние сервиса",
-      copyright: "Қазақша · Русский · English",
-    },
+      copyright: "Қазақша · Русский · English"
+    }
   },
   kk: {
     nav: {
@@ -288,112 +313,120 @@ export const landingCopy: Record<"en" | "ru" | "kk", LandingCopy> = {
       students: "Студенттерге",
       teachers: "Оқытушыларға",
       questions: "Сұрақтар",
-      login: "Кіру",
+      login: "Оқытушы кабинеті",
       menu: "Мәзірді ашу",
-      close: "Мәзірді жабу",
+      close: "Мәзірді жабу"
     },
     hero: {
-      eyebrow: "Дәріс кезіндегі кері байланыс",
-      title: "Түсіну",
-      accent: "бір белгіден басталады.",
-      body: "Студент бір нәрсені түсінбесе, батырманы басады. Оқытушы аудиторияның ортақ белгісін көріп, кідіріп түсіндіре алады.",
-      teacherCta: "Мен оқытушымын",
-      studentCta: "Дәріске қосылу",
-      note: "Браузерде жұмыс істейді. Студентке аккаунт қажет емес.",
+      eyebrow: "Дәрісте бір нәрсені түсінбей қалсаң",
+      title: "Түсінбей қалдың ба?",
+      accent: "Ондай болады.",
+      body: "Дәріске қосыл да, түсіндіру қажет болса, «Маған түсініксіз» батырмасын бас. Оқытушы аудиторияның ортақ белгісін көреді.",
+      teacherCta: "Оқытушы кабинеті",
+      studentCta: "Кодты енгізу",
+      note: "Дәріс кодын оқытушы береді.",
+      chips: [
+        "Аккаунтсыз",
+        "Браузерде",
+        "Бір рет басу"
+      ]
     },
     join: {
-      label: "Дәріске келдіңіз бе?",
-      placeholder: "Дәріс коды",
+      title: "Дәрістесің бе?",
+      label: "Оқытушы берген код",
+      placeholder: "6 таңба",
       button: "Қосылу",
-      hint: "Оқытушы берген алты таңбалы кодты енгізіңіз.",
+      hint: "6 таңба: әріптер мен сандар.",
+      helper: "Код жоқ па? Оқытушыдан сұра.",
+      teacherPrompt: "Сабақ жүргізесіз бе?"
     },
     demo: {
-      label: "Өзара әрекеттесу мысалы",
+      label: "Осында байқап көр",
       course: "Статистикаға кіріспе",
       topic: "Корреляция және себеп-салдар байланысы",
-      student: "Студент экраны",
+      student: "Сенің экраның",
       teacher: "Оқытушы экраны",
       timer: "Дәріс кезінде",
       signal: "Маған түсініксіз",
-      signalSent: "Мысал көрсетілді",
+      signalSent: "Бұл мысал еді",
       before: "Белгілер аз",
       after: "Түсіндіру қажет болуы мүмкін",
-      caption: "Батырманы басып көріңіз. Графикте нақты дәрістің деректері емес, аудиторияның ортақ белгісінің мысалы көрсетілген.",
-      reset: "Қайта көру",
+      caption: "Батырманы басып көруге болады. Бұл — мысал, нақты дәріс емес. График бір рет басудың нәтижесін емес, аудиторияның ортақ белгісін көрсетеді.",
+      reset: "Қайта көру"
     },
     statement: {
-      eyebrow: "Сұраққа орын бар",
-      title: "Үнсіздік әрдайым түсінгенді білдірмейді.",
-      body: "Үлкен аудиторияда қол көтеру оңай бола бермейді. Қарапайым белгі студентке қосымша түсіндіру қажет екенін білдірудің тағы бір жолын ұсынады.",
+      eyebrow: "Қол көтергің келмегенде",
+      title: "Сұрақ қою әрдайым оңай емес.",
+      body: "Жаңа тақырып, жылдам түсіндіру, күрделі мысал — кез келген адам түсінбей қалуы мүмкін. Бір рет басып, қосымша түсіндіру қажет екенін білдіре аласың."
     },
     roles: {
       studentLabel: "Студенттерге",
-      studentTitle: "Түсініксіз екенін білдіріңіз. Тыңдай беріңіз.",
-      studentBody: "Сөз іздеудің немесе дәрісті бөлудің қажеті жоқ. Қосымша түсіндіру керек болса, батырманы басыңыз.",
+      studentTitle: "Түсінбей қалдың ба? Белгі бер.",
+      studentBody: "Сұрақты бірден құрастыру міндетті емес. «Маған түсініксіз» батырмасын бас та, тыңдай бер.",
       studentPoints: [
-        "Код немесе QR арқылы қосылу",
-        "Аккаунт, аты-жөн немесе email қажет емес",
-        "Дәріс кезіндегі бір қарапайым әрекет",
+        "Код немесе QR арқылы қосыл",
+        "Аты-жөн, email және аккаунт қажет емес",
+        "Дәрісті бөлмей белгі бер"
       ],
       teacherLabel: "Оқытушыларға",
-      teacherTitle: "Қашан кідіру керегін байқаңыз.",
-      teacherBody: "Дәріс барысында аудиторияның ортақ белгісін бақылаңыз. Қашан баяулау, мысал келтіру немесе ойды қайта түсіндіру керегін өзіңіз шешесіз.",
+      teacherTitle: "Түсіндіру қажет сәтті байқаңыз.",
+      teacherBody: "Аудиторияның ортақ белгісі қашан кідіру керегін байқауға көмектеседі. Мысал келтіруді немесе ойды қайта түсіндіруді өзіңіз шешесіз.",
       teacherPoints: [
         "Дәріс кодын немесе QR көрсетіңіз",
         "Аудиторияның жалпы кері байланысын көріңіз",
-        "Сабақтан кейін белгілердің қорытындысын қараңыз",
-      ],
+        "Сабақтан кейін белгілердің қорытындысын қараңыз"
+      ]
     },
     process: {
-      eyebrow: "Белгіден түсіндіруге дейін",
-      title: "Үш қадам. Бір ортақ дәріс.",
+      eyebrow: "Неден бастау керек",
+      title: "Код. Дәріс. Бір батырма.",
       steps: [
         {
-          title: "Дәрісті ашыңыз",
-          body: "Оқытушы сабақты бастап, кодты немесе QR көрсетеді. Студенттер браузер арқылы қосылады.",
+          title: "Кодты енгіз",
+          body: "Оқытушыдан алты таңбалы кодты сұра немесе экрандағы QR кодын сканерле."
         },
         {
-          title: "Белгі беріңіз",
-          body: "Бір нәрсе түсініксіз болса, студент батырманы басады. Хабарлама жазудың немесе аккаунт ашудың қажеті жоқ.",
+          title: "Түсінбесең, батырманы бас",
+          body: "Дәріс экранында «Маған түсініксіз» батырмасы бар. Түсіндіру қажет болғанда, соны бас."
         },
         {
-          title: "Түсіндіруге уақыт бөліңіз",
-          body: "Оқытушы аудиторияның ортақ белгісін көріп, қалай жауап беру керегін өзі таңдайды.",
-        },
-      ],
+          title: "Оқытушы жалпы жағдайды көреді",
+          body: "Студенттердің белгілері аудиторияның ортақ белгісін құрайды. Қашан толығырақ түсіндіруді оқытушы шешеді."
+        }
+      ]
     },
     faq: {
-      title: "Алғашқы дәріс алдында",
+      title: "Сенде осындай сұрақтар болуы мүмкін",
       items: [
         {
-          question: "Студенттерге тіркелу керек пе?",
-          answer: "Жоқ. Дәріс кодын енгізу немесе оқытушы көрсеткен QR кодын сканерлеу жеткілікті. DärisAI браузерде жұмыс істейді, қолданба орнатудың қажеті жоқ.",
+          question: "Маған аккаунт керек пе?",
+          answer: "Жоқ. Дәріс кодын енгіз немесе оқытушы көрсеткен QR кодын сканерле. Бәрі браузерде жұмыс істейді, қолданба орнатудың қажеті жоқ."
         },
         {
-          question: "Оқытушы батырманы кім басқанын көре ме?",
-          answer: "Оқытушы экранында жеке студенттердің белгілері емес, аудиторияның жалпы белсенділігі көрсетіледі. Қосылу үшін аты-жөн немесе email қажет емес. Деректерді өңдеу туралы толығырақ «Құпиялық» бөлімінен оқыңыз.",
+          question: "Оқытушы батырманы мен басқанымды көре ме?",
+          answer: "Оның экранында сенің жеке белгілерің емес, аудиторияның жалпы белсенділігі көрінеді. Аты-жөніңді немесе email енгізудің қажеті жоқ. Деректерді өңдеу туралы «Құпиялық» бөлімінен оқи аласың."
         },
         {
           question: "Белгілер аз болса, бәрі түсінді деген сөз бе?",
-          answer: "Жоқ. Белгілердің аз болуы олардың аз жіберілгенін ғана білдіреді. Үнсіздіктің түрлі себебі болуы мүмкін, сондықтан DärisAI оны түсінудің көрсеткіші деп есептемейді.",
+          answer: "Жоқ. Үнсіздіктің түрлі себебі болуы мүмкін. DärisAI жіберілген белгілерді көрсетеді, бірақ үнсіздікті түсінгеннің дәлелі деп санамайды."
         },
         {
           question: "Оқытушы жұмысты қалай бастайды?",
-          answer: "Оқытушының шақыру кодымен кіріп, курс пен дәріс құрыңыз. Содан кейін дәріс кодын студенттерге беріңіз.",
-        },
-      ],
+          answer: "Оқытушының шақыру кодымен кіріп, курс пен дәріс құрыңыз. Содан кейін дәріс кодын студенттерге беріңіз."
+        }
+      ]
     },
     closing: {
-      title: "Түсінуге мүмкіндік беріңіз.",
-      body: "Студенттерге қосымша түсіндіру қажет екенін білдірудің қарапайым жолын ұсыныңыз.",
-      teacherCta: "Оқытушы кабинетіне кіру",
-      studentCta: "Кодпен қосылу",
+      title: "Дәріс коды бар ма?",
+      body: "Оны енгіз де, сабаққа қосыл.",
+      teacherCta: "Оқытушы кабинеті",
+      studentCta: "Кодты енгізу"
     },
     footer: {
-      tagline: "Назар аударуға тұрарлық белгі.",
+      tagline: "«Маған түсініксіз» деудің қарапайым жолы.",
       privacy: "Құпиялық",
       status: "Сервис күйі",
-      copyright: "Қазақша · Русский · English",
-    },
-  },
+      copyright: "Қазақша · Русский · English"
+    }
+  }
 };

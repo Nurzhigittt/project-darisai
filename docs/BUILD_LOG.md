@@ -286,3 +286,20 @@ Actual verification in the isolated frontend:
 - Full real-API E2E, backend checks, deployment and complete accessibility audit were not run for this isolated design change. The existing E2E hero-heading assertion was updated, but that workflow was not executed. No push, merge or deployment was performed.
 
 The compatibility Node executable was used because the standalone package-manager runtime failed on this macOS version. Test cache flags and the runner config loader avoided writing through the shared dependency symlink. No package or lockfile changes were required. The implementation commit SHA is recorded in the exported integration README.
+
+## Student-first landing revision — 2026-11-26
+
+Revised the first landing design after the user requested a more approachable student experience. Moved the single code form into the hero as the main action, first on mobile; kept lecturer access secondary. Replaced landing-only serif typography with locally hosted Geologica and its native single-storey `ss01` alternates. Added original small SVG sketches and a handwritten underline, rewrote EN/RU/KK copy, moved the labelled product example below the joining task, and made the closing CTA student-first. No shared/global styles, dependencies, API or backend code changed.
+
+The Google Fonts Geologica source and SIL OFL license are included with provenance. The complete variable WOFF2 is 120360 bytes. FontTools checks preserved all 973 glyphs and 836 encoded codepoints; all 42 Kazakh letters in both cases plus ä were checked for coverage, with non-empty source outlines. Browser computed styles confirmed Geologica with `ss01`, and the font loaded successfully for the Kazakh sample.
+
+Actual verification:
+
+- ESLint and standalone TypeScript checks passed using `/usr/local/bin/node`.
+- Full Vitest run: **93/93 tests, 11/11 files passed**. Existing landing interaction tests were updated for the new visible field label and a specific chart selector.
+- Final webpack production build passed compilation, TypeScript and 10 static pages. The same 27-file standalone trace warning from the ignored dependency symlink remains; install normally and rebuild before deployment.
+- Browser QA at 1360/1440 desktop widths, 390 × 844 mobile and 320 px narrow layouts. Checked RU/KK/EN, light/dark, menu/Escape, code validation and focus, native `#join` focus, local demonstration state and FAQ. Kazakh demo text was inspected after increasing small labels. No horizontal overflow in checked states. One code input is present in the DOM.
+- Saved desktop, full-page, RU mobile, KK mobile and dark mobile screenshots from the final compiled application.
+- The existing E2E heading expectation was updated; full real-API E2E and complete accessibility audit were not executed. No merge, push or deployment. The active functional checkout remains untouched.
+
+The implementation SHA is recorded in `darisai-v2-integration.txt` in the exported deliverables. The package contains a cumulative patch from the functional base and a separate revision-only patch for an already-applied first design.
