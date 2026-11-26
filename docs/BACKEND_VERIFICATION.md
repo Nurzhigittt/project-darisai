@@ -5,7 +5,7 @@
 
 | Requirement | Status | Evidence |
 | --- | --- | --- |
-| PostgreSQL connectivity/pooling | ✅ | 121 tests; `/ready`; clean migration |
+| PostgreSQL connectivity/pooling | ✅ | 126 tests; `/ready`; clean migration |
 | pgvector `vector(384)` + HNSW cosine | ✅ | migration 001/200; clean DB 0.8.1 |
 | Migration ordering/idempotency | ✅ | clean DB: 4 migrations; Phase 1 upgrade: 4 applied |
 | Foreign keys/constraints | ✅ | clean DB 19 tables; tests exercise ownership |
@@ -45,7 +45,7 @@ pytest -q
 
 ## Actual results
 
-- `pytest -q`: **121 passed**
+- `pytest -q`: **126 passed**
 - Ruff: clean
 - mypy: clean
 - Frontend: ESLint, TypeScript, Vitest 11/11, production build passed
