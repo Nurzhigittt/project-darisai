@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/lectures/{lecture_id}/realtime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Realtime Command */
+        post: operations["realtime_command_api_v1_lectures__lecture_id__realtime_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/professor": {
         parameters: {
             query?: never;
@@ -374,6 +391,23 @@ export interface paths {
         put?: never;
         /** Generate Intelligence */
         post: operations["generate_intelligence_api_v1_lectures__lecture_id__insights_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/generate/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stream Intelligence */
+        post: operations["stream_intelligence_api_v1_lectures__lecture_id__insights_generate_stream_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1613,6 +1647,43 @@ export interface components {
             /** Course Title */
             course_title?: string | null;
         };
+        /** RealtimeCommand */
+        RealtimeCommand: {
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "student" | "professor";
+            /**
+             * Action
+             * @default sync
+             * @enum {string}
+             */
+            action: "connect" | "sync" | "signal" | "leave";
+            signal?: components["schemas"]["StudentSignalPayload"] | null;
+        };
+        /** RealtimeSession */
+        RealtimeSession: {
+            /** Events */
+            events: {
+                [key: string]: unknown;
+            }[];
+            /** Realtime Url */
+            realtime_url?: string | null;
+            /** Publishable Key */
+            publishable_key?: string | null;
+            /** Channel */
+            channel?: string | null;
+            /** Access Token */
+            access_token?: string | null;
+            /** Expires At */
+            expires_at?: number | null;
+            /**
+             * Recovery Interval Ms
+             * @default 5000
+             */
+            recovery_interval_ms: number;
+        };
         /** ReplayHistoryItem */
         ReplayHistoryItem: {
             /**
@@ -1769,6 +1840,19 @@ export interface components {
             limits?: {
                 [key: string]: unknown;
             };
+        };
+        /** StudentSignalPayload */
+        StudentSignalPayload: {
+            /** Client Seq */
+            client_seq: number;
+            /**
+             * Kind
+             * @default lost
+             * @constant
+             */
+            kind: "lost";
+            /** Client Ts Ms */
+            client_ts_ms?: number | null;
         };
         /** TableManifest */
         TableManifest: {
@@ -1993,6 +2077,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    realtime_command_api_v1_lectures__lecture_id__realtime_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RealtimeCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RealtimeSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -2745,6 +2866,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IntelligenceGenerateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stream_intelligence_api_v1_lectures__lecture_id__insights_generate_stream_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntelligenceGenerateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
