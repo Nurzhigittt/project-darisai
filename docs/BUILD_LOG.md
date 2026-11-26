@@ -333,3 +333,5 @@ Actual final local validation with the installed Node v24.22.3:
 - Built-in-browser inspection of the compiled application confirmed desktop 1440px, narrow desktop 1120px and mobile 320px layouts, RU/KK, light/dark, loaded Geologica, mobile menu/Escape and invalid-code focus. No horizontal overflow in these checked states. The public example stays explicitly labelled and local-only; no production API fixture fallback was added.
 
 This integration does not merge main, deploy, or claim complete real P3 workflow acceptance. Final published commit SHA and exact remote run links are recorded in PR #4 and the user handoff report.
+
+First integrated PR CI at `80ba4ab` passed all four normal jobs. Browser run 45791953706 passed 14/16 tests: every original scenario, including Autonomy, plus the EN landing scenario passed. The two new RU/KK cases stopped at an ambiguous alert locator that also matched Next.js's empty route announcer. Scoped their alert lookup to the join form, retaining text, invalid-state and focus assertions. No product code or axe rule was changed; the rerun determines final results.
