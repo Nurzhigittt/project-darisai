@@ -45,7 +45,7 @@ function CohortTable({ memory }: { memory: CohortMemory }) {
     <p className="mt-2 text-sm leading-6 text-muted">{t("cohort.identifiers")}</p>
     <p id="cohort-scroll-hint" className="mt-1 text-sm leading-6 text-muted">{t("cohort.scroll")}</p>
     <div role="region" aria-label={t("cohort.tableRegion")} aria-describedby="cohort-scroll-hint" tabIndex={0}
-      className="mt-4 max-w-full overflow-x-auto rounded-2xl border border-border bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus">
+      className="relative mt-4 max-w-full overflow-x-auto rounded-2xl border border-border bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus">
       <table className="w-full min-w-[960px] border-collapse text-sm">
         <caption className="sr-only">{t("cohort.tableTitle")}. {t("cohort.denominator")}</caption>
         <thead>

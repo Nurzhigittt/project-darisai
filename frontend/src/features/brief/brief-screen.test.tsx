@@ -66,6 +66,26 @@ function insightFixture(overrides: Partial<Insight> = {}): Insight {
   };
 }
 
+function generatedFixture(kind: Insight["kind"] = "brief_next", source: Insight["source"] = "template"): Insight {
+  const insight = insightFixture({ kind, source });
+  const citation = {
+    segment_id: "66666666-6666-4666-8666-666666666666",
+    start_ms: 60_000,
+    end_ms: 75_000,
+    quote: "<img src=x onerror=alert(1)> Net force determines acceleration.",
+  };
+  return {
+    ...insight,
+    content: {
+      ...insight.content,
+      concepts: [{ title: "Net force", detail: "Revisit the force diagram.", citations: [citation], window_start_ms: 50_000, window_end_ms: 80_000, unique_signals: 0 }],
+      task: insight.content.task ? { ...insight.content.task, grounded_in: [citation] } : null,
+    },
+  };
+}
+
+const generateLabel = (kind = "brief_next") => label("brief.generate").replace("{kind}", label(`insight.kind.${kind}`));
+
 function linkFixture(): HandoffLink {
   return {
     insight_id: insightId,
@@ -107,17 +127,28 @@ function mockApi(insights: () => Insight[], override?: Override) {
   return transport;
 }
 
-function signIn() {
+function signIn(token = accessToken) {
   saveProfessorSession({
-    accessToken,
+    accessToken: token,
     professorId: "44444444-4444-4444-8444-444444444444",
     name: "Test Professor",
     expiresAt: Math.floor(Date.now() / 1000) + 3600,
   });
 }
 
+function view(id = lectureId) {
+  return <I18nProvider><ThemeProvider><BriefScreen lectureId={id} /></ThemeProvider></I18nProvider>;
+}
+
 function renderBrief() {
-  return render(<I18nProvider><ThemeProvider><BriefScreen lectureId={lectureId} /></ThemeProvider></I18nProvider>);
+  return render(view());
+}
+
+async function submitDraft(headline = "Old account draft") {
+  fireEvent.click(await screen.findByRole("button", { name: label("brief.new") }));
+  const editor = within(screen.getByRole("dialog", { name: label("insight.createTitle") }));
+  fireEvent.change(editor.getByRole("textbox", { name: label("insight.headline") }), { target: { value: headline } });
+  fireEvent.click(editor.getByRole("button", { name: label("insight.create") }));
 }
 
 function selectHandoff() {
@@ -154,6 +185,290 @@ afterEach(() => {
 });
 
 describe("BriefScreen", () => {
+  it.each([
+    ["brief_next", "template"],
+    ["brief_next", "prebaked"],
+    ["handoff", "live"],
+  ] as const)("generates %s with honest %s provenance and evidence, pending explicit approval", async (kind, source) => {
+    signIn();
+    const generated = generatedFixture(kind, source);
+    const pending = deferredResponse();
+    const transport = mockApi(() => [], (url, options) => options.method === "POST" && url.pathname === `${lecturePath}/insights/generate` ? pending.promise : undefined);
+    renderBrief();
+    await screen.findByRole("button", { name: label("brief.new") });
+    if (kind === "handoff") selectHandoff();
+    const button = screen.getByRole("button", { name: generateLabel(kind) });
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(button).toBeDisabled();
+    expect(screen.getByRole("button", { name: label("brief.new") })).toBeDisabled();
+    await act(async () => pending.resolve(json({ insight: generated, source, selection: "persisted_clusters=1; selected=1" })));
+    expect(await screen.findByText(label("brief.generated"))).toBeInTheDocument();
+    expect(card().getByText(label(`insight.source.${source}`))).toBeInTheDocument();
+    expect(card().getByText(label("insight.status.pending_approval"))).toBeInTheDocument();
+    expect(card().getByRole("button", { name: label("insight.approve") })).toBeEnabled();
+    expect(card().queryByRole("button", { name: label("insight.publish") })).not.toBeInTheDocument();
+    const disclosures = card().getAllByText(label("insight.evidence"));
+    disclosures.forEach((disclosure) => fireEvent.click(disclosure));
+    expect(card().getAllByText(generated.content.concepts![0]!.citations![0]!.quote)).toHaveLength(kind === "handoff" ? 2 : 1);
+    expect(card().getAllByText(label("insight.evidenceTime").replace("{start}", "01:00").replace("{end}", "01:15"))).toHaveLength(kind === "handoff" ? 2 : 1);
+    expect(card().getByText(label("insight.signalWindow").replace("{start}", "00:50").replace("{end}", "01:20"))).toBeInTheDocument();
+    expect(card().getByText(label("insight.uniqueSignals").replace("{count}", "0"))).toBeInTheDocument();
+    expect(card().getByText(label("insight.signalCaution"))).toBeInTheDocument();
+    expect(screen.getByTestId(`insight-${insightId}`).querySelector("img")).toBeNull();
+    expect(screen.queryByText("persisted_clusters=1; selected=1")).not.toBeInTheDocument();
+    const mutations = transport.mock.calls.filter(([, options]) => options?.method === "POST");
+    expect(mutations).toHaveLength(1);
+    expect(new URL(String(mutations[0]![0])).pathname).toBe(`${lecturePath}/insights/generate`);
+    expect(JSON.parse(String(mutations[0]![1]?.body))).toEqual({ kind, max_concepts: 3 });
+    expect(new Headers(mutations[0]![1]?.headers).get("Authorization")).toBe(`Bearer ${accessToken}`);
+    expect(mutations[0]![1]?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it.each([
+    [409, "INSUFFICIENT_EVIDENCE", "brief.insufficientEvidence"],
+    [409, "LECTURE_NOT_ENDED", "brief.notEnded"],
+    [429, "AI_BUDGET_EXHAUSTED", "brief.generationLimit"],
+  ] as const)("explains generation rejection %s/%s and keeps manual authoring available", async (status, code, key) => {
+    signIn();
+    const transport = mockApi(() => [], (_url, options) => options.method === "POST" ? failure(status, code) : undefined);
+    renderBrief();
+    fireEvent.click(await screen.findByRole("button", { name: generateLabel() }));
+    expect(await within(screen.getByRole("main")).findByText(label(key))).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: label("brief.new") })).toBeEnabled());
+    fireEvent.click(screen.getByRole("button", { name: label("brief.new") }));
+    expect(screen.getByRole("dialog", { name: label("insight.createTitle") })).toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+  });
+
+  it("waits for the lecture to end before generation while allowing a manual draft", async () => {
+    signIn();
+    const transport = mockApi(() => [], (url) => url.pathname === lecturePath ? json({ ...lectureFixture(), status: "live" }) : undefined);
+    renderBrief();
+    const generate = await screen.findByRole("button", { name: generateLabel() });
+    expect(generate).toBeDisabled();
+    fireEvent.click(generate);
+    expect(screen.getByText(label("brief.notEnded"))).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: label("brief.new") })).toBeEnabled();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(0);
+  });
+
+  it("reconciles generation saved before a lost response without generating it twice", async () => {
+    signIn();
+    const generated = generatedFixture();
+    let stored = false;
+    const transport = mockApi(() => stored ? [generated] : [], (url, options) => {
+      if (options.method === "POST" && url.pathname.endsWith("/generate")) { stored = true; return failure(501, "RESPONSE_LOST"); }
+    });
+    renderBrief();
+    fireEvent.click(await screen.findByRole("button", { name: generateLabel() }));
+    expect(await screen.findByText(label("brief.resolved"))).toBeInTheDocument();
+    expect(card().getByText(label("insight.status.pending_approval"))).toBeInTheDocument();
+    expect(screen.queryByText(label("brief.generated"))).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(1);
+  });
+
+  it("preserves transcript evidence and measured metadata when editing generated material", async () => {
+    signIn();
+    const generated = generatedFixture("handoff");
+    const transport = mockApi(() => [generated], (url, options) => {
+      if (options.method === "POST" && url.pathname.endsWith("/edit")) {
+        const body = JSON.parse(String(options.body)) as { content: Insight["content"] };
+        return json({ ...generated, content: body.content, status: "edited" });
+      }
+    });
+    renderBrief();
+    await screen.findByText("Forces and motion");
+    selectHandoff();
+    fireEvent.click(card().getByRole("button", { name: label("insight.edit") }));
+    const editor = within(screen.getByRole("dialog", { name: label("insight.editTitle") }));
+    expect(editor.getByText(label("insight.editEvidenceNotice"))).toBeInTheDocument();
+    fireEvent.change(editor.getByRole("textbox", { name: `${label("insight.conceptDetail")} 1` }), { target: { value: "  Clarify the diagram before calculation.  " } });
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.reason") }), { target: { value: "Clarify the task" } });
+    fireEvent.click(editor.getByRole("button", { name: label("insight.save") }));
+    expect(await screen.findByText(label("brief.updated"))).toBeInTheDocument();
+    const mutation = transport.mock.calls.find(([, options]) => options?.method === "POST");
+    const body = JSON.parse(String(mutation?.[1]?.body)) as { content: Insight["content"] };
+    expect(body.content.concepts?.[0]).toEqual({ ...generated.content.concepts![0], detail: "Clarify the diagram before calculation." });
+    expect(body.content.task?.grounded_in).toEqual(generated.content.task?.grounded_in);
+    expect(card().getByText(label("insight.status.edited"))).toBeInTheDocument();
+    expect(card().queryByRole("button", { name: label("insight.publish") })).not.toBeInTheDocument();
+  });
+
+  it.each(["read", "write"])("preserves a new login when an old %s returns 401 without a storage event", async (phase) => {
+    signIn();
+    const pending = deferredResponse();
+    let firstRead = true;
+    const transport = mockApi(() => [insightFixture()], (url, options) => {
+      if (phase === "read" && url.pathname === `${lecturePath}/insights` && firstRead) { firstRead = false; return pending.promise; }
+      if (phase === "write" && options.method === "POST") return pending.promise;
+    });
+    renderBrief();
+    if (phase === "write") await submitDraft();
+    signIn("new-account-token");
+    await act(async () => pending.resolve(failure(401, "UNAUTHORIZED")));
+    expect(await screen.findByText("Review the force diagram")).toBeInTheDocument();
+    expect(getProfessorSession()?.accessToken).toBe("new-account-token");
+    expect(navigation.replace).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([url, options]) => options?.method === "GET" && new URL(String(url)).pathname.endsWith("/insights"))).toHaveLength(2);
+  });
+
+  it.each(["read", "create", "publish"])("discards an old successful %s response after a silent account change", async (phase) => {
+    signIn();
+    const pending = deferredResponse();
+    const oldMaterial = insightFixture({ kind: phase === "publish" ? "handoff" : "brief_next", status: "approved" });
+    const nextMaterial = { ...oldMaterial, content: { ...oldMaterial.content, headline: "New account material" } };
+    const transport = mockApi(() => [], (url, options) => {
+      const token = new Headers(options.headers).get("Authorization");
+      if (options.method === "GET" && url.pathname === `${lecturePath}/insights`) {
+        if (token === "Bearer new-account-token") return json([nextMaterial]);
+        return phase === "read" ? pending.promise : json(phase === "publish" ? [oldMaterial] : []);
+      }
+      if (options.method === "POST") return pending.promise;
+    });
+    renderBrief();
+    if (phase === "create") await submitDraft();
+    if (phase === "publish") {
+      await screen.findByText("Forces and motion");
+      selectHandoff();
+      fireEvent.click(card().getByRole("button", { name: label("insight.publish") }));
+    }
+    signIn("new-account-token");
+    await act(async () => pending.resolve(json(phase === "read" ? [oldMaterial] : phase === "publish" ? linkFixture() : oldMaterial)));
+    expect(await screen.findByText("New account material")).toBeInTheDocument();
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: label("brief.link") })).not.toBeInTheDocument();
+    expect(screen.queryByText(label(phase === "publish" ? "brief.published" : "brief.saved"))).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(getProfessorSession()?.accessToken).toBe("new-account-token");
+    expect(transport.mock.calls.filter(([url, options]) => options?.method === "GET" && new URL(String(url)).pathname.endsWith("/insights"))).toHaveLength(2);
+  });
+
+  it("discards an old draft without submitting it with a newly signed-in account", async () => {
+    signIn();
+    const transport = mockApi(() => []);
+    renderBrief();
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.new") }));
+    const editor = within(screen.getByRole("dialog", { name: label("insight.createTitle") }));
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.headline") }), { target: { value: "Previous professor's draft" } });
+    signIn("new-account-token");
+    fireEvent.click(editor.getByRole("button", { name: label("insight.create") }));
+    await waitFor(() => expect(screen.getByRole("button", { name: label("brief.new") })).toBeEnabled());
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(0);
+    expect(getProfessorSession()?.accessToken).toBe("new-account-token");
+  });
+
+  it.each(["daris.professor.session", null])("clears links and drafts and aborts a pending edit on cross-tab logout (%s)", async (key) => {
+    signIn();
+    const pending = deferredResponse();
+    const material = insightFixture({ kind: "handoff", status: "published" });
+    const transport = mockApi(() => [material], (url, options) => {
+      if (options.method === "POST" && url.pathname.endsWith("/publish")) return json(linkFixture());
+      if (options.method === "POST" && url.pathname.endsWith("/edit")) return pending.promise;
+    });
+    renderBrief();
+    await screen.findByText("Forces and motion");
+    selectHandoff();
+    fireEvent.click(card().getByRole("button", { name: label("brief.createLink") }));
+    expect(await screen.findByRole("textbox", { name: label("brief.link") })).toHaveValue(linkFixture().handoff_url);
+    fireEvent.click(card().getByRole("button", { name: label("insight.edit") }));
+    const editor = within(screen.getByRole("dialog", { name: label("insight.editTitle") }));
+    fireEvent.change(editor.getByRole("textbox", { name: label("insight.reason") }), { target: { value: "Clarify this example" } });
+    fireEvent.click(editor.getByRole("button", { name: label("insight.save") }));
+    const mutationSignal = transport.mock.calls.find(([url]) => String(url).endsWith("/edit"))?.[1]?.signal;
+    window.localStorage.removeItem("daris.professor.session");
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key })));
+    expect(mutationSignal?.aborted).toBe(true);
+    expect(screen.queryByRole("textbox", { name: label("brief.link") })).not.toBeInTheDocument();
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(navigation.replace).toHaveBeenCalledWith("/login");
+    await act(async () => pending.resolve(json({ ...material, status: "edited" })));
+    expect(screen.queryByText(label("brief.updated"))).not.toBeInTheDocument();
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+  });
+
+  it("aborts an old read and reloads when another tab changes accounts", async () => {
+    signIn();
+    const pending = deferredResponse();
+    const nextRead = deferredResponse();
+    const transport = mockApi(() => [], (url, options) => {
+      if (url.pathname !== `${lecturePath}/insights`) return undefined;
+      return new Headers(options.headers).get("Authorization") === `Bearer ${accessToken}` ? pending.promise : nextRead.promise;
+    });
+    renderBrief();
+    const previousSignal = transport.mock.calls.find(([url]) => new URL(String(url)).pathname.endsWith("/insights"))?.[1]?.signal;
+    signIn("new-account-token");
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: "daris.professor.session" })));
+    expect(previousSignal?.aborted).toBe(true);
+    await act(async () => pending.resolve(failure(401, "UNAUTHORIZED")));
+    expect(getProfessorSession()?.accessToken).toBe("new-account-token");
+    expect(navigation.replace).not.toHaveBeenCalled();
+    const material = insightFixture();
+    await act(async () => nextRead.resolve(json([{ ...material, content: { ...material.content, headline: "New account material" } }])));
+    expect(await screen.findByText("New account material")).toBeInTheDocument();
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+  });
+
+  it("aborts a pending creation on unmount and ignores its late unauthorized response", async () => {
+    signIn();
+    const pending = deferredResponse();
+    const transport = mockApi(() => [], (_url, options) => options.method === "POST" ? pending.promise : undefined);
+    const rendered = renderBrief();
+    await submitDraft();
+    const mutationSignal = transport.mock.calls.find(([, options]) => options?.method === "POST")?.[1]?.signal;
+    rendered.unmount();
+    expect(mutationSignal?.aborted).toBe(true);
+    await act(async () => pending.resolve(failure(401, "UNAUTHORIZED")));
+    expect(navigation.replace).not.toHaveBeenCalled();
+    expect(getProfessorSession()?.accessToken).toBe(accessToken);
+  });
+
+  it.each(["read", "write"])("isolates a new lecture from a previous lecture's pending %s", async (phase) => {
+    signIn();
+    const pending = deferredResponse();
+    const newId = "55555555-5555-4555-8555-555555555555";
+    const transport = mockApi(() => [], (url, options) => {
+      if (url.pathname === `/api/v1/lectures/${newId}`) return json({ ...lectureFixture(), lecture_id: newId, title: "New lecture" });
+      if (url.pathname === `/api/v1/lectures/${newId}/insights`) return json([]);
+      if (phase === "read" && url.pathname === `${lecturePath}/insights`) return pending.promise;
+      if (phase === "write" && options.method === "POST") return pending.promise;
+    });
+    const rendered = renderBrief();
+    if (phase === "write") await submitDraft();
+    const oldSignal = transport.mock.calls.find(([url, options]) => phase === "write" ? options?.method === "POST" : new URL(String(url)).pathname.endsWith("/insights"))?.[1]?.signal;
+    rendered.rerender(view(newId));
+    expect(await screen.findByText("New lecture")).toBeInTheDocument();
+    expect(oldSignal?.aborted).toBe(true);
+    await act(async () => pending.resolve(phase === "read" ? json([insightFixture()]) : failure(401, "UNAUTHORIZED")));
+    expect(screen.getByText("New lecture")).toBeInTheDocument();
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(navigation.replace).not.toHaveBeenCalled();
+    expect(getProfessorSession()?.accessToken).toBe(accessToken);
+  });
+
+  it("does not show reconciliation success from a mutation belonging to an old account", async () => {
+    signIn();
+    const pending = deferredResponse();
+    let mutationStarted = false;
+    mockApi(() => [], (url, options) => {
+      if (options.method === "POST") { mutationStarted = true; return failure(503, "RESPONSE_LOST"); }
+      if (url.pathname === `${lecturePath}/insights` && mutationStarted && new Headers(options.headers).get("Authorization") === `Bearer ${accessToken}`) return pending.promise;
+    });
+    renderBrief();
+    await submitDraft();
+    await within(screen.getByRole("main")).findByText(label("brief.uncertain"));
+    signIn("new-account-token");
+    await act(async () => pending.resolve(json([insightFixture()])));
+    await waitFor(() => expect(screen.getByRole("button", { name: label("brief.new") })).toBeEnabled());
+    expect(screen.queryByText("Review the force diagram")).not.toBeInTheDocument();
+    expect(screen.queryByText(label("brief.resolved"))).not.toBeInTheDocument();
+    expect(getProfessorSession()?.accessToken).toBe("new-account-token");
+  });
+
   it.each(["network", "server", "malformed", "unknown"])("reconciles an uncertain %s creation without retaining or replaying the draft", async (outcome) => {
     signIn();
     let created: Insight | null = null;

@@ -35,9 +35,10 @@ export function InsightEditor({ initial, kind, busy, onSave, onCancel }: {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cleaned: InsightContent = {
+      ...content,
       headline: content.headline.trim(),
       read_time_sec: content.read_time_sec,
-      concepts: concepts.map((item) => ({ title: item.title.trim(), detail: item.detail.trim() })),
+      concepts: concepts.map((item) => ({ ...item, title: item.title.trim(), detail: item.detail.trim() })),
       task: content.task ? { ...content.task, title: content.task.title.trim(), instructions: content.task.instructions.trim() } : null,
     };
     if (!cleaned.headline || cleaned.concepts?.some((item) => !item.title || !item.detail) ||
@@ -84,6 +85,8 @@ export function InsightEditor({ initial, kind, busy, onSave, onCancel }: {
         <Input label={t("insight.duration")} type="number" min={1} max={180} step={1} value={content.task.duration_minutes ?? ""}
           onChange={(event) => setContent({ ...content, task: { ...content.task!, duration_minutes: event.target.value === "" ? null : Number(event.target.value) } })} />
       </div> : null}
+      {initial && (initial.content.concepts?.some((concept) => concept.citations?.length) || initial.content.task?.grounded_in?.length) ?
+        <p className="rounded-xl bg-primary-soft p-3 text-sm">{t("insight.editEvidenceNotice")}</p> : null}
       {initial ? <Textarea label={t("insight.reason")} required maxLength={1000} value={reason}
         onChange={(event) => setReason(event.target.value)} /> : null}
       {initial?.status === "published" ? <p className="rounded-xl bg-primary-soft p-3 text-sm">{t("brief.revokeNotice")}</p> : null}

@@ -225,3 +225,28 @@ Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), an
 - Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
 - Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
 - No Docker or cloud deployment was performed. Live provider functional checks passed, but no live adversarial safety benchmark was run.
+
+## P1 remaining frontend workflows — 2026-11-26
+
+Implemented Cohort Memory and server-authoritative Autonomy controls in `2f828d7`. After discovering that the team had delivered the actual P3 APIs/contracts on `feat/p3-axiom-engine`, merged P3 `c21446a` into the P1 branch as `6deb064`, preserving both histories. Resolved CORS by retaining P1's PUT and P3's X-Replay-Token header allowance; shared main was not changed. The P3 evidence above belongs to that team's earlier environment and is not a successful backend run on this Mac.
+
+Added Transcript JSON/audio import, BriefNext/Handoff server generation and evidence rendering, Socratic Replay, GapCards with local review scheduling, and the local learning library. Added EN/RU/KK copy and navigation. Replay credentials are separate from professor/Signal credentials; signed moments and state capabilities remain in memory. IndexedDB migration preserves prior records and revision checks prevent stale Replay/card writes from restoring cleared history. Uncertain professor mutations reconcile with one read and never automatically repeat the write. Moved the CORS regression tests into `tests/unit` so CI's explicit unit selection runs them.
+
+Local verification:
+
+| Check | Actual result |
+| --- | --- |
+| Frontend ESLint / TypeScript | Passed |
+| Frontend Vitest | 175/175 tests in 15 files, including the final late-Signal-ACK/local-history deletion regressions |
+| `pnpm build --webpack` | Passed; all new routes included. Default Turbopack build is not claimed as passing locally |
+| Backend Ruff after P3 integration | Passed |
+| Backend before P3 integration | Ruff/mypy and four real CORS middleware tests passed. Full pytest stopped because PostgreSQL at 127.0.0.1:55432 was unavailable |
+| Backend after P3 integration | Mypy and pytest collection blocked by missing numpy. Exact dependency installation could not resolve `filelock==4.3.1` / `numpy==2.5.5` in this environment. No substitute dependencies installed |
+| Contract regeneration after integration | Not completed locally because the backend import dependencies are unavailable; P3's committed generated schemas/types were used unchanged |
+| Playwright contract E2E | 1 failed before scenario execution and 2 not run: missing Chromium headless shell. Official browser installation reports unsupported mac13-arm64 for this version. No passing E2E or axe result claimed |
+
+Inspected an isolated build with a prominent synthetic-data banner and a local fixture API, outside the repository. The actual production routes have no fixture fallback. Through the built-in browser, exercised Replay selection → MCQ → free text → completion → GapCards generation/flip/local rating; inspected Transcript, Cohort and Autonomy. Checked 390×844 and 1280×800 layouts and light/dark themes. Found and fixed escaped table accessibility text causing mobile overflow, an Autonomy action squeezing the mobile concept title, and a malformed GitHub navigation link. The long-name confirmation dialog stays within a 390-pixel viewport. Preview uses a same-origin test proxy and does not prove production CORS, real STT, real provider results or real backend integration.
+
+Remaining: real PostgreSQL/pgvector/Redis/API setup, migration and transcript import, professor/public/student end-to-end scenarios, supported-browser/axe and manual assistive-technology checks, actual STT, final CI/team review, then P4's real-flow demo. Richer Cohort semester/title/structural-gap data and actual automatic AI publication require backend work. See `docs/handover/P1.md`.
+
+Final follow-up: clearing local history also records the highest allocated Signal sequence in the same IndexedDB transaction. Late accepted/duplicate acknowledgements and pending writes for earlier sequences cannot recreate erased signals; newly allocated signals still work. Confirmed the repaired mobile Autonomy titles use the full 308-pixel card content width at a 390-pixel viewport, instead of collapsing beside the action button. Final lint, TypeScript, 175 tests and production webpack build all passed after these fixes.

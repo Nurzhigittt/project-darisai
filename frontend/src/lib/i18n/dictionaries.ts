@@ -1,3 +1,6 @@
+import { replayDictionaries } from "./replay";
+import { gapcardsDictionaries } from "./gapcards";
+import { transcriptDictionaries } from "./transcript";
 import { cohortDictionaries } from "./cohort";
 import { autonomyDictionaries } from "./autonomy";
 import { teachingDictionaries } from "./teaching";
@@ -17,6 +20,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
     ...cohortDictionaries.en,
     ...autonomyDictionaries.en,
     ...teachingDictionaries.en,
+    ...replayDictionaries.en,
+    ...gapcardsDictionaries.en,
+    ...transcriptDictionaries.en,
     "brand.name": "DärisAI",
     "brand.tagline": "Make understanding visible.",
     "lecture.scheduled": "Scheduled",
@@ -299,6 +305,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
     ...cohortDictionaries.ru,
     ...autonomyDictionaries.ru,
     ...teachingDictionaries.ru,
+    ...replayDictionaries.ru,
+    ...gapcardsDictionaries.ru,
+    ...transcriptDictionaries.ru,
     "brand.name": "DärisAI",
     "brand.tagline": "Сделайте понимание видимым.",
     "lecture.scheduled": "Запланирована",
@@ -578,6 +587,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
     ...cohortDictionaries.kk,
     ...autonomyDictionaries.kk,
     ...teachingDictionaries.kk,
+    ...replayDictionaries.kk,
+    ...gapcardsDictionaries.kk,
+    ...transcriptDictionaries.kk,
     "brand.name": "DärisAI",
     "brand.tagline": "Түсінуді көрінетін етіңіз.",
     "lecture.scheduled": "Жоспарланған",

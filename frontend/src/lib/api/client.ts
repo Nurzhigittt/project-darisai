@@ -24,6 +24,24 @@ export type CohortConceptMetric = components["schemas"]["CohortConceptMetric"];
 export type ConceptAutonomy = components["schemas"]["AutonomyOut"];
 export type AutonomyUpdate = components["schemas"]["AutonomyUpdate"];
 
+export type ReplayStartRequest = components["schemas"]["ReplayStartRequest"];
+export type ReplayStartOut = components["schemas"]["ReplayStartOut"];
+export type ReplayTurnRequest = components["schemas"]["ReplayTurnRequest"];
+export type ReplayTurnOut = components["schemas"]["ReplayTurnOut"];
+export type ReplayMoment = components["schemas"]["ReplayMomentOut"];
+export type ReplayHistoryItem = components["schemas"]["ReplayHistoryItem"];
+export type Citation = components["schemas"]["Citation"];
+export type SocraticTurn = components["schemas"]["SocraticTurn"];
+export type GapCard = components["schemas"]["GapCardOut"];
+export type GapCardsResponse = components["schemas"]["GapCardsResponse"];
+export type GapCardGenerateRequest = components["schemas"]["GapCardGenerateRequest"];
+export type Transcript = components["schemas"]["TranscriptOut"];
+export type TranscriptImportRequest = components["schemas"]["TranscriptImportRequest"];
+export type TranscriptImportOut = components["schemas"]["TranscriptImportOut"];
+export type AudioChunk = components["schemas"]["AudioChunkOut"];
+export type IntelligenceGenerateRequest = components["schemas"]["IntelligenceGenerateRequest"];
+export type IntelligenceGenerateResponse = components["schemas"]["IntelligenceGenerateResponse"];
+
 export const API_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 ).replace(/\/$/, "");
@@ -45,6 +63,8 @@ export class ApiError extends Error {
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT";
   body?: unknown;
+  formData?: FormData;
+  replayToken?: string;
   token?: string | null;
   signal?: AbortSignal;
 };
@@ -52,13 +72,14 @@ type RequestOptions = {
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/json" };
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
+  if (options.replayToken) headers["X-Replay-Token"] = options.replayToken;
   if (options.token) headers.Authorization = `Bearer ${options.token}`;
   let response: Response;
   try {
     response = await fetch(`${API_URL}${path}`, {
       method: options.method ?? "GET",
       headers,
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      body: options.formData ?? (options.body === undefined ? undefined : JSON.stringify(options.body)),
       cache: "no-store",
       signal: options.signal,
     });
@@ -183,6 +204,27 @@ export const api = {
     request<HandoffLink>(`/api/v1/lectures/${lectureId}/insights/${insightId}/publish`, {
       method: "POST", token, signal,
     }),
+
+  startReplay: (replayToken: string, body: ReplayStartRequest, signal?: AbortSignal) =>
+    request<ReplayStartOut>("/api/v1/replay/start", { method: "POST", replayToken, body, signal }),
+
+  replayTurn: (replayToken: string, body: ReplayTurnRequest, signal?: AbortSignal) =>
+    request<ReplayTurnOut>("/api/v1/replay/turn", { method: "POST", replayToken, body, signal }),
+
+  generateGapCards: (replayToken: string, body: GapCardGenerateRequest, signal?: AbortSignal) =>
+    request<GapCardsResponse>("/api/v1/gapcards/generate", { method: "POST", replayToken, body, signal }),
+
+  getTranscript: (token: string, lectureId: string, signal?: AbortSignal) =>
+    request<Transcript>(`/api/v1/lectures/${lectureId}/transcript`, { token, signal }),
+
+  importTranscript: (token: string, lectureId: string, body: TranscriptImportRequest, signal?: AbortSignal) =>
+    request<TranscriptImportOut>(`/api/v1/lectures/${lectureId}/transcript/import`, { method: "POST", token, body, signal }),
+
+  uploadAudioChunk: (token: string, lectureId: string, formData: FormData, signal?: AbortSignal) =>
+    request<AudioChunk>(`/api/v1/lectures/${lectureId}/audio-chunks`, { method: "POST", token, formData, signal }),
+
+  generateInsight: (token: string, lectureId: string, body: IntelligenceGenerateRequest, signal?: AbortSignal) =>
+    request<IntelligenceGenerateResponse>(`/api/v1/lectures/${lectureId}/insights/generate`, { method: "POST", token, body, signal }),
 
   getCohortMemory: (token: string, courseId: string, signal?: AbortSignal) =>
     request<CohortMemory>(`/api/v1/courses/${courseId}/cohort-memory?limit=200`, { token, signal }),

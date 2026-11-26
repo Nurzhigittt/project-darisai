@@ -422,15 +422,10 @@ export function StudentLectureScreen({ lectureId }: { lectureId: string }) {
                   </ul>
                 )}
               </div>
-              <div className="mt-7 rounded-2xl border border-dashed border-border p-4 text-left">
-                <div className="flex items-center gap-2 font-semibold">
-                  <Sparkles aria-hidden className="size-4 text-primary" />
-                  {t("student.replaySoon")}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-muted">
-                  {t("student.replaySoonBody")}
-                </p>
-              </div>
+              <nav className="mt-7 flex flex-wrap justify-center gap-3" aria-label={t("learning.title")}>
+                <Link href={`/replay/${lectureId}`} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary px-5 font-semibold text-primary-foreground"><Sparkles aria-hidden className="size-4" />{t("learning.replay")}</Link>
+                <Link href={`/gapcards/${lectureId}`} className="inline-flex min-h-12 items-center rounded-xl border border-border px-5 font-semibold">{t("learning.cards")}</Link>
+              </nav>
               <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <Button variant="secondary" onClick={() => setHistoryOpen(true)}>
                   <History aria-hidden className="size-4" />

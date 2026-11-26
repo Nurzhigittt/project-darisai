@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, BookOpen, FileText, Plus, RefreshCw, ShieldCheck, WifiOff } from "lucide-react";
+import { ArrowLeft, BookOpen, FileText, Plus, RefreshCw, ShieldCheck, Sparkles, WifiOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
@@ -25,6 +25,9 @@ type Editor = { kind: Insight["kind"]; insight?: Insight };
 
 function errorKey(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.code === "LECTURE_NOT_ENDED") return "brief.notEnded";
+    if (error.code === "INSUFFICIENT_EVIDENCE") return "brief.insufficientEvidence";
+    if (error.code === "AI_BUDGET_EXHAUSTED") return "brief.generationLimit";
     if (error.status === 0) return "brief.network";
     if (error.status === 429) return "brief.rateLimit";
     if (error.status === 409) return "brief.conflict";
@@ -37,7 +40,12 @@ function uncertainOutcome(error: unknown): boolean {
   return !(error instanceof ApiError) || error.status === 0 || error.status >= 500 || error.code === "INVALID_RESPONSE";
 }
 
+// A different lecture must not inherit pending requests, drafts or capabilities.
 export function BriefScreen({ lectureId }: { lectureId: string }) {
+  return <BriefContent key={lectureId} lectureId={lectureId} />;
+}
+
+function BriefContent({ lectureId }: { lectureId: string }) {
   const { t } = useI18n();
   const router = useRouter();
   const [lecture, setLecture] = useState<Lecture | null>(null);
@@ -54,25 +62,55 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   const [links, setLinks] = useState<Record<string, HandoffLink>>({});
   const [offline, setOffline] = useState(false);
   const [unresolved, setUnresolved] = useState(false);
+  const [sessionRevision, setSessionRevision] = useState(0);
+  const mounted = useRef(false);
   const busyRef = useRef(false);
-  const controller = useRef<AbortController | null>(null);
+  const sessionToken = useRef<string | null>(null);
+  const readController = useRef<AbortController | null>(null);
+  const mutationController = useRef<AbortController | null>(null);
 
-  const expireSession = useCallback(() => {
-    clearProfessorSession();
+  const clearProtectedState = useCallback(() => {
+    readController.current?.abort();
+    mutationController.current?.abort();
+    busyRef.current = false;
     setLecture(null);
     setInsights([]);
     setLinks({});
     setEditor(null);
     setRejecting(null);
+    setReason("");
+    setError(null);
+    setActionError(null);
+    setMessage("");
+    setUnresolved(false);
+    setBusy(null);
+    setLoading(true);
+  }, []);
+
+  const expireSession = useCallback(() => {
+    clearProtectedState();
+    sessionToken.current = null;
+    clearProfessorSession();
     router.replace("/login");
-  }, [router]);
+  }, [clearProtectedState, router]);
+
+  const reconcileSession = useCallback(() => {
+    clearProtectedState();
+    const session = getProfessorSession();
+    if (!session) { expireSession(); return; }
+    // Preserve the new login, but never reuse the previous account's draft or link.
+    sessionToken.current = session.accessToken;
+    setSessionRevision((current) => current + 1);
+  }, [clearProtectedState, expireSession]);
 
   const load = useCallback(async (): Promise<boolean> => {
     const session = getProfessorSession();
     if (!session) { expireSession(); return false; }
-    controller.current?.abort();
+    if (sessionToken.current && sessionToken.current !== session.accessToken) clearProtectedState();
+    sessionToken.current = session.accessToken;
+    readController.current?.abort();
     const request = new AbortController();
-    controller.current = request;
+    readController.current = request;
     setLoading(true);
     setError(null);
     try {
@@ -80,7 +118,8 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         api.getLecture(session.accessToken, lectureId, request.signal),
         api.listInsights(session.accessToken, lectureId, request.signal),
       ]);
-      if (request.signal.aborted) return false;
+      if (!mounted.current || request.signal.aborted) return false;
+      if (getProfessorSession()?.accessToken !== session.accessToken) { reconcileSession(); return false; }
       setLecture(nextLecture);
       setInsights(nextInsights);
       // A material may have been edited and republished in another tab.
@@ -89,27 +128,42 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
       setUnresolved(false);
       return true;
     } catch (caught) {
-      if (request.signal.aborted) return false;
+      if (!mounted.current || request.signal.aborted) return false;
+      if (getProfessorSession()?.accessToken !== session.accessToken) { reconcileSession(); return false; }
       if (caught instanceof ApiError && caught.status === 401) { expireSession(); return false; }
       setError(errorKey(caught));
       return false;
     } finally {
-      if (!request.signal.aborted) setLoading(false);
+      if (mounted.current && !request.signal.aborted) setLoading(false);
     }
-  }, [lectureId, expireSession]);
+  }, [lectureId, clearProtectedState, expireSession, reconcileSession]);
 
   useEffect(() => {
+    mounted.current = true;
     void load();
-    return () => controller.current?.abort();
-  }, [load]);
+    return () => {
+      mounted.current = false;
+      readController.current?.abort();
+      mutationController.current?.abort();
+    };
+  }, [load, sessionRevision]);
 
   useEffect(() => {
     const update = () => setOffline(!navigator.onLine);
+    const updateSession = (event: StorageEvent) => {
+      if (event.key !== "daris.professor.session" && event.key !== null) return;
+      if (getProfessorSession()?.accessToken !== sessionToken.current) reconcileSession();
+    };
     update();
     window.addEventListener("online", update);
     window.addEventListener("offline", update);
-    return () => { window.removeEventListener("online", update); window.removeEventListener("offline", update); };
-  }, []);
+    window.addEventListener("storage", updateSession);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+      window.removeEventListener("storage", updateSession);
+    };
+  }, [reconcileSession]);
 
   function replaceInsight(updated: Insight) {
     if (!updated || updated.lecture_id !== lectureId || typeof updated.insight_id !== "string") {
@@ -134,18 +188,29 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
     }
   }
 
-  async function run(key: string, operation: (token: string) => Promise<void>): Promise<boolean> {
-    if (busyRef.current || offline || loading || unresolved || error) return false;
+  async function run<T>(key: string, operation: (token: string, signal: AbortSignal) => Promise<T>, apply: (result: T) => void): Promise<void> {
+    if (busyRef.current || offline || loading || unresolved || error) return;
     const session = getProfessorSession();
-    if (!session) { expireSession(); return false; }
+    if (!session) { expireSession(); return; }
+    if (session.accessToken !== sessionToken.current) { reconcileSession(); return; }
     busyRef.current = true;
     setBusy(key);
     setActionError(null);
     setMessage("");
-    try {
-      await operation(session.accessToken);
+    const request = new AbortController();
+    mutationController.current = request;
+    const isCurrent = () => {
+      if (!mounted.current || request.signal.aborted) return false;
+      if (getProfessorSession()?.accessToken !== session.accessToken) { reconcileSession(); return false; }
       return true;
+    };
+    try {
+      const result = await operation(session.accessToken, request.signal);
+      // Request callbacks must not change state until this session/lifecycle check.
+      if (!isCurrent()) return;
+      apply(result);
     } catch (caught) {
+      if (!isCurrent()) return;
       if (caught instanceof ApiError && caught.status === 401) expireSession();
       else if (uncertainOutcome(caught)) {
         // The server may have saved the change before the response was lost.
@@ -156,7 +221,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         setLinks({});
         setUnresolved(true);
         setActionError("brief.uncertain");
-        if (await load()) {
+        if (await load() && isCurrent()) {
           setActionError(null);
           setMessage("brief.resolved");
         }
@@ -164,28 +229,41 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         setActionError(caught instanceof ApiError && caught.status === 422 ? "insight.validation" : errorKey(caught));
         if (caught instanceof ApiError && caught.status === 409) await load();
       }
-      return false;
     } finally {
-      busyRef.current = false;
-      setBusy(null);
+      if (mutationController.current === request) {
+        mutationController.current = null;
+        busyRef.current = false;
+        if (mounted.current && !request.signal.aborted) setBusy(null);
+      }
     }
+  }
+
+  async function generate() {
+    if (lecture?.status !== "ended") return;
+    await run("generate", (token, signal) => api.generateInsight(token, lectureId, { kind, max_concepts: 3 }, signal), (result) => {
+      if (!result || !result.insight || result.insight.kind !== kind || result.insight.status !== "pending_approval" ||
+        !["template", "prebaked", "live"].includes(result.source) || result.insight.source !== result.source) {
+        throw new Error("Unexpected generation response");
+      }
+      replaceInsight(result.insight);
+      setMessage("brief.generated");
+    });
   }
 
   async function save(content: InsightContent, editReason: string) {
     if (!editor) return;
-    const done = await run("save", async (token) => {
-      const updated = editor.insight
-        ? await api.editInsight(token, lectureId, editor.insight.insight_id, { content, reason: editReason })
-        : await api.createInsight(token, lectureId, { kind: editor.kind, content });
+    await run("save", (token, signal) => editor.insight
+      ? api.editInsight(token, lectureId, editor.insight.insight_id, { content, reason: editReason }, signal)
+      : api.createInsight(token, lectureId, { kind: editor.kind, content }, signal), (updated) => {
       replaceInsight(updated);
       setMessage(editor.insight ? "brief.updated" : "brief.saved");
+      setEditor(null);
     });
-    if (done) setEditor(null);
   }
 
   async function approve(insight: Insight) {
-    await run(`${insight.insight_id}:approve`, async (token) => {
-      replaceInsight(await api.approveInsight(token, lectureId, insight.insight_id));
+    await run(`${insight.insight_id}:approve`, (token, signal) => api.approveInsight(token, lectureId, insight.insight_id, signal), (updated) => {
+      replaceInsight(updated);
       setMessage("brief.approved");
     });
   }
@@ -193,16 +271,16 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
   async function reject(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!rejecting || !reason.trim()) return;
-    const done = await run("reject", async (token) => {
-      replaceInsight(await api.rejectInsight(token, lectureId, rejecting.insight_id, reason.trim()));
+    await run("reject", (token, signal) => api.rejectInsight(token, lectureId, rejecting.insight_id, reason.trim(), signal), (updated) => {
+      replaceInsight(updated);
       setMessage("brief.rejected");
+      setRejecting(null);
+      setReason("");
     });
-    if (done) { setRejecting(null); setReason(""); }
   }
 
   async function publish(insight: Insight) {
-    await run(`${insight.insight_id}:publish`, async (token) => {
-      const link = await api.publishHandoff(token, lectureId, insight.insight_id);
+    await run(`${insight.insight_id}:publish`, (token, signal) => api.publishHandoff(token, lectureId, insight.insight_id, signal), (link) => {
       if (!link || link.insight_id !== insight.insight_id || typeof link.handoff_url !== "string") {
         throw new Error("Unexpected publication response");
       }
@@ -237,6 +315,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         </Button>
       </div>
       {lecture ? <nav aria-label={t("teaching.related")} className="mt-5 flex flex-wrap gap-3">
+        <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
         <Link href={`/cohort/${lecture.course_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.cohort")}</Link>
         <Link href={`/settings/autonomy/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.autonomy")}</Link>
       </nav> : null}
@@ -258,8 +337,14 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
               {t(`insight.kind.${value}`)}<span className="rounded-full bg-background px-2 text-sm">{insights.filter((item) => item.kind === value).length}</span>
             </button>)}
           </div>
-          <Button disabled={disabled} onClick={() => { setActionError(null); setEditor({ kind }); }}><Plus aria-hidden className="size-4" />{t("brief.new")}</Button>
+          <div className="flex flex-wrap gap-3">
+            <Button disabled={disabled || lecture.status !== "ended"} loading={busy === "generate"} onClick={() => void generate()}>
+              <Sparkles aria-hidden className="size-4" />{t("brief.generate", { kind: t(`insight.kind.${kind}`) })}
+            </Button>
+            <Button variant="secondary" disabled={disabled} onClick={() => { setActionError(null); setEditor({ kind }); }}><Plus aria-hidden className="size-4" />{t("brief.new")}</Button>
+          </div>
         </div>
+        {lecture.status !== "ended" ? <p className="mt-3 text-sm text-muted">{t("brief.notEnded")}</p> : null}
         {insights.length >= 100 ? <p className="mt-3 text-sm text-muted">{t("brief.limit")}</p> : null}
         <div className="mt-6 space-y-6">
           {visible.length === 0 ? <EmptyState icon={<FileText aria-hidden className="size-6" />} title={t("brief.emptyTitle")} body={t("brief.emptyBody")} /> :
@@ -270,12 +355,12 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
         </div>
       </> : null}
     </main>
-    <Dialog open={Boolean(editor)} onClose={() => { if (!busy) setEditor(null); }} title={t(editor?.insight ? "insight.editTitle" : "insight.createTitle")}
+    <Dialog open={Boolean(editor)} onClose={() => { if (!busyRef.current) setEditor(null); }} title={t(editor?.insight ? "insight.editTitle" : "insight.createTitle")}
       description={editor ? t(`insight.kind.${editor.kind}`) : undefined} closeLabel={t("common.close")} className="max-h-[90dvh] w-[min(94vw,700px)] overflow-y-auto">
       {editorError}
       {editor ? <InsightEditor key={editor.insight?.insight_id ?? editor.kind} initial={editor.insight} kind={editor.kind} busy={disabled} onSave={save} onCancel={() => setEditor(null)} /> : null}
     </Dialog>
-    <Dialog open={Boolean(rejecting)} onClose={() => { if (!busy) setRejecting(null); }} title={t("insight.rejectTitle")}
+    <Dialog open={Boolean(rejecting)} onClose={() => { if (!busyRef.current) setRejecting(null); }} title={t("insight.rejectTitle")}
       description={t("insight.rejectHint")} closeLabel={t("common.close")}>
       <form onSubmit={reject} className="space-y-4 pb-6">
         {editorError}

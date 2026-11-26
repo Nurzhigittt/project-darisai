@@ -140,6 +140,7 @@ export function LectureSummaryScreen({ lectureId }: { lectureId: string }) {
               {summary.title}
             </h1>
             <p className="mt-2 text-muted">{t("summary.title")}</p>
+            <Link href={`/transcript/${lectureId}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold">{t("teaching.transcript")}</Link>
             <Link href={`/settings/autonomy/${lectureId}`} className="mt-4 inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:bg-primary-soft/60">
               {t("teaching.autonomy")}
             </Link>

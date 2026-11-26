@@ -239,8 +239,8 @@ function AutonomyContent({ lectureId }: { lectureId: string }) {
         </section>
         <div className="mt-6 space-y-4">
           {policies.length === 0 ? <EmptyState icon={<LockKeyhole aria-hidden className="size-6" />} title={t("autonomy.emptyTitle")} body={t("autonomy.emptyBody")} /> : policies.map((policy) => <article key={policy.concept_canonical_id} aria-labelledby={`concept-${policy.concept_canonical_id}`} className="rounded-3xl border border-border bg-surface p-5 shadow-soft sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
+              <div className="min-w-0 w-full sm:flex-1">
                 <Badge tone={policy.mode === "locked" ? "neutral" : "primary"}>{policy.mode === "locked" ? <LockKeyhole aria-hidden className="size-3.5" /> : <ShieldCheck aria-hidden className="size-3.5" />}{t(`autonomy.mode.${policy.mode}`)}</Badge>
                 <h2 id={`concept-${policy.concept_canonical_id}`} className="mt-3 break-words text-2xl font-semibold">{policy.concept_title}</h2>
                 <p className="mt-2 text-sm text-muted">{t(policy.mode === "locked" ? "autonomy.lockedHint" : "autonomy.allowedHint")}</p>

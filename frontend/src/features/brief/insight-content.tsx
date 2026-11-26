@@ -2,8 +2,25 @@
 
 import { Clock3, NotebookPen } from "lucide-react";
 
-import type { InsightContent } from "@/lib/api/client";
+import type { Citation, InsightContent } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n";
+import { formatOffset } from "@/lib/utils";
+
+function CitationList({ citations }: { citations?: Citation[] }) {
+  const { t } = useI18n();
+  if (!citations?.length) return null;
+  return <details className="mt-4 rounded-xl border border-border bg-surface/70 p-3">
+    <summary className="cursor-pointer rounded text-sm font-semibold">{t("insight.evidence")}</summary>
+    <ol className="mt-3 space-y-4">
+      {citations.map((citation, index) => <li key={`${citation.segment_id}:${index}`}>
+        <figure className="border-l-2 border-primary/40 pl-3">
+          <blockquote className="whitespace-pre-wrap text-sm leading-6">{citation.quote}</blockquote>
+          <figcaption className="mt-2 text-xs text-muted">{t("insight.evidenceTime", { start: formatOffset(citation.start_ms), end: formatOffset(citation.end_ms) })}</figcaption>
+        </figure>
+      </li>)}
+    </ol>
+  </details>;
+}
 
 export function InsightContentView({ content }: { content: InsightContent }) {
   const { t } = useI18n();
@@ -24,9 +41,14 @@ export function InsightContentView({ content }: { content: InsightContent }) {
               <li key={index} className="rounded-2xl border border-border bg-background p-4">
                 <h4 className="font-semibold">{concept.title}</h4>
                 <p className="mt-2 whitespace-pre-wrap leading-7 text-muted">{concept.detail}</p>
+                {typeof concept.window_start_ms === "number" && typeof concept.window_end_ms === "number" ?
+                  <p className="mt-3 text-sm text-muted">{t("insight.signalWindow", { start: formatOffset(concept.window_start_ms), end: formatOffset(concept.window_end_ms) })}</p> : null}
+                {typeof concept.unique_signals === "number" ? <p className="mt-2 text-sm text-muted">{t("insight.uniqueSignals", { count: concept.unique_signals })}</p> : null}
+                <CitationList citations={concept.citations} />
               </li>
             ))}
           </ul>
+          {content.concepts?.some((concept) => typeof concept.unique_signals === "number") ? <p className="mt-3 text-sm text-muted">{t("insight.signalCaution")}</p> : null}
         </section>
       ) : null}
       {content.task ? (
@@ -37,6 +59,7 @@ export function InsightContentView({ content }: { content: InsightContent }) {
           </div>
           <h3 className="mt-4 text-lg font-semibold">{content.task.title}</h3>
           <p className="mt-2 whitespace-pre-wrap leading-7">{content.task.instructions}</p>
+          <CitationList citations={content.task.grounded_in} />
         </section>
       ) : null}
     </div>

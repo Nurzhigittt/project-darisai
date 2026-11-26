@@ -10,9 +10,9 @@ import { Logo } from "@/components/ui/logo";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { useI18n } from "@/lib/i18n";
 
-const Code2Url =
-  process.env.NEXT_PUBLIC_Code2_URL ??
-  "https://Code2.com/hackathon-worldAI-2026-ULTRA/daris-ai";
+const githubUrl =
+  process.env.NEXT_PUBLIC_GITHUB_URL ??
+  "https://github.com/Nurzhigittt/project-darisai";
 
 export function SiteHeader() {
   const { t } = useI18n();
@@ -22,6 +22,7 @@ export function SiteHeader() {
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Logo />
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+          <Link href="/gapcards" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-primary-soft/60">{t("learning.title")}</Link>
           <Link
             href="/#join"
             className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-primary-soft/60"
@@ -52,10 +53,10 @@ export function SiteHeader() {
             <LanguageSwitcher />
             <ThemeSwitcher />
             <a
-              href={Code2Url}
+              href={githubUrl}
               target="_blank"
               rel="noreferrer"
-              aria-label="Code2 repository"
+              aria-label="GitHub repository"
               className="inline-flex size-10 items-center justify-center rounded-full text-muted hover:bg-primary-soft/60 hover:text-foreground"
             >
               <Code2 aria-hidden className="size-5" />
@@ -79,6 +80,7 @@ export function SiteHeader() {
           className="border-t border-border bg-surface px-5 py-4 md:hidden"
         >
           <ul className="grid gap-1 text-sm font-semibold">
+            <li><Link href="/gapcards" onClick={() => setOpen(false)} className="block rounded-lg px-3 py-3">{t("learning.title")}</Link></li>
             <li>
               <Link href="/#join" onClick={() => setOpen(false)} className="block rounded-lg px-3 py-3">
                 {t("nav.join")}

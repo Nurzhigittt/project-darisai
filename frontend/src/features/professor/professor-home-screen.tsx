@@ -321,6 +321,7 @@ export function ProfessorHomeScreen() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2 sm:justify-end">
+                      <Link href={`/transcript/${lecture.lecture_id}`} className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">{t("teaching.transcript")}</Link>
                       <Link href={`/settings/autonomy/${lecture.lecture_id}`}
                         className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-sm font-semibold hover:bg-primary-soft/60">
                         {t("teaching.autonomy")}
