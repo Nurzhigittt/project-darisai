@@ -69,10 +69,12 @@ curl -fsS https://your-real-domain.example/api/v1/status
 Create a lecture only after `APP_BASE_URL` is correct, then scan its QR from a
 phone. Do not use `localhost` in a QR intended for another device.
 
-## Current blocker
+## Permanent hosting blocker and verified temporary demonstration
 
-This environment has **no Docker executable and no authorized cloud
-infrastructure or billing account**. The Compose configuration is syntactically
-valid, but no container build/start, public URL, HTTPS certificate or deployment
-is claimed. A maintainer must provide deployment credentials before Part V can
-be completed.
+This environment has **no Docker executable and no authorized permanent cloud
+infrastructure or billing account**. Container build/start remains unverified.
+A temporary Cloudflare HTTPS tunnel was verified on 26 November 2026 using the
+real locally running production application. It forwards only the application
+proxy; PostgreSQL, Redis and Ollama are not exposed through it. HTTP, WebSocket,
+CORS and generated public QR URLs passed checks. See [FINAL_PUBLICATION.md](FINAL_PUBLICATION.md).
+Permanent hosting still requires an authorized host and credentials.

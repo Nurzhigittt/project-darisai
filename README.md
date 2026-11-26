@@ -179,7 +179,7 @@ The realtime path is deterministic and browser-free. No LLM sits in the Signal �
 
 Sources: [`docs/BUILD_LOG.md`](docs/BUILD_LOG.md), [`docs/PERFORMANCE_REPORT.md`](docs/PERFORMANCE_REPORT.md), [`artifacts/loadtest/loadtest-20261126T075720Z.json`](artifacts/loadtest/loadtest-20261126T075720Z.json).
 
-These are single-environment engineering measurements, not production SLAs. Docker and cloud deployment were not executed locally.
+These are single-environment engineering measurements, not production SLAs. Docker and permanent cloud deployment were not executed locally. A temporary HTTPS competition demonstration was verified after integration; see [final publication evidence](docs/FINAL_PUBLICATION.md).
 
 ## Quick start
 
@@ -218,7 +218,7 @@ The Compose files are committed, but Docker was not available in the verificatio
 
 ### Local AI
 
-The core lecture loop does not call an LLM. For local generation, DärisAI supports Ollama on a localhost endpoint; no cloud key is required and the adapter does not silently switch to an external provider. The default template path stays available and is labelled honestly. See [`docs/LOCAL_AI.md`](docs/LOCAL_AI.md) for the actual local `qwen2.5:1.5b` smoke result, latency and STT limitation.
+The core lecture loop does not call an LLM. Local Faster-Whisper `small` CPU INT8 transcription is verified for EN/RU/KK; Kazakh output is imperfect. Ollama `qwen2.5:1.5b` verification is partial: BriefNext and Handoff returned live local generation, while Replay start and GapCards used templates; a local Replay turn took 147.92 s. The local adapter does not silently switch to a cloud provider. DeepSeek remains an optional server-configured interactive provider. See [`docs/LOCAL_AI.md`](docs/LOCAL_AI.md) for evidence and latency limits.
 
 ## Repository map
 
@@ -240,7 +240,8 @@ artifacts/  raw synthetic load and evaluation evidence
 - [P1 frontend handover](docs/handover/P1.md) — screens, accessibility, real integration
 - [P2 backend handover](docs/P2_HANDOVER.md) — cohort, autonomy, Handoff, demo backend
 - [P3 Axiom handover](docs/P3_HANDOVER.md) — retrieval, providers, guardrails
-- [Local AI](docs/LOCAL_AI.md) — Ollama, local run evidence and STT limit
+- [Local AI](docs/LOCAL_AI.md) — verified local STT, partial local LLM evidence and latency limits
+- [Final publication](docs/FINAL_PUBLICATION.md) — merge, main CI/E2E and temporary demo verification
 - [AI production readiness](docs/AI_PRODUCTION_READINESS.md) — prewarm, cache, cost, limits
 - [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology
 - [Retrieval benchmark](docs/RETRIEVAL_BENCHMARK.md) — dense vs lexical vs hybrid
@@ -274,7 +275,8 @@ The official mark is the stylized lowercase **ä** in Vintage Berry on Mint Crea
 - ✅ Live DeepSeek and Groq provider smoke checks passed; local Ollama `qwen2.5:1.5b` generation was verified through the integrated API (33.69 s, `source=live`); template fallback remains deterministic.
 - ✅ Local Faster-Whisper `small` CPU INT8 transcription was verified for EN/RU/KK through the real audio-chunk API; cloud Groq remains optional.
 - ⚠️ Broad live adversarial safety evaluation and human learning-outcome studies are not established.
-- ⚠️ No deployment, cloud hosting, multi-worker evaluator coordination or real-device screen-reader audit is claimed.
+- ✅ Temporary HTTPS demonstration verified with real PostgreSQL, Redis, FastAPI, production Next.js, public WebSocket and explicit Origin checks. This is not permanent hosting.
+- ⚠️ Permanent cloud hosting, multi-worker evaluator coordination and a real-device screen-reader audit are not claimed. Physical iPhone test step results remain unconfirmed.
 - ⚠️ P4 owns the 40-student judge simulator and 90-second orchestration.
 
 ## Contributing

@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-11-26T12:16:55.300278+00:00",
+  "landing": 200,
+  "ready": {
+    "status": "ready",
+    "checks": [
+      {
+        "name": "postgresql",
+        "status": "ok",
+        "latency_ms": 1.03
+      },
+      {
+        "name": "redis",
+        "status": "ok",
+        "latency_ms": 0.4
+      }
+    ],
+    "timestamp": "2026-11-26T12:16:56.282382+00:00"
+  },
+  "provider": "openai_compatible",
+  "student_url_status": 200
+}

@@ -1,0 +1,35 @@
+{
+  "url": "https://converted-markets-frost-boys.trycloudflare.com",
+  "checked_at": "2026-11-26T12:09:42.050219+00:00",
+  "physical_device_verified": false,
+  "http": {
+    "/": 200,
+    "/ready": 200,
+    "/api/v1/status": 200,
+    "/metrics": 404,
+    "/docs": 404,
+    "/openapi.json": 404
+  },
+  "cors_allowed": true,
+  "cors_denied": true,
+  "development_invite_rejected": true,
+  "lecture": {
+    "lecture_id": "161c3da5-62e4-4e84-a86d-10349dd85881",
+    "course_id": "73246680-89a3-4fad-b2bc-6c4eb3b1f602",
+    "title": "РџСЂРёРЅС†РёРї Р‘РµСЂРЅСѓР»Р»Рё: РґР°РІР»РµРЅРёРµ, СЃРєРѕСЂРѕСЃС‚СЊ Рё РїРѕРґСЉС‘РјРЅР°СЏ СЃРёР»Р°",
+    "language": "ru",
+    "status": "scheduled",
+    "join_code": "Z6YDJ8",
+    "join_url": "https://converted-markets-frost-boys.trycloudflare.com/join/Z6YDJ8",
+    "synthetic": true,
+    "scenario": "bernoulli_ru",
+    "transcript_segments": 40,
+    "expires_at": "2026-11-26T14:09:46.943696Z"
+  },
+  "qr_url_correct": true,
+  "public_ws_url_correct": true,
+  "public_websocket_signal_accepted": true,
+  "websocket_bad_origin_rejected": true,
+  "lecture_current_status": "live",
+  "active_llm_provider": "openai_compatible"
+}

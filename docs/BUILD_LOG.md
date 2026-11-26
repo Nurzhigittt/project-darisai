@@ -337,3 +337,15 @@ Benchmarked local Ollama `qwen2.5:1.5b`: baseline BriefNext 33.69 s; tuned one-c
 Implemented and ran the real 40-student backend demo (`scripts/judge_demo.py`): 40/40 WebSocket clients, 40 accepted signals, 41 Ripple updates, Replay, GapCards, template BriefNext/Handoff, Cohort Memory and reset in 87.53 s. Evidence: `artifacts/evals/local/judge-demo-90s.json`. P4's separate simulator UI/branch remains absent; no scripted animation was substituted.
 
 Docker and public deployment remain blocked (no Docker executable, no authorized infrastructure); physical smartphone testing remains blocked on a public HTTPS URL.
+
+## Publication verification — 2026-11-26
+
+Merged PR #6 with explicit team authorization into main as `0046763fa25f04d6f329aa883a8e53a757d976ee`; PR #5 is an ancestor and automatically closed as merged. Main CI and E2E passed. No implementation scope was added.
+
+Started the production application with real isolated PostgreSQL/pgvector and Redis, FastAPI, local ONNX embeddings and Faster-Whisper configuration. A temporary application-only HTTPS tunnel passed HTTP, CORS allow/deny, WebSocket Signal and origin rejection, development-invite rejection and QR URL checks. All 16 Playwright tests passed against the public URL in 2.0 minutes. Physical iPhone step results remain unconfirmed.
+
+The 40-student template demonstration passed in 85.55 s, including 40 accepted signals, 42 Ripple updates and reset. A separate DeepSeek run with 10 students passed in 30.00 s with live BriefNext/Handoff. Raw sanitized evidence is under `artifacts/evals/publication/`.
+
+Pre-publication local checks: Ruff 0.14.5 passed (the newer host Ruff 0.15.20 reports two ASYNC240 findings; the repository-pinned binary was used); mypy passed for 84 source files; pytest 127 passed in 27.38 s; frontend ESLint/TypeScript passed, 188 tests passed, production webpack build passed. Reused external node_modules caused standalone tracing warnings; the verified deployment uses next start with installed dependencies, not the standalone export.
+
+Description/topics updates returned HTTP 404 for the push-only account. Social preview requires an administrator. Permanent hosting and Docker remain unverified. See `docs/FINAL_PUBLICATION.md` for the publication boundary.

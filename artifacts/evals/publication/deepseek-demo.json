@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "students": 10,
+  "lecture": {
+    "lecture_id": "9e9c6372-03cc-4a28-9192-44783142ed06",
+    "course_id": "73246680-89a3-4fad-b2bc-6c4eb3b1f602",
+    "title": "Принцип Бернулли: давление, скорость и подъёмная сила",
+    "language": "ru",
+    "status": "scheduled",
+    "join_code": "FZ2H06",
+    "join_url": "https://converted-markets-frost-boys.trycloudflare.com/join/FZ2H06",
+    "synthetic": true,
+    "scenario": "bernoulli_ru",
+    "transcript_segments": 40,
+    "expires_at": "2026-11-26T14:12:24.976717Z"
+  },
+  "joined": 10,
+  "accepted_signals": 10,
+  "ripple_updates": 8,
+  "brief_source": "live",
+  "handoff_source": "live",
+  "handoff_url_issued": true,
+  "handoff_expires_at": "2026-12-03T12:12:48.228704Z",
+  "replay_moments": 1,
+  "replay_source": "template",
+  "gapcards": 3,
+  "gapcards_source": null,
+  "cohort_concepts": 7,
+  "cohort_structural_gaps": 0,
+  "reset_status": "scheduled",
+  "reset_transcript_segments": 40,
+  "wall_seconds": 30.0
+}
