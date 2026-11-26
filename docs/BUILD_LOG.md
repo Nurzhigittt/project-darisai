@@ -303,3 +303,17 @@ Actual verification:
 - The existing E2E heading expectation was updated; full real-API E2E and complete accessibility audit were not executed. No merge, push or deployment. The active functional checkout remains untouched.
 
 The implementation SHA is recorded in `darisai-v2-integration.txt` in the exported deliverables. The package contains a cumulative patch from the functional base and a separate revision-only patch for an already-applied first design.
+
+## Landing color and depth revision — 2026-11-26
+
+Added the user's requested mint/rose background gradients, a faint static dot texture, berry shading and soft depth to the isolated student-first landing. Scoped theme variables control the light/dark washes. One non-semantic wrapper surrounds the hero and product example; the existing composition, Geologica, copy, routes and interactions are unchanged. Strengthened small-text colors over the atmospheric surfaces. No global styles, dependencies, API or backend changes.
+
+Actual verification:
+
+- ESLint passed. All **93 frontend tests in 11 files passed**.
+- Final webpack production build passed compilation, TypeScript and generation of 10 static pages. The existing 27-file standalone trace warning from the dependency symlink remains; normal dependency installation and rebuild are required for distribution.
+- Inspected the compiled page at 1440 × 1000, 390 × 844 and 320 px widths, light/dark themes, and RU/KK/EN. No horizontal overflow in checked states. Saved desktop light/dark, full-page light, mobile light/dark and Kazakh screenshots.
+- Checked mobile menu/Escape and invalid-code alert with input focus after adding the decorative wrapper. Background texture has no pointer events and introduces no animation.
+- Conservative color calculations informed the stronger local small-text colors; this is not a complete accessibility audit. Real-API E2E, backend tests, merge, push and deployment were not performed for this scoped visual revision.
+
+The implementation SHA is recorded in `darisai-v3-integration.txt` in the exported deliverables. The package includes a cumulative patch from the functional base and a revision-only patch for the second design. The active functional checkout remains untouched.

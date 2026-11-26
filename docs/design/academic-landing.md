@@ -1,9 +1,10 @@
-# Student-first landing — second design iteration
+# Student-first landing — third design iteration
 
 The public home page now puts joining a lecture first. A prominent code form shares the desktop hero with a short, reassuring headline; on mobile, the form comes before the explanatory copy. Lecturer access remains available as a secondary action. This replaces the previous serif-led academic composition after user feedback that it felt too corporate.
 
 ## Visual direction
 
+- The third pass restores the depth and color requested from the user's earlier light/dark screenshots: a responsive mint/rose atmospheric background behind the hero and demo, a faint dot texture, shaded berry joining and closing panels, and soft tinted surfaces. The second-pass composition, Geologica and interactions remain unchanged. All effects are scoped CSS; there are no new image requests or animations. Small text uses stronger local colors to remain legible over the washes.
 - Keep the selected ä mark, Vintage Berry `#912F56`, Mint Cream `#EAF2EF` and the existing dark-theme system.
 - Use locally hosted **Geologica** for this landing page. Enable the font's own `ss01` alternate for a single-storey Latin a/ä and Cyrillic а; keep `SHRP=0` and `slnt=0`. This relates the typography to the mark without replacing letters with images or pretending to have created a new typeface.
 - The complete variable font is approximately 118 KiB, under SIL OFL 1.1. Its source, checksums and conversion are recorded beside it in `frontend/public/fonts/geologica/PROVENANCE.txt`.

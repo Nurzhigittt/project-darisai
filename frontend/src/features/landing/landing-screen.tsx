@@ -130,6 +130,7 @@ export function LandingScreen() {
       </header>
 
       <main id="main">
+        <div className={styles.atmosphere}>
         <section className={`${styles.container} ${styles.hero}`} aria-labelledby="hero-title">
           <div id="join" className={styles.joinCard} role="region" aria-labelledby="join-title">
             <div className={styles.joinCardHeader}>
@@ -209,6 +210,7 @@ export function LandingScreen() {
             <figcaption id="demo-caption">{copy.demo.caption}</figcaption>
           </figure>
         </section>
+        </div>
 
         <section id="how" className={`${styles.container} ${styles.process}`}>
           <p className={styles.eyebrow}>{copy.process.eyebrow}</p>
