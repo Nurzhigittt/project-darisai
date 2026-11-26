@@ -26,11 +26,12 @@ export function clamp(value: number, min: number, max: number): number {
 }
 
 export function normalizeJoinCode(input: string): string {
-  return input.toUpperCase().replace(/[^0-9A-HJKMNP-TV-Z]/g, "").slice(0, 6);
+  // Preserve typed letters; the API decides whether the code exists.
+  return input.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 6);
 }
 
 export function isJoinCodeComplete(input: string): boolean {
-  return /^[0-9A-HJKMNP-TV-Z]{6}$/.test(normalizeJoinCode(input));
+  return /^[0-9A-Z]{6}$/.test(normalizeJoinCode(input));
 }
 
 export function safeJson<T>(value: string | null): T | null {
