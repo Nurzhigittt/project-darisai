@@ -273,3 +273,27 @@ First remote CI at `18f14e7`: frontend lint/types/tests/default production build
 - Backend tests: **121 passed**; Ruff/mypy clean; frontend lint/typecheck/tests/build clean.
 - 300-client load: 300/300, 0 errors, ack p95 14.71 ms, Signal-to-Ripple p95 396.84 ms, p99 468.60 ms; API working set ~164 MB and CPU ~13.8% of four cores during the sample.
 - No Docker or cloud deployment was executed.
+
+## P1 final integration and accessibility — 2026-11-26
+
+Merged P2 `f2a312f` (which contains P3 `c21446a`) into `feat/p1-frontend-experience` as `6ba8322`, preserving history and the P1 CORS `PUT` plus P3 `X-Replay-Token` allowances. Regenerated OpenAPI and TypeScript contracts.
+
+Completed the P2-facing UI: server decision history, Handoff link revocation and revoked state, Cohort structural gaps with canonical titles and explicit synthetic/observed/mixed provenance, autonomy eligibility/observation/whitelist timestamps and `AUTONOMY_NOT_ELIGIBLE` handling. Regenerated contracts are stable.
+
+Accessibility root causes fixed without disabling axe rules: transient colour interpolation during theme changes, native dialog close re-entrancy, and a pause/resume control response closing the end-lecture dialog. All 13 Playwright tests pass, including the three previously failing mobile light/dark axe checks.
+
+Actual verification:
+
+| Check | Result |
+| --- | --- |
+| Frontend ESLint / TypeScript | Passed |
+| Vitest | 178/178 in 15 files |
+| Production build | Passed |
+| Playwright E2E | 13/13 passed |
+| Axe mobile light/dark | Passed |
+| Backend Ruff / mypy / pytest | Passed; 125 tests |
+| Contracts | Stable |
+| Live P2 API | BriefNext/Handoff template, edit, approve, decisions, publish, redeem, revoke, structural gaps, autonomy eligibility, Replay, GapCards |
+| Live P2 UI | Brief history, structural gaps, autonomy eligibility rendered from real API |
+
+Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
