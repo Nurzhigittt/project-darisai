@@ -1,56 +1,67 @@
-# Contributing
+# Contributing to DärisAI
 
-DärisAI is a working Phase 1 vertical slice. The next milestone is Phase 2 (Axiom & Temporal RAG), but the Signal & Ripple boundary must stay stable.
+DärisAI is a student-first classroom intelligence product. Small, focused
+changes are preferred over large rewrites. Read [AGENTS.md](AGENTS.md),
+[docs/ONBOARDING.md](docs/ONBOARDING.md) and [docs/SECURITY_PRIVACY.md](docs/SECURITY_PRIVACY.md)
+before touching data boundaries or credentials.
 
-## Before you start
+## Setup
 
-Read:
+```bash
+cp .env.example .env
+cd backend
+python -m venv .venv
+python -m pip install -e ".[dev]"
+python -m app.migrate
+python -m app.seed
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
 
-1. [AGENTS.md](AGENTS.md) — architecture, security and definition of done.
-2. [docs/HANDOVER.md](docs/HANDOVER.md) — current state and the exact next task.
-3. [docs/SPEC_AUDIT.md](docs/SPEC_AUDIT.md) — the decisions behind the implementation.
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
 ## Workflow
 
 ```bash
-git switch -c feat/phase-2-short-topic
-# make focused changes
-make lint
-make typecheck
-make test
-cd frontend && pnpm build
-git add -A
-git commit -m "feat(axiom): describe the verified change"
-git push -u origin HEAD
+git switch -c feat/short-topic
+# implement and test
+ruff check app tests
+mypy app
+pytest -q
+cd ../frontend && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm e2e
 ```
 
 - Use Conventional Commits.
-- Do not force-push shared branches or rewrite history.
-- Keep PRs focused. One concern per PR.
-- Regenerate contracts with `make contracts`; never hand-edit `types.gen.ts`.
-- Add or update tests for behavior, not for coverage theatre.
-- Record actual verification in [docs/BUILD_LOG.md](docs/BUILD_LOG.md).
+- Never force-push shared branches or rewrite history.
+- Keep one concern per pull request.
+- Regenerate contracts with `python scripts/export_schemas.py` and `pnpm contracts`; never hand-edit `types.gen.ts`.
+- Record actual verification and limitations in [docs/BUILD_LOG.md](docs/BUILD_LOG.md).
+- Use the existing **ä** mark and official mint/berry identity. Read [docs/BRAND.md](docs/BRAND.md) before adding visual assets.
 
 ## Non-negotiables
 
-- No student account, student identity column, or individual student signal history.
+- No student account, name, email, phone, device fingerprint or individual signal history.
+- No persistent student dialogue table.
 - Signal and Replay tokens remain separately scoped.
-- No raw tokens, IPs, request bodies or cookies in logs.
-- Silence is never reported as understanding.
-- Small groups are labelled insufficient participation, not forced into a cluster.
-- No secret, generated build directory or dependency directory in Git.
-- No invented test result, benchmark, deployment or uptime value.
+- No raw tokens, IPs, request bodies, audio or cookies in logs or Git.
+- Silence is never reported as understanding; small groups are `insufficient_participation`.
+- Teacher approval cannot be bypassed by AI generation.
+- Do not claim offline/local AI, cloud deployment, physical-device or accessibility success without actual evidence.
 
 ## Pull request checklist
 
-- [ ] Lint, typecheck and tests pass with real infrastructure.
-- [ ] Production build succeeds.
-- [ ] Contracts/types regenerated.
-- [ ] Privacy and security invariants preserved.
-- [ ] Accessibility and EN/RU/KK copy considered.
-- [ ] Screenshots/docs updated if the UI changed.
-- [ ] Verification output and limitations recorded honestly.
+- [ ] Backend lint, types and tests pass.
+- [ ] Frontend lint, types, tests and production build pass.
+- [ ] Playwright and axe pass for affected flows.
+- [ ] Contracts regenerated and stable.
+- [ ] EN/RU/KK copy updated for visible changes.
+- [ ] Light/dark and reduced-motion behaviour checked.
+- [ ] Screenshots/docs updated if visuals changed.
+- [ ] No secret, raw audio, model cache or personal data staged.
 
-## Reporting a security issue
+## Security
 
-Please do not open a public issue. Follow [SECURITY.md](SECURITY.md).
+Do not open a public issue for a vulnerability. Follow [SECURITY.md](SECURITY.md).

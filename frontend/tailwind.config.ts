@@ -24,8 +24,8 @@ const config: Config = {
         "ripple-warm": "rgb(var(--ripple-warm-rgb) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["IBM Plex Sans", "ui-sans-serif", "system-ui", "sans-serif"],
-        serif: ['"Source Serif 4"', "ui-serif", "Georgia", "serif"],
+        sans: ["Geologica", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["Geologica", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
         soft: "0 24px 70px -32px rgb(var(--shadow-color) / 0.28)",

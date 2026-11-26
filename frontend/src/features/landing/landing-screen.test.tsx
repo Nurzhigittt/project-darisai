@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LandingScreen } from "@/features/landing/landing-screen";
@@ -40,6 +41,23 @@ describe("landing interactions", () => {
     fireEvent.change(screen.getByLabelText(landingCopy.en.join.label), { target: { value: "abc123" } });
     fireEvent.click(screen.getByRole("button", { name: landingCopy.en.join.button }));
     expect(navigation.push).toHaveBeenCalledWith("/join/ABC123");
+  });
+
+  it("preserves I, L, O and U while typing and submits the complete code unchanged", async () => {
+    const user = userEvent.setup();
+    renderLanding();
+    const input = screen.getByLabelText(landingCopy.en.join.label);
+
+    await user.type(input, "l");
+    expect(input).toHaveValue("L");
+    await user.type(input, "iou1{Enter}");
+    expect(input).toHaveValue("LIOU1");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(navigation.push).not.toHaveBeenCalled();
+
+    await user.type(input, "2{Enter}");
+    expect(input).toHaveValue("LIOU12");
+    expect(navigation.push).toHaveBeenCalledWith("/join/LIOU12");
   });
 
   it("keeps the student example local and does not change the audience chart", () => {

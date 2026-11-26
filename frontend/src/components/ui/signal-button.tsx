@@ -27,7 +27,7 @@ type Props = {
 const stateClasses: Record<SignalVisualState, string> = {
   connecting: "border-border bg-surface text-muted",
   ready:
-    "border-ripple-low/35 bg-ripple-low text-[#0d2b1d] shadow-[0_0_70px_-18px_var(--ripple-low)] hover:brightness-105",
+    "border-ripple-low/60 bg-ripple-low bg-[radial-gradient(circle_at_32%_18%,#ddf8d6_0%,#a7e59a_48%,#7bcc6b_100%)] text-[#173d25] shadow-[0_18px_50px_-22px_var(--ripple-low),inset_0_2px_3px_#ffffff80] hover:brightness-105",
   sending: "border-primary/30 bg-primary text-primary-foreground",
   accepted: "border-positive/40 bg-positive text-[#102a1e]",
   cooldown: "border-border bg-surface-raised text-foreground",
@@ -91,11 +91,11 @@ export function SignalButton({
     );
 
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="relative isolate flex flex-col items-center">
       {state === "ready" ? (
         <span
           aria-hidden
-          className="absolute inset-0 -z-10 rounded-full bg-ripple-low/20 blur-2xl motion-safe:animate-breathe"
+          className="absolute -inset-4 -z-10 rounded-full border border-ripple-low/15 bg-ripple-low/5 motion-safe:animate-breathe"
         />
       ) : null}
       <button
@@ -117,7 +117,8 @@ export function SignalButton({
         data-testid="signal-button"
         data-state={state}
         className={cn(
-          "relative grid size-[min(76vw,300px)] touch-manipulation place-items-center rounded-full border-2",
+          "relative grid size-[min(66vw,286px)] touch-manipulation place-items-center rounded-full border",
+          "before:pointer-events-none before:absolute before:inset-2 before:rounded-full before:border before:border-white/25",
           "transition-[transform,background-color,box-shadow] duration-200",
           interactive ? "active:scale-[0.97]" : "cursor-default",
           stateClasses[state],
@@ -153,7 +154,7 @@ export function SignalButton({
         ) : null}
         <span className="flex flex-col items-center gap-3 px-8 text-center">
           {icon}
-          <span className="text-balance text-[clamp(1.25rem,5vw,1.75rem)] font-semibold leading-tight tracking-tight">
+          <span className="text-balance text-[clamp(1.2rem,4.8vw,1.65rem)] font-bold leading-tight tracking-[-0.035em]">
             {label}
           </span>
           {state === "cooldown" && cooldownRemainingMs > 0 ? (

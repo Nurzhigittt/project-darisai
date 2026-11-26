@@ -1,0 +1,22 @@
+﻿{
+  "provider": "ollama",
+  "model": "qwen2.5:1.5b",
+  "replay_start_source": "template",
+  "replay_turn_seconds": 147.92,
+  "replay_turn_result": "grounded MCQ with transcript citation and signed state token",
+  "gapcards_seconds": 9.02,
+  "gapcards_source": "template",
+  "gapcards_validation": {
+    "schema_ok": true,
+    "citations_ok": true,
+    "answer_leak": false,
+    "grounded_score": 1.0,
+    "attempts": 1,
+    "fallback_used": true
+  },
+  "brief_next_local_seconds": 33.69,
+  "brief_next_source": "live",
+  "handoff_local_seconds": 91.10,
+  "handoff_source": "live",
+  "finding": "Replay start and GapCards selected their deterministic template paths even with Ollama configured. A local Replay turn completed, but took 147.92 s. BriefNext and Handoff used live local generation. The claim is therefore partial: local LLM generation is verified for BriefNext/Handoff, not for every Replay/GapCards branch."
+}

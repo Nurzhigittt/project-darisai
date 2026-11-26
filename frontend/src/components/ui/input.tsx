@@ -45,7 +45,7 @@ export function Input({
           "flex min-h-12 items-center gap-2 rounded-xl border bg-surface px-4 transition-colors",
           error
             ? "border-ripple-warm"
-            : "border-border focus-within:border-primary",
+            : "border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15",
         )}
       >
         {leading ? <span className="text-muted">{leading}</span> : null}
@@ -68,7 +68,7 @@ export function Input({
         </p>
       ) : null}
       {error ? (
-        <p id={`${inputId}-error`} className="text-sm font-medium text-ripple-warm">
+        <p id={`${inputId}-error`} className="text-sm font-medium text-[#9c431c] dark:text-[#f0b69d]">
           {error}
         </p>
       ) : null}

@@ -75,7 +75,7 @@ export const landingCopy: Record<"en" | "ru" | "kk", LandingCopy> = {
     },
     hero: {
       eyebrow: "For the moments you lose the thread",
-      title: "Something unclear?",
+      title: "Didn’t understand everything?",
       accent: "That’s okay.",
       body: "Join your lecture and tap “I’m not following” when you need an explanation. Your lecturer sees the audience’s combined signal.",
       teacherCta: "Lecturer login",

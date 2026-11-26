@@ -287,11 +287,11 @@ Actual verification:
 | Check | Result |
 | --- | --- |
 | Frontend ESLint / TypeScript | Passed |
-| Vitest | 187/187 in 17 files |
+| Vitest | 188/188 in 17 files |
 | Production build | Passed |
 | Playwright E2E | 16/16 passed |
 | Axe mobile light/dark | Passed |
-| Backend Ruff / mypy / pytest | Passed; 125 tests |
+| Backend Ruff / mypy / pytest | Passed; 127 tests |
 | Contracts | Stable |
 | Live P2 API | BriefNext/Handoff template, edit, approve, decisions, publish, redeem, revoke, structural gaps, autonomy eligibility, Replay, GapCards |
 | Live P2 UI | Brief history, structural gaps, autonomy eligibility rendered from real API |
@@ -299,3 +299,41 @@ Actual verification:
 Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
 
 
+
+## Official brand identity — 2026-11-26
+
+Reworked the repository presentation around the supplied stylized **ä** mark and official palette (Mint Cream, Vintage Berry, Jet Black, Yale Blue, Rose Kiss). The high-resolution supplied icon was traced into a transparent SVG/PNG mark; the wordmark uses the bundled Geologica variable font. Replaced the JPEG icons with real PNG PWA/favicon/Apple icons and regenerated the social preview.
+
+Added:
+- light/dark hero banners and 1280×640 social previews;
+- workflow, Signal → Ripple, Axiom architecture and verified-metrics diagrams;
+- an illustrative Signal → Ripple GIF;
+- actual production-build screenshots from a local synthetic run;
+- English, Russian and Kazakh READMEs plus brand/onboarding guides;
+- issue templates and a revised PR template.
+
+Replaced the orange danger/attention tokens with Vintage Berry/Rose Kiss so the product UI stays inside the official palette.
+
+Verification after the change: frontend ESLint, TypeScript, **188 unit tests**, production build and **16/16 Playwright E2E** passed, including axe light/dark and the real API Signal → Ripple workflow. Backend regression remained 127 tests. The screenshot run used synthetic lecture/student data and the template AI path.
+
+Repository description/topics/social-preview settings were prepared but the authenticated API token returned 404 for repository administration, so remote metadata was not changed. The social preview asset is committed at `brand/social/social-preview-light.png` (1280×640); it still needs to be uploaded in GitHub repository settings by a maintainer with admin access. No deployment was performed.
+
+## Final integration and local AI — 2026-11-26
+
+Merged the V3 frontend design (`eea9de8`) into the official brand branch manually. Kept the brand palette, logo, metadata, screenshots and README system while applying V3's app-wide Geologica layout, surfaces and responsive components. Replaced the V3 danger colour with the official Vintage Berry action token. All P1/P2 behaviour, decision history, Handoff revocation, Cohort structural gaps and Autonomy eligibility remain intact.
+
+Regenerated framed README screenshots from the final V3 build with baked rounded corners, borders, shadows and consistent spacing (`scripts/render_readme_assets.py`). Added login, join, transcript, local learning library, public Handoff and Replay captures plus a desktop/mobile composite.
+
+Added an Ollama local LLM provider (`AXIOM_LLM_PROVIDER=ollama`) that uses `http://127.0.0.1:11434/v1`, no cloud API key and no silent cloud fallback. Actual integrated generation with `qwen2.5:1.5b` returned `source=live`, a validated cited concept and one citation in **33.69 s**. Evidence: `artifacts/evals/local/ollama-smoke.json`; limitations: `docs/LOCAL_AI.md`. Local Faster-Whisper `small` CPU INT8 was subsequently installed and verified through the audio API.
+
+Final local checks after integration: backend **127 tests**, Ruff/mypy clean; frontend **188 tests**, ESLint/TypeScript clean; production build passed; Playwright **16/16** including real API Signal → Ripple and axe light/dark. Docker is not installed and no cloud/billing authorization is available, so no container or public deployment was run. Physical smartphone testing remains blocked on a public HTTPS URL; the manual checklist is in `docs/SMARTPHONE_ACCEPTANCE.md`.
+
+## Local STT and judge demo — 2026-11-26
+
+Implemented a CPU INT8 Faster-Whisper adapter (`faster-whisper==1.2.1`, `av==16.0.1`, model `small`) and wired it into the existing audio-chunk ingestion API. Actual integrated results: EN 13.91 s, RU 10.35 s, KK 9.13 s, all `status=completed`, one timestamped segment and one embedding; Kazakh small-model output is recognizable but imperfect. No cloud provider was configured and the local adapter has no HTTP client. Evidence: `artifacts/evals/local/local-stt-api.json` and `faster-whisper-smoke.json`.
+
+Benchmarked local Ollama `qwen2.5:1.5b`: baseline BriefNext 33.69 s; tuned one-concept BriefNext 28.18 s; longer Handoff 91.10 s. Added local max-token/keep-alive controls. Correctness and citation validation preserved; local long-form latency is still not interactive. Evidence: `artifacts/evals/local/ollama-latency.json`.
+
+Implemented and ran the real 40-student backend demo (`scripts/judge_demo.py`): 40/40 WebSocket clients, 40 accepted signals, 41 Ripple updates, Replay, GapCards, template BriefNext/Handoff, Cohort Memory and reset in 87.53 s. Evidence: `artifacts/evals/local/judge-demo-90s.json`. P4's separate simulator UI/branch remains absent; no scripted animation was substituted.
+
+Docker and public deployment remain blocked (no Docker executable, no authorized infrastructure); physical smartphone testing remains blocked on a public HTTPS URL.

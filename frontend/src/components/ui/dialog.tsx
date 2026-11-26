@@ -77,7 +77,7 @@ export function Dialog({
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-4 p-6 pb-4">
+      <div className="app-dialog-heading mb-5 flex items-start justify-between gap-4 border-b border-border p-6">
         <div className="min-w-0">
           <h2 id={titleId} className="break-words text-xl font-semibold">
             {title}

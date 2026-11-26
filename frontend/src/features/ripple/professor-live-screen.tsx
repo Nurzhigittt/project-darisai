@@ -51,6 +51,8 @@ import {
   type WsStatus,
 } from "@/lib/ws/client";
 
+import styles from "./live.module.css";
+
 type RippleView = {
   state: RippleState;
   availability: RippleAvailability;
@@ -256,10 +258,12 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-background">
-        <header className="container-page flex h-16 items-center justify-between">
-          <Logo />
-          <ThemeSwitcher />
+      <div className="app-page min-h-dvh">
+        <header className="app-header">
+          <div className="container-page flex items-center justify-between">
+            <Logo />
+            <ThemeSwitcher />
+          </div>
         </header>
         <main className="container-page grid gap-6 py-10 lg:grid-cols-2">
           <Skeleton className="h-[460px] w-full" />
@@ -271,10 +275,12 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
 
   if (!lecture || error) {
     return (
-      <div className="min-h-dvh bg-background">
-        <header className="container-page flex h-16 items-center justify-between">
-          <Logo />
-          <ThemeSwitcher />
+      <div className="app-page min-h-dvh">
+        <header className="app-header">
+          <div className="container-page flex items-center justify-between">
+            <Logo />
+            <ThemeSwitcher />
+          </div>
         </header>
         <main id="main" className="container-page py-12">
           <ErrorState
@@ -298,9 +304,9 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
   const connected = wsStatus === "ready";
 
   return (
-    <div className="min-h-dvh bg-background">
-      <header className="border-b border-border bg-surface/65">
-        <div className="container-page flex h-16 items-center justify-between gap-3">
+    <div className="app-page min-h-dvh">
+      <header className="app-header">
+        <div className="container-page flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <Logo />
             <span className="hidden h-6 w-px bg-border sm:block" />
@@ -322,8 +328,8 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
         </div>
       </header>
 
-      <main id="main" className="container-page py-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <main id="main" className={`container-page ${styles.main}`}>
+        <div className={styles.overview}>
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={live ? "positive" : paused ? "attention" : "primary"}>
@@ -346,12 +352,12 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                 }
               />
             </div>
-            <h1 className="mt-3 text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-tight">
+            <h1 className={styles.title}>
               {lecture.title}
             </h1>
-            <p className="mt-1 text-sm text-muted">{lecture.course_title ?? ""}</p>
+            <p className="mt-3 text-sm text-muted">{lecture.course_title ?? ""}</p>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3">
+          <div className={styles.timer}>
             <Clock3 aria-hidden className="size-5 text-primary" />
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
@@ -370,13 +376,9 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
           </Banner>
         ) : null}
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <section className="relative flex min-h-[430px] flex-col items-center justify-center overflow-hidden rounded-4xl border border-border bg-surface p-6 shadow-soft sm:min-h-[520px] sm:p-10">
-            <div
-              aria-hidden
-              className="absolute inset-x-1/4 top-10 h-64 rounded-full bg-positive/10 blur-3xl"
-            />
-            <Badge tone="neutral" className="absolute left-5 top-5">
+        <div className={styles.workspace}>
+          <section className={`app-panel ${styles.orbStage}`}>
+            <Badge tone="neutral" className={styles.statusBadge}>
               {t("prof.live.status")}
             </Badge>
             <RippleOrb
@@ -390,7 +392,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
             <p className="mt-6 max-w-md text-center text-sm leading-6 text-muted">
               {t("prof.live.signalsNote")}
             </p>
-            <details className="mt-7 w-full max-w-md rounded-2xl border border-border bg-background/70 p-4 text-sm">
+            <details className={styles.metrics}>
               <summary className="cursor-pointer font-semibold">
                 {t("prof.live.details")}
               </summary>
@@ -422,13 +424,13 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
             </details>
           </section>
 
-          <section className="flex flex-col gap-5">
-            <div className="rounded-4xl border border-border bg-surface p-6 shadow-soft">
-              <div className="flex items-center justify-between gap-2">
+          <section className={styles.aside}>
+            <div className={styles.invitation}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-lg font-semibold">{t("prof.live.joinTitle")}</h2>
                 <Link
                   href={`/p/${lectureId}/present`}
-                  className="inline-flex min-h-10 items-center gap-1.5 rounded-xl px-2.5 text-sm font-semibold text-primary hover:bg-primary-soft"
+                  className={`inline-flex min-h-10 items-center gap-1.5 rounded-xl px-2.5 text-xs font-semibold ${styles.inviteLink}`}
                 >
                   <Expand aria-hidden className="size-4" />
                   {t("prof.live.present")}
@@ -447,7 +449,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
               </div>
             </div>
 
-            <div className="rounded-4xl border border-border bg-surface p-6 shadow-soft">
+            <div className={`app-panel ${styles.controls}`}>
               <div className="flex flex-wrap gap-2">
                 {scheduled ? (
                   <Button
@@ -501,7 +503,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
               </p>
             </div>
 
-            <div className="rounded-4xl border border-dashed border-border p-5">
+            <div className={`app-panel app-panel-mint ${styles.summaryLink}`}>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <BarChart3 aria-hidden className="size-4 text-primary" />
                 {t("prof.live.details")}
@@ -513,7 +515,7 @@ export function ProfessorLiveScreen({ lectureId }: { lectureId: string }) {
                 href={`/summary/${lectureId}`}
                 className="mt-3 inline-flex min-h-10 items-center text-sm font-semibold text-primary hover:underline"
               >
-                {t("prof.home.summary")} в†’
+                {t("prof.home.summary")} →
               </Link>
             </div>
           </section>

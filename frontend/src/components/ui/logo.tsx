@@ -20,14 +20,14 @@ export function Logo({
         width={36}
         height={36}
         className={cn(
-          "size-9 rounded-[10px] shadow-[0_4px_12px_-6px_rgba(38,35,58,0.6)]",
+          "size-9 rounded-[10px]",
           light && "ring-1 ring-white/25",
         )}
         priority
       />
       <span
         className={cn(
-          "text-lg font-semibold tracking-[-0.04em]",
+          "text-xl font-bold tracking-[-0.045em]",
           light ? "text-white" : "text-foreground",
         )}
       >

@@ -1,0 +1,77 @@
+name: Bug report
+description: Report a reproducible defect without sharing student data or secrets.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make DärisAI calmer and more reliable.
+
+        **Do not paste** raw Signal/Replay tokens, invite codes, audio, student conversations, API keys or personal data. Redact identifiers and use synthetic setup steps.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: One or two sentences, plus the user-visible impact.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use synthetic lecture/course names and redact credentials.
+      placeholder: |
+        1. Start a local API and frontend...
+        2. Join with a synthetic code...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or version
+      placeholder: e9dea4c
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Signal / Ripple realtime
+        - Authentication / lecture lifecycle
+        - Transcript / Axiom / Replay
+        - BriefNext / Handoff / insights
+        - Cohort / autonomy
+        - Frontend / accessibility
+        - Demo backend
+        - Documentation / tooling
+        - Security / privacy
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks already run
+      description: Commands and actual output, if any.
+      placeholder: |
+        ruff check app tests
+        pytest -q
+        pnpm test
+        pnpm e2e
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed tokens, names, audio and other personal data from this report.
+          required: true
+        - label: I did not include a real credential or `.env` content.
+          required: true

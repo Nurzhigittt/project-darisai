@@ -1,7 +1,3 @@
-import "@fontsource/source-serif-4/600.css";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
 import "@/styles/globals.css";
 
 import type { Metadata, Viewport } from "next";
@@ -20,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s · DärisAI",
   },
   description:
-    "A quiet, anonymous Signal & Ripple tool for lectures. Students speak up without interrupting; professors see moments that need clarification.",
+    "A local-first classroom signal layer. Students speak up without interrupting; professors see the moment a room loses the thread.",
   applicationName: "DärisAI",
   manifest: "/manifest.webmanifest",
   icons: {
@@ -35,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DärisAI — Make understanding visible",
     description:
-      "A quiet, anonymous Signal & Ripple tool for lectures. No student accounts.",
+      "Local-first classroom intelligence. No student accounts.",
     type: "website",
     images: [
       {
@@ -50,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "DärisAI — Make understanding visible",
     description:
-      "A quiet, anonymous Signal & Ripple tool for lectures. No student accounts.",
+      "Local-first classroom intelligence. No student accounts.",
     images: ["/social-preview.png"],
   },
   robots: { index: true, follow: true },

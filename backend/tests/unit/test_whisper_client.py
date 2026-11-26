@@ -66,3 +66,18 @@ async def test_whisper_client_rejects_empty_and_provider_errors() -> None:
         await failing.transcribe(
             audio=b"audio", filename="x.wav", mime_type="audio/wav", language="en"
         )
+
+
+def test_local_provider_is_selected_without_cloud_key() -> None:
+    from app.stt.faster_whisper_client import FasterWhisperClient
+    from app.stt.whisper_client import build_stt_provider
+
+    provider = build_stt_provider(
+        _settings(
+            axiom_stt_provider="faster_whisper",
+            axiom_stt_api_key="",
+            axiom_local_stt_model="small",
+            axiom_local_stt_compute_type="int8",
+        )
+    )
+    assert isinstance(provider, FasterWhisperClient)

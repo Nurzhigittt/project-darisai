@@ -1,7 +1,7 @@
 {
   "name": "DärisAI — Make understanding visible",
   "short_name": "DärisAI",
-  "description": "A quiet, anonymous Signal & Ripple tool for lectures.",
+  "description": "A local-first classroom signal layer for lectures.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

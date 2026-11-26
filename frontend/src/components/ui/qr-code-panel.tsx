@@ -49,7 +49,7 @@ export function QRCodePanel({
 
   return (
     <div className={cn("flex flex-col items-center text-center", className)}>
-      <div className="rounded-3xl border border-border bg-white p-5 shadow-lift">
+      <div className="max-w-full rounded-[24px] border border-black/5 bg-white p-4 shadow-[0_12px_28px_-18px_#122c3440] sm:p-5">
         <QRCodeSVG
           value={value}
           size={size}
@@ -59,14 +59,15 @@ export function QRCodePanel({
           marginSize={2}
           aria-label={`QR code joining ${title}`}
           role="img"
+          className="h-auto max-w-full"
         />
       </div>
-      <p className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-muted">
+      <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
         {t("prof.live.code")}
       </p>
       <p
         data-testid="join-code"
-        className="mt-1 font-mono text-[clamp(2rem,7vw,3rem)] font-semibold tracking-[0.18em] text-foreground"
+        className="mt-1 font-mono text-[clamp(1.9rem,7vw,2.65rem)] font-semibold tracking-[0.15em] text-foreground"
       >
         {code}
       </p>

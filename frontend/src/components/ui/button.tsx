@@ -8,9 +8,9 @@ type Size = "sm" | "md" | "lg" | "xl";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-primary-foreground shadow-lift hover:bg-primary-strong active:translate-y-px",
+    "app-primary-button bg-primary text-primary-foreground active:translate-y-px",
   secondary:
-    "border border-border bg-surface text-foreground hover:bg-primary-soft/60 active:translate-y-px",
+    "border border-border bg-surface text-foreground hover:border-primary/50 hover:bg-primary-soft/60 active:translate-y-px",
   ghost: "text-foreground hover:bg-primary-soft/60",
   danger:
     "bg-ripple-warm text-white hover:brightness-95 active:translate-y-px",
