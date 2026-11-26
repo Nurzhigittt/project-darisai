@@ -317,3 +317,19 @@ Actual verification:
 - Conservative color calculations informed the stronger local small-text colors; this is not a complete accessibility audit. Real-API E2E, backend tests, merge, push and deployment were not performed for this scoped visual revision.
 
 The implementation SHA is recorded in `darisai-v3-integration.txt` in the exported deliverables. The package includes a cumulative patch from the functional base and a revision-only patch for the second design. The active functional checkout remains untouched.
+
+## V3 integration and controlled-dialog recovery — 2026-11-26
+
+Integrated the supplied cumulative design archive on top of current P1 head `6b1c913`, preserving the three original design commits/authorship and all newer product work. Applied commits: `984d563`, `219b879`, `cf923ac`. Retained both sides of the build-log append conflict. Restored learning-library links, privacy manifest/OpenAPI links and configurable GitHub URL. Geologica, gradients and SVG decoration are landing-scoped; other screens retain Source Serif 4 / IBM Plex Sans. The only join form still uses the real existing route. A validation alert now translates immediately after locale changes.
+
+Pre-integration CI at `6b1c913` passed all four normal jobs. Push E2E run 45785294518 passed 13/13; duplicate PR E2E run 45785305441 failed on the reopened Autonomy confirmation disappearing before keyboard confirmation. Added a controlled native-dialog close counter so an already-requested asynchronous close event cannot close a later opening. Four deterministic tests cover delayed close/focus, parent synchronization, external native close and busy-parent cancellation; the old implementation failed two of these tests.
+
+Actual final local validation with the installed Node v24.22.3:
+
+- ESLint, TypeScript and **184/184 Vitest tests in 17 files passed**.
+- `pnpm build --webpack` passed, including every product route. Normal locked dependencies replace the design clone's symlink; there are no standalone external-dependency trace warnings. Default Turbopack remains a remote CI check.
+- Backend Ruff passed. Mypy reports the missing numpy import (79 files checked); pytest stops before collection with ModuleNotFoundError numpy. No dependency versions or API contracts were changed.
+- Added three Playwright scenarios for RU desktop, KK dark 320px and EN 390px, with screenshots, all WCAG axe tags, control-boundary checks and real UI keyboard/form/menu/FAQ assertions. No axe rule is disabled. Local browser execution could not start: the installed headless version is unsupported on this Mac, and a system-Chrome attempt aborted before test execution. Passing E2E/axe results require the updated remote PR checks.
+- Built-in-browser inspection of the compiled application confirmed desktop 1440px, narrow desktop 1120px and mobile 320px layouts, RU/KK, light/dark, loaded Geologica, mobile menu/Escape and invalid-code focus. No horizontal overflow in these checked states. The public example stays explicitly labelled and local-only; no production API fixture fallback was added.
+
+This integration does not merge main, deploy, or claim complete real P3 workflow acceptance. Final published commit SHA and exact remote run links are recorded in PR #4 and the user handoff report.

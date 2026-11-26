@@ -7,6 +7,7 @@ import { useRef, useState, type FormEvent } from "react";
 
 import { Logo } from "@/components/ui/logo";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { API_URL } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n";
 import { locales, type Locale } from "@/lib/i18n/dictionaries";
 import { isJoinCodeComplete, normalizeJoinCode } from "@/lib/utils";
@@ -16,6 +17,7 @@ import styles from "./landing.module.css";
 
 const languageNames: Record<Locale, string> = { en: "EN", ru: "RU", kk: "ҚАЗ" };
 const navigationLabels: Record<Locale, string> = { en: "Main navigation", ru: "Основная навигация", kk: "Негізгі навигация" };
+const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/Nurzhigittt/project-darisai";
 
 function SignalChart({ active = false }: { active?: boolean }) {
   return (
@@ -51,7 +53,7 @@ export function LandingScreen() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [hasCodeError, setHasCodeError] = useState(false);
   const [demoActive, setDemoActive] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const codeInput = useRef<HTMLInputElement>(null);
@@ -60,11 +62,11 @@ export function LandingScreen() {
     event.preventDefault();
     const normalized = normalizeJoinCode(code);
     if (!isJoinCodeComplete(normalized)) {
-      setError(t("join.invalid.body"));
+      setHasCodeError(true);
       codeInput.current?.focus();
       return;
     }
-    setError(null);
+    setHasCodeError(false);
     router.push(`/join/${normalized}`);
   }
 
@@ -97,6 +99,7 @@ export function LandingScreen() {
           <Logo className={styles.logo} />
           <nav className={styles.desktopNav} aria-label={navigationLabels[locale]}>
             {nav.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
+            <Link href="/gapcards">{t("learning.title")}</Link>
           </nav>
           <div className={styles.headerActions}>
             <label className={styles.language}>
@@ -123,6 +126,7 @@ export function LandingScreen() {
             id="landing-navigation" className={styles.mobileNav} aria-label={navigationLabels[locale]}
           >
             {nav.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
+            <Link href="/gapcards" onClick={() => setMenuOpen(false)}>{t("learning.title")}</Link>
             <a href="#join" onClick={focusJoin}>{copy.nav.students}</a>
             <Link href="/login">{copy.nav.login}</Link>
           </nav>
@@ -144,13 +148,13 @@ export function LandingScreen() {
               <label className={styles.joinLabel} htmlFor="lecture-code">{copy.join.label}</label>
               <input
                 ref={codeInput} id="lecture-code" name="code" value={code}
-                onChange={(event) => { setCode(normalizeJoinCode(event.target.value)); setError(null); }}
+                onChange={(event) => { setCode(normalizeJoinCode(event.target.value)); setHasCodeError(false); }}
                 placeholder={copy.join.placeholder} autoComplete="off" autoCapitalize="characters"
-                spellCheck={false} maxLength={6} aria-invalid={Boolean(error)}
-                aria-describedby={error ? "code-error" : "code-hint"}
+                spellCheck={false} maxLength={6} aria-invalid={hasCodeError}
+                aria-describedby={hasCodeError ? "code-error" : "code-hint"}
               />
               <p id="code-hint" className={styles.joinHint}>{copy.join.hint}</p>
-              {error && <p id="code-error" role="alert" className={styles.joinError}>{error}</p>}
+              {hasCodeError && <p id="code-error" role="alert" className={styles.joinError}>{t("join.invalid.body")}</p>}
               <button type="submit">{copy.join.button}</button>
             </form>
             <p className={styles.joinHelp}>{copy.join.helper}</p>
@@ -273,9 +277,12 @@ export function LandingScreen() {
         <div className={`${styles.container} ${styles.footerTop}`}>
           <div><Logo className={styles.logo} /><p>{copy.footer.tagline}</p></div>
           <nav aria-label={t("footer.product")}>
+            <Link href="/gapcards">{t("learning.title")}</Link>
             <Link href="/privacy">{copy.footer.privacy}</Link>
             <Link href="/status">{copy.footer.status}</Link>
-            <a href="https://github.com/Nurzhigittt/project-darisai" target="_blank" rel="noreferrer">GitHub</a>
+            <a href={`${API_URL}/api/v1/privacy/manifest`}>{t("footer.manifest")}</a>
+            <a href={`${API_URL}/api/v1/openapi.json`}>{t("footer.api")}</a>
+            <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
           </nav>
         </div>
         <div className={`${styles.container} ${styles.footerBottom}`}><span>© {new Date().getFullYear()} DärisAI</span><span>{copy.footer.copyright}</span></div>

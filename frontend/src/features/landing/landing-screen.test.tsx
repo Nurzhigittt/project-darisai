@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LandingScreen } from "@/features/landing/landing-screen";
 import { landingCopy } from "@/features/landing/landing-copy";
 import { I18nProvider } from "@/lib/i18n";
+import { dictionaries } from "@/lib/i18n/dictionaries";
 import { ThemeProvider } from "@/lib/theme";
 
 const navigation = vi.hoisted(() => ({ push: vi.fn() }));
@@ -29,6 +30,9 @@ describe("landing interactions", () => {
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveFocus();
     expect(navigation.push).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "kk" } });
+    expect(screen.getByRole("alert")).toHaveTextContent(dictionaries.kk["join.invalid.body"]!);
+    expect(input).toHaveAttribute("aria-invalid", "true");
   });
 
   it("normalizes a complete code and uses the existing join route", () => {

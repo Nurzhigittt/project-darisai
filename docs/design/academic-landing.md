@@ -25,16 +25,16 @@ The user supplied these references. Their public previews were inspected visuall
 
 ## Functional boundaries
 
-This is an isolated landing-page revision on `design/academic-landing`, based on functional commit `6deb064c2e39b596032fb05104179e612b7e3f34`. It changes no API contracts, authentication, backend, shared header/footer, global font rules, dependencies or lockfiles. Geologica is scoped to this page; the rest of the app keeps its current typography pending a broader design decision.
+The design originated on isolated branch `design/academic-landing`, based on functional commit `6deb064c2e39b596032fb05104179e612b7e3f34`, and was integrated into the current P1 frontend on 2026-11-26. It changes no API contracts, authentication, backend, shared header/footer, global font rules, dependencies or lockfiles. Geologica is scoped to this page; the rest of the app keeps its current typography pending a broader design decision.
 
 There is one join form and one input. Codes retain the existing normalization and `/join/{CODE}` route, validation alert, focus handling and Enter submission. Join anchors preserve native navigation and focus the input afterward. The mobile menu retains its expanded state, Escape support and return focus. The inherited skip link, language switcher and themes remain available. EN, RU and KK copy follow the same product boundaries.
 
 The page does not claim complete anonymity, measure understanding, infer understanding from silence, invent customers or promise unimplemented AI features. Sample chart data is explicitly labelled. Full real-API testing and integration with ongoing functional changes are separate from this visual revision.
 
-## Integrating later
+## Integration into the current frontend
 
-The active functional checkout is untouched. When it reaches a clean checkpoint, create an integration branch and apply the exported cumulative patch with `git am --3way`, or fetch the isolated branch and cherry-pick its commits in order. Preserve newer functional changes when resolving conflicts. The most likely conflicts are the landing screen, its E2E heading assertion and the appended build log.
+The cumulative V3 patch was applied with `git am --3way` on top of P1 commit `6b1c913`. All three design commits retain their author. The build-log append conflict was resolved by retaining both histories. Newer P1 navigation remains available: the learning library, privacy manifest, OpenAPI contract and configured GitHub URL. Validation errors now follow locale changes immediately.
 
-Install dependencies normally before building in the integrated checkout. The local design clone reused an existing installation through an ignored `node_modules` symlink; its standalone build warns about traced files outside the output boundary, so do not distribute that local `.next/standalone` directory.
+The integrated checkout uses a normal locked dependency installation. Its webpack production build has no external-node_modules tracing warnings. Geologica and the new colors remain scoped to the landing; other product screens retain Source Serif 4 and IBM Plex Sans. No dependency, lockfile, API or backend changes were needed for the design integration.
 
-Run lint, typecheck, frontend tests, production build and the repository's required integration checks. Verify a real student join, lecturer login, locale persistence, themes and mobile keyboard operation before deployment. No merge, push or deployment is part of this design handoff. Actual verification and the implementation SHA are recorded in the build log and exported integration notes.
+Three Playwright cases cover RU desktop, KK dark 320px and EN 390px layouts, form errors, keyboard joining, menu/Escape, FAQ, local example behavior, native join-anchor focus and axe checks. Reports include full-page screenshots. Required local checks and environment limits are recorded in `docs/BUILD_LOG.md`; current remote results are in PR #4. Full real P3 workflow acceptance, manual assistive-technology checks, merge and deployment remain separate.
