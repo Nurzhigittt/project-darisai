@@ -48,7 +48,6 @@ export function Dialog({
       ref={ref}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
-      onClose={onClose}
       onCancel={(event) => {
         event.preventDefault();
         onClose();

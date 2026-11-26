@@ -19,8 +19,11 @@ export type InsightCreate = components["schemas"]["InsightCreate"];
 export type InsightEdit = components["schemas"]["InsightEdit"];
 export type HandoffLink = components["schemas"]["HandoffLinkOut"];
 export type HandoffPublic = components["schemas"]["HandoffPublicOut"];
+export type HandoffRevoke = components["schemas"]["HandoffRevokeOut"];
+export type InsightDecision = components["schemas"]["InsightDecisionOut"];
 export type CohortMemory = components["schemas"]["CohortMemoryOut"];
 export type CohortConceptMetric = components["schemas"]["CohortConceptMetric"];
+export type CohortStructuralGap = components["schemas"]["CohortStructuralGap"];
 export type ConceptAutonomy = components["schemas"]["AutonomyOut"];
 export type AutonomyUpdate = components["schemas"]["AutonomyUpdate"];
 
@@ -203,6 +206,16 @@ export const api = {
   publishHandoff: (token: string, lectureId: string, insightId: string, signal?: AbortSignal) =>
     request<HandoffLink>(`/api/v1/lectures/${lectureId}/insights/${insightId}/publish`, {
       method: "POST", token, signal,
+    }),
+
+  revokeHandoff: (token: string, lectureId: string, insightId: string, reason: string, signal?: AbortSignal) =>
+    request<HandoffRevoke>(`/api/v1/lectures/${lectureId}/insights/${insightId}/handoff/revoke`, {
+      method: "POST", token, body: { reason }, signal,
+    }),
+
+  listInsightDecisions: (token: string, lectureId: string, insightId: string, signal?: AbortSignal) =>
+    request<InsightDecision[]>(`/api/v1/lectures/${lectureId}/insights/${insightId}/decisions`, {
+      token, signal,
     }),
 
   startReplay: (replayToken: string, body: ReplayStartRequest, signal?: AbortSignal) =>

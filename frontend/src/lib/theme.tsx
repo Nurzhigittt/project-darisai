@@ -20,6 +20,17 @@ type ThemeValue = {
 
 const ThemeContext = createContext<ThemeValue | null>(null);
 
+function applyTheme(next: Theme): void {
+  const root = document.documentElement;
+  // Theme changes must be atomic for accessibility. CSS colour transitions
+  // otherwise produce transient low-contrast blends while axe samples the page.
+  root.dataset.themeChanging = "true";
+  root.dataset.theme = next;
+  window.setTimeout(() => {
+    if (root.dataset.theme === next) delete root.dataset.themeChanging;
+  }, 250);
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
@@ -27,13 +38,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const stored = window.localStorage.getItem("daris.theme");
     const next: Theme = stored === "dark" ? "dark" : "light";
     setThemeState(next);
-    document.documentElement.dataset.theme = next;
+    applyTheme(next);
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
     window.localStorage.setItem("daris.theme", next);
-    document.documentElement.dataset.theme = next;
+    applyTheme(next);
   }, []);
 
   const value = useMemo<ThemeValue>(

@@ -13,7 +13,7 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { Logo } from "@/components/ui/logo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
-import { api, ApiError, type HandoffLink, type Insight, type InsightContent, type Lecture } from "@/lib/api/client";
+import { api, ApiError, type HandoffLink, type Insight, type InsightContent, type InsightDecision, type Lecture } from "@/lib/api/client";
 import { clearProfessorSession, getProfessorSession } from "@/lib/auth/professor";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -46,7 +46,7 @@ export function BriefScreen({ lectureId }: { lectureId: string }) {
 }
 
 function BriefContent({ lectureId }: { lectureId: string }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [lecture, setLecture] = useState<Lecture | null>(null);
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -60,6 +60,10 @@ function BriefContent({ lectureId }: { lectureId: string }) {
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [links, setLinks] = useState<Record<string, HandoffLink>>({});
+  const [revoked, setRevoked] = useState<Record<string, boolean>>({});
+  const [history, setHistory] = useState<{ insight: Insight; decisions: InsightDecision[] } | null>(null);
+  const [revoking, setRevoking] = useState<Insight | null>(null);
+  const [revokeReason, setRevokeReason] = useState("");
   const [offline, setOffline] = useState(false);
   const [unresolved, setUnresolved] = useState(false);
   const [sessionRevision, setSessionRevision] = useState(0);
@@ -76,6 +80,10 @@ function BriefContent({ lectureId }: { lectureId: string }) {
     setLecture(null);
     setInsights([]);
     setLinks({});
+    setRevoked({});
+    setHistory(null);
+    setRevoking(null);
+    setRevokeReason("");
     setEditor(null);
     setRejecting(null);
     setReason("");
@@ -122,6 +130,7 @@ function BriefContent({ lectureId }: { lectureId: string }) {
       if (getProfessorSession()?.accessToken !== session.accessToken) { reconcileSession(); return false; }
       setLecture(nextLecture);
       setInsights(nextInsights);
+      setRevoked({});
       // A material may have been edited and republished in another tab.
       // The list cannot prove that a previously issued link is still valid.
       setLinks({});
@@ -173,6 +182,11 @@ function BriefContent({ lectureId }: { lectureId: string }) {
       ? current.map((item) => item.insight_id === updated.insight_id ? updated : item)
       : [updated, ...current]);
     setLinks((current) => {
+      const next = { ...current };
+      delete next[updated.insight_id];
+      return next;
+    });
+    setRevoked((current) => {
       const next = { ...current };
       delete next[updated.insight_id];
       return next;
@@ -279,6 +293,35 @@ function BriefContent({ lectureId }: { lectureId: string }) {
     });
   }
 
+  async function showHistory(insight: Insight) {
+    await run(`${insight.insight_id}:history`, (token, signal) =>
+      api.listInsightDecisions(token, lectureId, insight.insight_id, signal), (decisions) => {
+      if (!Array.isArray(decisions)) throw new Error("Unexpected decision history response");
+      setHistory({ insight, decisions });
+    });
+  }
+
+  async function revoke(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!revoking || !revokeReason.trim()) return;
+    const insight = revoking;
+    await run(`${insight.insight_id}:revoke`, (token, signal) =>
+      api.revokeHandoff(token, lectureId, insight.insight_id, revokeReason.trim(), signal), (result) => {
+      if (!result || result.insight_id !== insight.insight_id || typeof result.revoked !== "number" || result.revoked < 1) {
+        throw new Error("Unexpected Handoff revocation response");
+      }
+      setLinks((current) => {
+        const next = { ...current };
+        delete next[insight.insight_id];
+        return next;
+      });
+      setRevoked((current) => ({ ...current, [insight.insight_id]: true }));
+      setRevoking(null);
+      setRevokeReason("");
+      setMessage("brief.revoked");
+    });
+  }
+
   async function publish(insight: Insight) {
     await run(`${insight.insight_id}:publish`, (token, signal) => api.publishHandoff(token, lectureId, insight.insight_id, signal), (link) => {
       if (!link || link.insight_id !== insight.insight_id || typeof link.handoff_url !== "string") {
@@ -293,6 +336,7 @@ function BriefContent({ lectureId }: { lectureId: string }) {
   const visible = insights.filter((item) => item.kind === kind);
   const disabled = Boolean(busy) || offline || loading || unresolved || Boolean(error);
   const editorError = actionError ? <p role="alert" className="mb-4 rounded-xl border border-border bg-background p-3">{t(actionError)}</p> : null;
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" });
 
   return <div className="min-h-dvh bg-background">
     <header className="border-b border-border bg-surface/70">
@@ -351,7 +395,9 @@ function BriefContent({ lectureId }: { lectureId: string }) {
             visible.map((insight) => <InsightCard key={`${insight.insight_id}:${links[insight.insight_id]?.expires_at ?? ""}`} insight={insight} link={links[insight.insight_id]}
               disabled={disabled} busy={busy?.startsWith(`${insight.insight_id}:`) ? busy.split(":")[1] ?? null : null}
               onApprove={() => void approve(insight)} onEdit={() => { setActionError(null); setEditor({ kind: insight.kind, insight }); }}
-              onReject={() => { setActionError(null); setReason(""); setRejecting(insight); }} onPublish={() => void publish(insight)} />)}
+              onReject={() => { setActionError(null); setReason(""); setRejecting(insight); }} onPublish={() => void publish(insight)}
+              onHistory={() => void showHistory(insight)} onRevoke={() => { setActionError(null); setRevoking(insight); }}
+              revoked={Boolean(revoked[insight.insight_id])} />)}
         </div>
       </> : null}
     </main>
@@ -369,6 +415,32 @@ function BriefContent({ lectureId }: { lectureId: string }) {
         <div className="flex flex-wrap justify-end gap-3">
           <Button type="button" variant="secondary" disabled={Boolean(busy)} onClick={() => setRejecting(null)}>{t("insight.cancel")}</Button>
           <Button type="submit" disabled={disabled || !reason.trim()} loading={busy === "reject"}>{t("insight.confirmReject")}</Button>
+        </div>
+      </form>
+    </Dialog>
+    <Dialog open={Boolean(history)} onClose={() => setHistory(null)} title={t("brief.decisionHistory")}
+      description={history?.insight.content.headline} closeLabel={t("common.close")} className="max-h-[90dvh] w-[min(94vw,700px)] overflow-y-auto">
+      {history ? <div className="space-y-3 pb-6">
+        {history.decisions.length === 0 ? <p className="text-sm text-muted">{t("brief.noDecisions")}</p> : history.decisions.map((decision) => <div key={decision.decision_id} className="rounded-xl border border-border p-3 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-semibold">{t(`insight.decision.${decision.action}`)}</p>
+            <time dateTime={decision.created_at} className="text-xs text-muted">{dateFormatter.format(new Date(decision.created_at))}</time>
+          </div>
+          <p className="mt-1 text-muted">{t("brief.decisionTransition", { from: t(`insight.status.${decision.from_status}`), to: t(`insight.status.${decision.to_status}`) })}</p>
+          {decision.reason ? <p className="mt-2 whitespace-pre-wrap break-words">{decision.reason}</p> : null}
+        </div>)}
+        <div className="flex justify-end"><Button variant="secondary" onClick={() => setHistory(null)}>{t("common.close")}</Button></div>
+      </div> : null}
+    </Dialog>
+    <Dialog open={Boolean(revoking)} onClose={() => { if (!busyRef.current) setRevoking(null); }} title={t("brief.revokeLinkTitle")}
+      description={t("brief.revokeLinkHint")} closeLabel={t("common.close")}>
+      <form onSubmit={revoke} className="space-y-4 pb-6">
+        {editorError}
+        <Textarea label={t("insight.reason")} required maxLength={200} value={revokeReason} disabled={disabled}
+          onChange={(event) => setRevokeReason(event.target.value)} />
+        <div className="flex flex-wrap justify-end gap-3">
+          <Button type="button" variant="secondary" disabled={Boolean(busy)} onClick={() => setRevoking(null)}>{t("insight.cancel")}</Button>
+          <Button type="submit" disabled={disabled || !revokeReason.trim()} loading={busy === `${revoking?.insight_id}:revoke`}>{t("brief.confirmRevoke")}</Button>
         </div>
       </form>
     </Dialog>

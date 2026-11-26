@@ -827,4 +827,50 @@ describe("BriefScreen", () => {
       options?.method === "GET" && new URL(String(url)).pathname === `${lecturePath}/insights`,
     )).toHaveLength(2);
   });
+
+  it("shows the server decision trail and revokes a published Handoff link without claiming a new status", async () => {
+    signIn();
+    const published = insightFixture({ kind: "handoff", status: "published", source: "template" });
+    const decisionsPath = `${insightPath}/decisions`;
+    const publishPath = `${insightPath}/publish`;
+    const revokePath = `${insightPath}/handoff/revoke`;
+    const decision = {
+      decision_id: "55555555-5555-4555-8555-555555555555",
+      insight_id: insightId,
+      action: "publish" as const,
+      from_status: "approved",
+      to_status: "published",
+      reason: null,
+      concept_canonical_id: null,
+      created_at: new Date().toISOString(),
+    };
+    const transport = mockApi(() => [published], (url, options) => {
+      if ((options.method ?? "GET") === "GET" && url.pathname === decisionsPath) return json([decision]);
+      if (options.method === "POST" && url.pathname === publishPath) return json(linkFixture());
+      if (options.method === "POST" && url.pathname === revokePath) {
+        return json({ insight_id: insightId, revoked: 1, status: "published" });
+      }
+      return undefined;
+    });
+    renderBrief();
+    await screen.findByRole("button", { name: label("brief.new") });
+    selectHandoff();
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.decisionHistory") }));
+    const historyDialog = within(await screen.findByRole("dialog", { name: label("brief.decisionHistory") }));
+    expect(historyDialog.getByText(label("insight.decision.publish"))).toBeInTheDocument();
+    expect(historyDialog.getByText(label("brief.decisionTransition").replace("{from}", label("insight.status.approved")).replace("{to}", label("insight.status.published")))).toBeInTheDocument();
+    const closeButtons = historyDialog.getAllByRole("button", { name: label("common.close") });
+    fireEvent.click(closeButtons[closeButtons.length - 1]!);
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.createLink") }));
+    expect(await screen.findByText(label("brief.published"))).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: label("brief.revokeLink") }));
+    const revokeDialog = within(await screen.findByRole("dialog", { name: label("brief.revokeLinkTitle") }));
+    fireEvent.change(revokeDialog.getByRole("textbox", { name: label("insight.reason") }), { target: { value: "Link leaked" } });
+    fireEvent.click(revokeDialog.getByRole("button", { name: label("brief.confirmRevoke") }));
+    expect((await screen.findAllByText(label("brief.revoked"))).length).toBeGreaterThan(0);
+    expect(card().getByText(label("insight.linkRevoked"))).toBeInTheDocument();
+    expect(card().queryByRole("button", { name: label("brief.revokeLink") })).not.toBeInTheDocument();
+    expect(transport.mock.calls.filter(([, options]) => options?.method === "POST")).toHaveLength(2);
+    expect(transport.mock.calls.some(([url, options]) => options?.method === "POST" && new URL(String(url)).pathname === revokePath)).toBe(true);
+  });
 });

@@ -282,4 +282,27 @@ describe("CohortScreen", () => {
     expect(screen.getByRole("button", { name: label("cohort.refresh") })).toBeDisabled();
     expect(screen.getByRole("button", { name: label("cohort.retry") })).toBeDisabled();
   });
+
+  it("renders structural gaps with explicit synthetic provenance and canonical titles", async () => {
+    signIn();
+    mockApi(() => ({
+      ...memory(),
+      structural_gaps: [{
+        concept_canonical_id: conceptId,
+        concept_title: "Pressure and flow",
+        terms: ["2025-Fall", "2026-Spring", "2026-Fall"],
+        consecutive_terms: 3,
+        min_confused_share: 0.66,
+        max_confused_share: 0.74,
+        provenance: "synthetic",
+        note: "Structural-gap rule.",
+      }],
+    }));
+    render(ui());
+    expect(await screen.findByRole("heading", { name: label("cohort.structuralTitle") })).toBeInTheDocument();
+    expect(screen.getAllByText("Pressure and flow").length).toBeGreaterThan(0);
+    expect(screen.getByText(label("cohort.provenance.synthetic"))).toBeInTheDocument();
+    expect(screen.getByText(label("cohort.structuralTerms").replace("{terms}", "2025-Fall → 2026-Spring → 2026-Fall"))).toBeInTheDocument();
+    expect(screen.getByText(label("cohort.structuralRule").replace("{terms}", "3").replace("{share}", "60%"))).toBeInTheDocument();
+  });
 });

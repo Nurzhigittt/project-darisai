@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, ExternalLink, Pencil, Send, X } from "lucide-react";
+import { Check, Copy, ExternalLink, History, Link2Off, Pencil, Send, X } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ import { useI18n } from "@/lib/i18n";
 import { insightActions, safeHandoffUrl } from "./insight-actions";
 import { InsightContentView } from "./insight-content";
 
-export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, onReject, onPublish }: {
+export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, onReject, onPublish, onHistory, onRevoke, revoked = false }: {
   insight: Insight;
   link?: HandoffLink;
   disabled: boolean;
@@ -22,12 +22,15 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
   onEdit: () => void;
   onReject: () => void;
   onPublish: () => void;
+  onHistory: () => void;
+  onRevoke: () => void;
+  revoked?: boolean;
 }) {
   const { t, locale } = useI18n();
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
   const actions = insightActions(insight);
-  const url = link && insight.status === "published" ? safeHandoffUrl(link.handoff_url) : null;
+  const url = !revoked && link && insight.status === "published" ? safeHandoffUrl(link.handoff_url) : null;
 
   async function copy() {
     if (!url) return;
@@ -46,6 +49,7 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
         <div className="flex flex-wrap gap-2">
           <Badge>{t(`insight.status.${insight.status}`)}</Badge>
           <Badge tone="primary">{t(`insight.source.${insight.source}`)}</Badge>
+          {revoked ? <Badge tone="danger">{t("insight.linkRevoked")}</Badge> : null}
         </div>
         <time dateTime={insight.created_at} className="text-sm text-muted">
           {new Date(insight.created_at).toLocaleDateString(locale)}
@@ -69,7 +73,14 @@ export function InsightCard({ insight, link, disabled, busy, onApprove, onEdit, 
         {actions.publish ? <Button disabled={disabled} loading={busy === "publish"} onClick={onPublish}>
           <Send aria-hidden className="size-4" />{t(insight.status === "published" ? "brief.createLink" : "insight.publish")}
         </Button> : null}
+        <Button variant="ghost" disabled={disabled} onClick={onHistory}>
+          <History aria-hidden className="size-4" />{t("brief.decisionHistory")}
+        </Button>
+        {insight.kind === "handoff" && insight.status === "published" && Boolean(link) && !revoked ? <Button variant="secondary" disabled={disabled} onClick={onRevoke}>
+          <Link2Off aria-hidden className="size-4" />{t("brief.revokeLink")}
+        </Button> : null}
       </div> : null}
+      {revoked ? <p role="status" className="mt-4 rounded-xl border border-border bg-background p-3 text-sm">{t("brief.revoked")}</p> : null}
       {insight.kind === "handoff" && insight.status === "published" ? <p className="mt-4 text-sm text-muted">{t("brief.extraLinkNotice")}</p> : null}
       {url && link ? <div className="mt-5 space-y-3 rounded-2xl border border-border bg-background p-4">
         <Input label={t("brief.link")} readOnly value={url} onFocus={(event) => event.target.select()} />

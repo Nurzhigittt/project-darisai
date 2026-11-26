@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -38,8 +39,36 @@ function MetricCell({ value, percent = false, shade = false }: { value?: number 
   </td>;
 }
 
+function StructuralGaps({ memory }: { memory: CohortMemory }) {
+  const { locale, t } = useI18n();
+  const gaps = memory.structural_gaps ?? [];
+  if (gaps.length === 0) return null;
+  const percent = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
+  return <section className="mt-8" aria-labelledby="cohort-structural-title">
+    <h2 id="cohort-structural-title" className="text-2xl font-semibold">{t("cohort.structuralTitle")}</h2>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{t("cohort.structuralIntro")}</p>
+    <div className="mt-5 grid gap-4 md:grid-cols-2">
+      {gaps.map((gap) => <article key={gap.concept_canonical_id} className="rounded-2xl border border-border bg-surface p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="break-words text-lg font-semibold">{gap.concept_title}</h3>
+            <code className="mt-1 block break-all font-mono text-xs text-muted">{gap.concept_canonical_id}</code>
+          </div>
+          <Badge tone={gap.provenance === "synthetic" ? "attention" : gap.provenance === "mixed" ? "primary" : "positive"}>
+            {t(`cohort.provenance.${gap.provenance}`)}
+          </Badge>
+        </div>
+        <p className="mt-4 text-sm font-semibold">{t("cohort.structuralShare", { min: percent.format(gap.min_confused_share), max: percent.format(gap.max_confused_share) })}</p>
+        <p className="mt-2 text-sm leading-6 text-muted">{t("cohort.structuralTerms", { terms: gap.terms.join(" → ") })}</p>
+        <p className="mt-2 text-xs leading-5 text-muted">{t("cohort.structuralRule", { terms: gap.consecutive_terms, share: percent.format(0.6) })}</p>
+      </article>)}
+    </div>
+  </section>;
+}
+
 function CohortTable({ memory }: { memory: CohortMemory }) {
   const { t } = useI18n();
+  const titles = new Map((memory.structural_gaps ?? []).map((gap) => [gap.concept_canonical_id, gap.concept_title]));
   return <section className="mt-8" aria-labelledby="cohort-table-title">
     <h2 id="cohort-table-title" className="text-2xl font-semibold">{t("cohort.tableTitle")}</h2>
     <p className="mt-2 text-sm leading-6 text-muted">{t("cohort.identifiers")}</p>
@@ -57,6 +86,7 @@ function CohortTable({ memory }: { memory: CohortMemory }) {
         <tbody>
           {memory.concepts.map((concept) => <tr key={concept.concept_canonical_id}>
             <th scope="row" className="border-t border-border p-4 text-left align-top font-normal">
+              {titles.get(concept.concept_canonical_id) ? <span className="mb-1 block break-words text-sm font-semibold">{titles.get(concept.concept_canonical_id)}</span> : null}
               <code className="break-all font-mono text-xs leading-5">{concept.concept_canonical_id}</code>
               {concept.status === "insufficient_history" ? <span className="mt-2 block text-xs font-semibold text-muted">{t("cohort.insufficient")}</span> : null}
             </th>
@@ -212,6 +242,7 @@ export function CohortScreen({ courseId }: { courseId: string }) {
           <div><p>{t("cohort.interpretation")}</p><p className="mt-2 text-muted">{t("cohort.thresholds", { lectures: memory.minimum_lectures_required, participants: memory.minimum_participants_per_lecture })}</p></div>
         </div>
         {memory.concepts.length === 0 ? <div className="mt-8"><EmptyState icon={<ChartNoAxesCombined aria-hidden className="size-6" />} title={t("cohort.emptyTitle")} body={t("cohort.emptyBody")} /></div> : <CohortTable memory={memory} />}
+        <StructuralGaps memory={memory} />
         {generatedLabel ? <p className="mt-6 text-xs text-muted">{t("cohort.generated")}: <time dateTime={memory.generated_at}>{generatedLabel}</time></p> : null}
       </> : null}
     </main>

@@ -49,7 +49,8 @@ async function setup(page: Page, holdMutations = false) {
 
   let policy: ConceptAutonomy = {
     lecture_id: lectureId, course_id: courseId, concept_canonical_id: conceptId,
-    concept_title: "Net force", mode: "locked", approvals: 0, rejections: 0, updated_at: null,
+    concept_title: "Net force", mode: "locked", approvals: 0, rejections: 0,
+    eligible: false, updated_at: null,
   };
   const changes: Array<{ path: string; method: string; body: AutonomyUpdate }> = [];
   const pendingResponses: Array<() => void> = [];
