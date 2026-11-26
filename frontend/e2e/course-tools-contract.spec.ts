@@ -3,6 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 import type { AutonomyUpdate, CohortMemory, ConceptAutonomy, Course, Lecture } from "../src/lib/api/client";
 import { dictionaries } from "../src/lib/i18n/dictionaries";
+import { waitForCssTransitions } from "./helpers/wait-for-css-transitions";
 
 // These contract responses exist only in intercepted browser test requests.
 // There is no production demo route, fallback data, or contact with a real API.
@@ -97,6 +98,7 @@ async function setup(page: Page, holdMutations = false) {
 }
 
 async function assertAccessibleWithoutPageOverflow(page: Page) {
+  await waitForCssTransitions(page);
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(result.violations, JSON.stringify(result.violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) })))).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -152,7 +154,10 @@ test("contract fixture: keyboard cancellation sends no PUT, and allow or revoke 
   await expect(allow).toBeFocused();
 
   await page.keyboard.press("Enter");
-  await dialog.getByRole("button", { name: label("autonomy.confirmAllow"), exact: true }).focus();
+  await expect(dialog).toBeVisible();
+  const confirmAllow = dialog.getByRole("button", { name: label("autonomy.confirmAllow"), exact: true });
+  await confirmAllow.focus();
+  await expect(confirmAllow).toBeFocused();
   await page.keyboard.press("Enter");
   await expect.poll(() => fixture.changes.length).toBe(1);
   await expect(article.getByText(label("autonomy.mode.locked"), { exact: true })).toBeVisible();
