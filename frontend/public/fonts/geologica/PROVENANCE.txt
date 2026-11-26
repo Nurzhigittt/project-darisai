@@ -1,0 +1,42 @@
+Geologica full variable webfont
+
+Original authors: Monokrom, Sindre Bremnes, Frode Helland.
+License: SIL Open Font License 1.1; see OFL.txt.
+Font version: 1.010; gftools 0.9.28.
+Retrieved: 2026-11-26.
+
+Source repository: https://github.com/google/fonts
+Source path: ofl/geologica/Geologica[CRSV,SHRP,slnt,wght].ttf
+Source Git blob SHA: 9e7771e32575873bba48b16b6ef1696b63087a2a
+Source TTF SHA-256: 9124d9e88ac6c11d761f35241713a51d68e2c4ebedce0edaca834717a00959ec
+Upstream project: https://github.com/googlefonts/geologica
+Upstream commit recorded in Google Fonts metadata:
+685f38d7c9e86b0c8530204c97ddcaf6558dd17b
+Metadata: https://github.com/google/fonts/blob/main/ofl/geologica/METADATA.pb
+License source: https://github.com/google/fonts/blob/main/ofl/geologica/OFL.txt
+
+Output: geologica-full-variable.woff2
+Size: 120360 bytes.
+SHA-256: f29209355691ec082dcb85edf5098913978e29f8627c7a570805c6758a952305
+
+Conversion: existing FontTools converted the full original TTF to WOFF2.
+Brotli compression used the installed Node runtime's built-in node:zlib codec.
+No dependency was installed. No subsetting, glyph redesign, cmap alteration,
+axis pinning, or stylistic substitution was applied to this production file.
+
+Axes (minimum / default / maximum):
+wght: 100 / 100 / 900
+CRSV: 0 / 0 / 1
+SHRP: 0 / 0 / 100
+slnt: -12 / 0 / 0
+
+Validation: the WOFF2 was reopened and its cmap and glyph count matched the TTF.
+973 glyphs; 836 encoded codepoints. All 42 Kazakh Cyrillic letters in both cases,
+plus Latin a with diaeresis (U+00E4), are present in the original font and output.
+Kazakh letter outlines were checked as non-empty in the source.
+
+The author's ss01 OpenType feature is preserved. It supplies single-storey
+forms for Latin a and a with diaeresis, and Cyrillic a. Enable this feature
+in CSS for a form closer to the DarisAI icon. SHRP=0 and slnt=0 retain the
+unsharpened upright style. Use CSS font-weight within 100–900; default wght
+is 100, so choose explicit weights for text and headings.
