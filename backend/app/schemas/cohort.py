@@ -38,9 +38,25 @@ class CohortConceptMetric(ApiModel):
         return self
 
 
+class CohortStructuralGap(ApiModel):
+    concept_canonical_id: UUID
+    concept_title: str = Field(min_length=1, max_length=200)
+    terms: list[str] = Field(min_length=3)
+    consecutive_terms: int = Field(ge=3)
+    min_confused_share: float = Field(ge=0, le=1)
+    max_confused_share: float = Field(ge=0, le=1)
+    provenance: Literal["synthetic", "observed", "mixed"]
+    note: str = (
+        "Structural-gap rule: at least three consecutive terms with a confusion share "
+        ">= 0.60 and sufficient lecture volume. This is an observed-signal pattern, "
+        "not a measurement of comprehension."
+    )
+
+
 class CohortMemoryOut(ApiModel):
     minimum_lectures_required: int = Field(default=5, ge=5)
     minimum_participants_per_lecture: int = Field(default=3, ge=3)
     concepts: list[CohortConceptMetric]
+    structural_gaps: list[CohortStructuralGap] = Field(default_factory=list)
     generated_at: datetime
     interpretation_note: str

@@ -41,6 +41,8 @@ def make_settings(**overrides: object) -> Settings:
         "axiom_llm_provider": "disabled",
         "axiom_stt_provider": "disabled",
         "axiom_similarity_floor": 0.0,
+        "rate_limit_auth_per_minute": 1000,
+        "rate_limit_join_per_minute": 1000,
     }
     values.update(overrides)
     return Settings(**values)

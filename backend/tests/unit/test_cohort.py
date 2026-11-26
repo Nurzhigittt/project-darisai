@@ -150,6 +150,7 @@ async def test_response_contains_no_course_lecture_or_participant_identifiers() 
         "minimum_lectures_required",
         "minimum_participants_per_lecture",
         "concepts",
+        "structural_gaps",
         "generated_at",
         "interpretation_note",
     }

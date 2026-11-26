@@ -27,6 +27,8 @@ from app.services.analytics import AnalyticsService
 from app.services.auth import AuthService
 from app.services.autonomy import ConceptAutonomyService
 from app.services.cohort import CohortMemoryService
+from app.services.concepts import ConceptCatalogService
+from app.services.demo import DemoService
 from app.services.insights import InsightService
 from app.services.lectures import CourseService, LectureService
 from app.services.rate_limit import RateLimiter
@@ -61,9 +63,11 @@ class AppContext:
     axiom_state: AxiomTokenCodec
     axiom: AxiomEngine
     transcripts: TranscriptService
+    concept_catalog: ConceptCatalogService
     replay: ReplayService
     gapcards: GapCardService
     intelligence: IntelligenceService
+    demo: DemoService
 
     @classmethod
     def build(cls, settings: Settings) -> AppContext:
@@ -82,7 +86,11 @@ class AppContext:
         retrieval = TemporalRetriever(db, settings, embeddings)
         axiom = AxiomEngine(settings, build_llm_client(settings))
         axiom_state = AxiomTokenCodec(settings)
-        transcripts = TranscriptService(db, settings, embeddings, build_stt_provider(settings))
+        concept_catalog = ConceptCatalogService(db)
+        courses = CourseService(db)
+        transcripts = TranscriptService(
+            db, settings, embeddings, build_stt_provider(settings), concept_catalog
+        )
         budget = GenerationBudget(redis_client, settings)
         replay_guard = ReplayAbuseGuard(redis_client, settings)
         replay = ReplayService(
@@ -112,15 +120,15 @@ class AppContext:
             codec=codec,
             counters=counters,
             auth=AuthService(db, settings, codec),
-            courses=CourseService(db),
+            courses=courses,
             lectures=LectureService(db, settings),
             student_tokens=student_tokens,
             insights=insights,
             rate_limiter=RateLimiter(redis_client, settings),
             signals=signals,
             analytics=analytics,
-            autonomy=ConceptAutonomyService(db),
-            cohort_memory=CohortMemoryService(db),
+            autonomy=ConceptAutonomyService(db, settings),
+            cohort_memory=CohortMemoryService(db, settings),
             connections=manager,
             event_bus=event_bus,
             ripple=ripple,
@@ -131,6 +139,7 @@ class AppContext:
             axiom_state=axiom_state,
             axiom=axiom,
             transcripts=transcripts,
+            concept_catalog=concept_catalog,
             replay=replay,
             gapcards=gapcards,
             intelligence=IntelligenceService(
@@ -141,5 +150,13 @@ class AppContext:
                 insights=insights,
                 budget=budget,
                 axiom=axiom,
+                concept_catalog=concept_catalog,
+            ),
+            demo=DemoService(
+                db=db,
+                settings=settings,
+                courses=courses,
+                transcripts=transcripts,
+                concepts=concept_catalog,
             ),
         )

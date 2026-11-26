@@ -48,6 +48,10 @@ class FakeDatabase:
         self.fetchrow_calls.append((query, args))
         return []
 
+    async def execute(self, query: str, *args: Any) -> str:
+        self.fetchrow_calls.append((query, args))
+        return "OK"
+
     @asynccontextmanager
     async def transaction(self):
         yield self.connection
@@ -299,8 +303,11 @@ async def test_editing_published_handoff_revokes_links_and_requires_reapproval()
     edited = await service.edit(lecture_id, insight_id, professor_id, request)
 
     assert edited.status == "edited"
-    assert "UPDATE handoff_links SET revoked_at = now()" in db.connection.execute_calls[-1][0]
-    assert db.connection.execute_calls[-1][1] == (insight_id,)
+    revoke_call = next(
+        call for call in db.connection.execute_calls if "UPDATE handoff_links" in call[0]
+    )
+    assert "revoked_at = now()" in revoke_call[0]
+    assert revoke_call[1] == (insight_id,)
 
     db.connection.row = {**published, "status": edited.status}
     db.connection.updated_row = {**published, "status": "approved"}
@@ -348,8 +355,11 @@ async def test_rejecting_published_handoff_revokes_active_links() -> None:
     )
 
     assert result.status == "rejected"
-    assert "UPDATE handoff_links SET revoked_at = now()" in db.connection.execute_calls[0][0]
-    assert db.connection.execute_calls[0][1] == (insight_id,)
+    revoke_call = next(
+        call for call in db.connection.execute_calls if "UPDATE handoff_links" in call[0]
+    )
+    assert "revoked_at = now()" in revoke_call[0]
+    assert revoke_call[1] == (insight_id,)
 
 
 @pytest.mark.asyncio
@@ -377,7 +387,9 @@ async def test_publish_requires_owned_approved_handoff_and_stores_only_token_has
 
     assert link.handoff_url == "https://classroom.example/handoff#token=fake-handoff-token"
     assert link.expires_at > datetime.now(UTC)
-    link_query, link_args = db.connection.execute_calls[-1]
+    link_query, link_args = next(
+        call for call in db.connection.execute_calls if "INSERT INTO handoff_links" in call[0]
+    )
     assert "INSERT INTO handoff_links" in link_query
     assert link_args == (insight_id, sha256_hex("fake-handoff-token"), link.expires_at)
     assert "fake-handoff-token" not in link_args
@@ -420,6 +432,7 @@ async def test_handoff_redemption_is_hash_scoped_and_returns_minimal_payload() -
     expires_at = datetime.now(UTC)
     db = FakeDatabase(
         row={
+            "link_id": uuid4(),
             "payload": _handoff_content(),
             "lecture_title": "Vectors",
             "language": "en",

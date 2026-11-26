@@ -410,6 +410,278 @@
         }
       }
     },
+    "/api/v1/demo/scenarios": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "List Demo Scenarios",
+        "operationId": "list_demo_scenarios_api_v1_demo_scenarios_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DemoScenarioOut"
+                  },
+                  "title": "Response List Demo Scenarios Api V1 Demo Scenarios Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/lectures": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Create Demo Lecture",
+        "operationId": "create_demo_lecture_api_v1_demo_lectures_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoLectureCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoLectureOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/lectures/{lecture_id}/reset": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Reset Demo Lecture",
+        "operationId": "reset_demo_lecture_api_v1_demo_lectures__lecture_id__reset_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoResetOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/lectures/{lecture_id}": {
+      "delete": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Delete Demo Lecture",
+        "operationId": "delete_demo_lecture_api_v1_demo_lectures__lecture_id__delete",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/cleanup": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Cleanup Demo Lectures",
+        "operationId": "cleanup_demo_lectures_api_v1_demo_cleanup_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoCleanupOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/gapcards/generate": {
       "post": {
         "tags": [
@@ -939,6 +1211,160 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HandoffLinkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/decisions": {
+      "get": {
+        "tags": [
+          "insights",
+          "handoff"
+        ],
+        "summary": "List Insight Decisions",
+        "operationId": "list_insight_decisions_api_v1_lectures__lecture_id__insights__insight_id__decisions_get",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "insight_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Insight Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InsightDecisionOut"
+                  },
+                  "title": "Response List Insight Decisions Api V1 Lectures  Lecture Id  Insights  Insight Id  Decisions Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/handoff/revoke": {
+      "post": {
+        "tags": [
+          "insights",
+          "handoff"
+        ],
+        "summary": "Revoke Handoff",
+        "operationId": "revoke_handoff_api_v1_lectures__lecture_id__insights__insight_id__handoff_revoke_post",
+        "parameters": [
+          {
+            "name": "lecture_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lecture Id"
+            }
+          },
+          {
+            "name": "insight_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Insight Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandoffRevokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffRevokeOut"
                 }
               }
             }
@@ -2005,6 +2431,46 @@
             "minimum": 0.0,
             "title": "Rejections"
           },
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible",
+            "default": false
+          },
+          "observation_started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observation Started At"
+          },
+          "whitelisted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Whitelisted At"
+          },
+          "policy_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Reason"
+          },
           "updated_at": {
             "anyOf": [
               {
@@ -2040,6 +2506,19 @@
               "whitelisted"
             ],
             "title": "Mode"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
           }
         },
         "additionalProperties": false,
@@ -2266,6 +2745,13 @@
             "type": "array",
             "title": "Concepts"
           },
+          "structural_gaps": {
+            "items": {
+              "$ref": "#/components/schemas/CohortStructuralGap"
+            },
+            "type": "array",
+            "title": "Structural Gaps"
+          },
           "generated_at": {
             "type": "string",
             "format": "date-time",
@@ -2284,6 +2770,72 @@
           "interpretation_note"
         ],
         "title": "CohortMemoryOut"
+      },
+      "CohortStructuralGap": {
+        "properties": {
+          "concept_canonical_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Concept Canonical Id"
+          },
+          "concept_title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Concept Title"
+          },
+          "terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 3,
+            "title": "Terms"
+          },
+          "consecutive_terms": {
+            "type": "integer",
+            "minimum": 3.0,
+            "title": "Consecutive Terms"
+          },
+          "min_confused_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Min Confused Share"
+          },
+          "max_confused_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Max Confused Share"
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "synthetic",
+              "observed",
+              "mixed"
+            ],
+            "title": "Provenance"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "Structural-gap rule: at least three consecutive terms with a confusion share >= 0.60 and sufficient lecture volume. This is an observed-signal pattern, not a measurement of comprehension."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "concept_canonical_id",
+          "concept_title",
+          "terms",
+          "consecutive_terms",
+          "min_confused_share",
+          "max_confused_share",
+          "provenance"
+        ],
+        "title": "CohortStructuralGap"
       },
       "ColumnManifest": {
         "properties": {
@@ -2473,6 +3025,212 @@
           "created_at"
         ],
         "title": "CourseOut"
+      },
+      "DemoCleanupOut": {
+        "properties": {
+          "deleted_lectures": {
+            "type": "integer",
+            "title": "Deleted Lectures"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "deleted_lectures"
+        ],
+        "title": "DemoCleanupOut"
+      },
+      "DemoLectureCreate": {
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Scenario",
+            "default": "bernoulli_ru"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DemoLectureCreate"
+      },
+      "DemoLectureOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "course_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Course Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Language"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "live",
+              "paused",
+              "ended"
+            ],
+            "title": "Status"
+          },
+          "join_code": {
+            "type": "string",
+            "title": "Join Code"
+          },
+          "join_url": {
+            "type": "string",
+            "title": "Join Url"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true,
+            "title": "Synthetic",
+            "default": true
+          },
+          "scenario": {
+            "type": "string",
+            "title": "Scenario"
+          },
+          "transcript_segments": {
+            "type": "integer",
+            "title": "Transcript Segments"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "course_id",
+          "title",
+          "language",
+          "status",
+          "join_code",
+          "join_url",
+          "scenario",
+          "transcript_segments",
+          "expires_at"
+        ],
+        "title": "DemoLectureOut"
+      },
+      "DemoResetOut": {
+        "properties": {
+          "lecture_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lecture Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "live",
+              "paused",
+              "ended"
+            ],
+            "title": "Status"
+          },
+          "cleared_signals": {
+            "type": "boolean",
+            "title": "Cleared Signals",
+            "default": true
+          },
+          "cleared_clusters": {
+            "type": "boolean",
+            "title": "Cleared Clusters",
+            "default": true
+          },
+          "cleared_insights": {
+            "type": "boolean",
+            "title": "Cleared Insights",
+            "default": true
+          },
+          "transcript_segments": {
+            "type": "integer",
+            "title": "Transcript Segments"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lecture_id",
+          "status",
+          "transcript_segments"
+        ],
+        "title": "DemoResetOut"
+      },
+      "DemoScenarioOut": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "ru",
+              "kk",
+              "en"
+            ],
+            "title": "Language"
+          },
+          "segment_count": {
+            "type": "integer",
+            "title": "Segment Count"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true,
+            "title": "Synthetic",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "language",
+          "segment_count"
+        ],
+        "title": "DemoScenarioOut"
       },
       "GapCardBack": {
         "properties": {
@@ -2750,6 +3508,54 @@
         ],
         "title": "HandoffRedeemRequest"
       },
+      "HandoffRevokeOut": {
+        "properties": {
+          "insight_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Insight Id"
+          },
+          "revoked": {
+            "type": "integer",
+            "title": "Revoked"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending_approval",
+              "approved",
+              "rejected",
+              "edited",
+              "published"
+            ],
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "insight_id",
+          "revoked",
+          "status"
+        ],
+        "title": "HandoffRevokeOut"
+      },
+      "HandoffRevokeRequest": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "HandoffRevokeRequest"
+      },
       "HealthResponse": {
         "properties": {
           "status": {
@@ -3002,6 +3808,78 @@
         ],
         "title": "InsightCreate"
       },
+      "InsightDecisionOut": {
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Decision Id"
+          },
+          "insight_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Insight Id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "edit",
+              "reject",
+              "publish",
+              "revoke"
+            ],
+            "title": "Action"
+          },
+          "from_status": {
+            "type": "string",
+            "title": "From Status"
+          },
+          "to_status": {
+            "type": "string",
+            "title": "To Status"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "concept_canonical_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Concept Canonical Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "decision_id",
+          "insight_id",
+          "action",
+          "from_status",
+          "to_status",
+          "created_at"
+        ],
+        "title": "InsightDecisionOut"
+      },
       "InsightEdit": {
         "properties": {
           "reason": {
@@ -3028,6 +3906,18 @@
             "type": "string",
             "format": "uuid",
             "title": "Insight Id"
+          },
+          "concept_canonical_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Concept Canonical Id"
           },
           "lecture_id": {
             "type": "string",

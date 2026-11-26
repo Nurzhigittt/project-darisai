@@ -124,6 +124,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/demo/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Demo Scenarios */
+        get: operations["list_demo_scenarios_api_v1_demo_scenarios_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/lectures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Demo Lecture */
+        post: operations["create_demo_lecture_api_v1_demo_lectures_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/lectures/{lecture_id}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset Demo Lecture */
+        post: operations["reset_demo_lecture_api_v1_demo_lectures__lecture_id__reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/lectures/{lecture_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Demo Lecture */
+        delete: operations["delete_demo_lecture_api_v1_demo_lectures__lecture_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/cleanup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cleanup Demo Lectures */
+        post: operations["cleanup_demo_lectures_api_v1_demo_cleanup_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/gapcards/generate": {
         parameters: {
             query?: never;
@@ -221,6 +306,40 @@ export interface paths {
         put?: never;
         /** Publish Handoff */
         post: operations["publish_handoff_api_v1_lectures__lecture_id__insights__insight_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Insight Decisions */
+        get: operations["list_insight_decisions_api_v1_lectures__lecture_id__insights__insight_id__decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lectures/{lecture_id}/insights/{insight_id}/handoff/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke Handoff */
+        post: operations["revoke_handoff_api_v1_lectures__lecture_id__insights__insight_id__handoff_revoke_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -583,6 +702,17 @@ export interface components {
             approvals: number;
             /** Rejections */
             rejections: number;
+            /**
+             * Eligible
+             * @default false
+             */
+            eligible: boolean;
+            /** Observation Started At */
+            observation_started_at?: string | null;
+            /** Whitelisted At */
+            whitelisted_at?: string | null;
+            /** Policy Reason */
+            policy_reason?: string | null;
             /** Updated At */
             updated_at?: string | null;
         };
@@ -593,6 +723,8 @@ export interface components {
              * @enum {string}
              */
             mode: "locked" | "whitelisted";
+            /** Reason */
+            reason?: string | null;
         };
         /** Body_upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post */
         Body_upload_audio_chunk_api_v1_lectures__lecture_id__audio_chunks_post: {
@@ -672,6 +804,8 @@ export interface components {
             minimum_participants_per_lecture: number;
             /** Concepts */
             concepts: components["schemas"]["CohortConceptMetric"][];
+            /** Structural Gaps */
+            structural_gaps?: components["schemas"]["CohortStructuralGap"][];
             /**
              * Generated At
              * Format: date-time
@@ -679,6 +813,34 @@ export interface components {
             generated_at: string;
             /** Interpretation Note */
             interpretation_note: string;
+        };
+        /** CohortStructuralGap */
+        CohortStructuralGap: {
+            /**
+             * Concept Canonical Id
+             * Format: uuid
+             */
+            concept_canonical_id: string;
+            /** Concept Title */
+            concept_title: string;
+            /** Terms */
+            terms: string[];
+            /** Consecutive Terms */
+            consecutive_terms: number;
+            /** Min Confused Share */
+            min_confused_share: number;
+            /** Max Confused Share */
+            max_confused_share: number;
+            /**
+             * Provenance
+             * @enum {string}
+             */
+            provenance: "synthetic" | "observed" | "mixed";
+            /**
+             * Note
+             * @default Structural-gap rule: at least three consecutive terms with a confusion share >= 0.60 and sufficient lecture volume. This is an observed-signal pattern, not a measurement of comprehension.
+             */
+            note: string;
         };
         /** ColumnManifest */
         ColumnManifest: {
@@ -749,6 +911,115 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /** DemoCleanupOut */
+        DemoCleanupOut: {
+            /** Deleted Lectures */
+            deleted_lectures: number;
+        };
+        /** DemoLectureCreate */
+        DemoLectureCreate: {
+            /**
+             * Scenario
+             * @default bernoulli_ru
+             */
+            scenario: string;
+            /** Title */
+            title?: string | null;
+        };
+        /** DemoLectureOut */
+        DemoLectureOut: {
+            /**
+             * Lecture Id
+             * Format: uuid
+             */
+            lecture_id: string;
+            /**
+             * Course Id
+             * Format: uuid
+             */
+            course_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Language
+             * @enum {string}
+             */
+            language: "ru" | "kk" | "en";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "scheduled" | "live" | "paused" | "ended";
+            /** Join Code */
+            join_code: string;
+            /** Join Url */
+            join_url: string;
+            /**
+             * Synthetic
+             * @default true
+             * @constant
+             */
+            synthetic: true;
+            /** Scenario */
+            scenario: string;
+            /** Transcript Segments */
+            transcript_segments: number;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** DemoResetOut */
+        DemoResetOut: {
+            /**
+             * Lecture Id
+             * Format: uuid
+             */
+            lecture_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "scheduled" | "live" | "paused" | "ended";
+            /**
+             * Cleared Signals
+             * @default true
+             */
+            cleared_signals: boolean;
+            /**
+             * Cleared Clusters
+             * @default true
+             */
+            cleared_clusters: boolean;
+            /**
+             * Cleared Insights
+             * @default true
+             */
+            cleared_insights: boolean;
+            /** Transcript Segments */
+            transcript_segments: number;
+        };
+        /** DemoScenarioOut */
+        DemoScenarioOut: {
+            /** Key */
+            key: string;
+            /** Title */
+            title: string;
+            /**
+             * Language
+             * @enum {string}
+             */
+            language: "ru" | "kk" | "en";
+            /** Segment Count */
+            segment_count: number;
+            /**
+             * Synthetic
+             * @default true
+             * @constant
+             */
+            synthetic: true;
         };
         /** GapCardBack */
         GapCardBack: {
@@ -868,6 +1139,26 @@ export interface components {
             /** Token */
             token: string;
         };
+        /** HandoffRevokeOut */
+        HandoffRevokeOut: {
+            /**
+             * Insight Id
+             * Format: uuid
+             */
+            insight_id: string;
+            /** Revoked */
+            revoked: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending_approval" | "approved" | "rejected" | "edited" | "published";
+        };
+        /** HandoffRevokeRequest */
+        HandoffRevokeRequest: {
+            /** Reason */
+            reason: string;
+        };
         /** HealthResponse */
         HealthResponse: {
             /**
@@ -971,6 +1262,37 @@ export interface components {
             kind: "brief_next" | "handoff";
             content: components["schemas"]["InsightContent"];
         };
+        /** InsightDecisionOut */
+        InsightDecisionOut: {
+            /**
+             * Decision Id
+             * Format: uuid
+             */
+            decision_id: string;
+            /**
+             * Insight Id
+             * Format: uuid
+             */
+            insight_id: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "approve" | "edit" | "reject" | "publish" | "revoke";
+            /** From Status */
+            from_status: string;
+            /** To Status */
+            to_status: string;
+            /** Reason */
+            reason?: string | null;
+            /** Concept Canonical Id */
+            concept_canonical_id?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** InsightEdit */
         InsightEdit: {
             /** Reason */
@@ -984,6 +1306,8 @@ export interface components {
              * Format: uuid
              */
             insight_id: string;
+            /** Concept Canonical Id */
+            concept_canonical_id?: string | null;
             /**
              * Lecture Id
              * Format: uuid
@@ -1878,6 +2202,167 @@ export interface operations {
             };
         };
     };
+    list_demo_scenarios_api_v1_demo_scenarios_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoScenarioOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_demo_lecture_api_v1_demo_lectures_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoLectureCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoLectureOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reset_demo_lecture_api_v1_demo_lectures__lecture_id__reset_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoResetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_demo_lecture_api_v1_demo_lectures__lecture_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cleanup_demo_lectures_api_v1_demo_cleanup_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoCleanupOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     generate_gapcards_api_v1_gapcards_generate_post: {
         parameters: {
             query?: never;
@@ -2118,6 +2603,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HandoffLinkOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_insight_decisions_api_v1_lectures__lecture_id__insights__insight_id__decisions_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightDecisionOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_handoff_api_v1_lectures__lecture_id__insights__insight_id__handoff_revoke_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                lecture_id: string;
+                insight_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HandoffRevokeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HandoffRevokeOut"];
                 };
             };
             /** @description Validation Error */
