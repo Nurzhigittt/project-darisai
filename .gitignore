@@ -63,5 +63,7 @@ backend/.model_cache/
 !artifacts/evals/hardening/*.json
 !artifacts/evals/local/
 !artifacts/evals/local/*.json
+!artifacts/evals/local/audio/
+!artifacts/evals/local/audio/*.wav
 !artifacts/loadtest/
 !artifacts/loadtest/*.json

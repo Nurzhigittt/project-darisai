@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "students": 40,
+  "lecture": {
+    "lecture_id": "ccfad387-16a8-48ed-9139-8b518859e6d8",
+    "course_id": "5d1a37d9-f77b-48ff-9e4a-aaf4c91d6fed",
+    "title": "Принцип Бернулли: давление, скорость и подъёмная сила",
+    "language": "ru",
+    "status": "scheduled",
+    "join_code": "AH3PVW",
+    "join_url": "http://localhost:3000/join/AH3PVW",
+    "synthetic": true,
+    "scenario": "bernoulli_ru",
+    "transcript_segments": 40,
+    "expires_at": "2026-11-26T13:38:04.526505Z"
+  },
+  "joined": 40,
+  "accepted_signals": 40,
+  "ripple_updates": 41,
+  "brief_source": "template",
+  "handoff_source": "template",
+  "handoff_url_issued": true,
+  "handoff_expires_at": "2026-12-03T11:39:31.075448Z",
+  "replay_moments": 1,
+  "replay_source": "template",
+  "gapcards": 1,
+  "gapcards_source": null,
+  "cohort_concepts": 7,
+  "cohort_structural_gaps": 0,
+  "reset_status": "scheduled",
+  "reset_transcript_segments": 40,
+  "wall_seconds": 87.53
+}

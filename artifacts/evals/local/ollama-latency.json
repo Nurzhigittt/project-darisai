@@ -1,0 +1,18 @@
+﻿{
+  "provider": "ollama",
+  "model": "qwen2.5:1.5b",
+  "device": "cpu",
+  "observed_baseline_brief_next_seconds": 33.69,
+  "tuned_configuration": {
+    "max_tokens": 800,
+    "keep_alive": "5m",
+    "timeout_seconds": 60,
+    "temperature": 0.2
+  },
+  "measurements": [
+    {"kind": "brief_next", "max_concepts": 1, "seconds": 28.18, "source": "live", "validated": true},
+    {"kind": "handoff", "max_concepts": 3, "seconds": 91.10, "source": "live", "validated": true}
+  ],
+  "finding": "The 33.69 s baseline is dominated by CPU prompt processing and generation for a 1.5B local model. Lower output size and keep-alive reduce a short BriefNext call to 28.18 s, but a longer Handoff prompt remains slow. Correctness and citation validation were preserved.",
+  "not_claimed": "No real-time/interactive latency target is met for long Handoff generation; cloud or a stronger local machine remains preferable for that path."
+}

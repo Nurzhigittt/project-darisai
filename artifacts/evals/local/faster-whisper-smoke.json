@@ -1,0 +1,44 @@
+{
+  "model": "small",
+  "compute_type": "int8",
+  "device": "cpu",
+  "load_seconds": 4.26,
+  "results": {
+    "en": {
+      "seconds": 6.18,
+      "language": "en",
+      "duration_ms": 3432,
+      "segments": [
+        {
+          "start_ms": 0,
+          "end_ms": 3300,
+          "text": "When the pipe narrows, the flow speed increases."
+        }
+      ]
+    },
+    "ru": {
+      "seconds": 6.06,
+      "language": "ru",
+      "duration_ms": 4488,
+      "segments": [
+        {
+          "start_ms": 0,
+          "end_ms": 4000,
+          "text": "Когда труба сужается, скорость потока увеличивается."
+        }
+      ]
+    },
+    "kk": {
+      "seconds": 5.99,
+      "language": "kk",
+      "duration_ms": 3360,
+      "segments": [
+        {
+          "start_ms": 0,
+          "end_ms": 2560,
+          "text": "Кубортарылғанда ағын жылдандыға артат."
+        }
+      ]
+    }
+  }
+}

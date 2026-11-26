@@ -45,7 +45,7 @@ pytest -q
 
 ## Actual results
 
-- `pytest -q`: **126 passed**
+- `pytest -q`: **127 passed**
 - Ruff: clean
 - mypy: clean
 - Frontend: ESLint, TypeScript, Vitest 11/11, production build passed

@@ -67,7 +67,7 @@ DärisAI — студент түсіндірудің байланысын жоғ
 
 | Тексеру | Нақты жергілікті нәтиже |
 | --- | --- |
-| Backend | **126 тест** · Ruff және mypy таза |
+| Backend | **127 тест** · Ruff және mypy таза |
 | Frontend | **188 unit-тест**, 17 файл |
 | Playwright | **16/16 E2E**, нақты Signal → Ripple және axe қоса |
 | Signal acknowledgement | p95 **14.71 мс** |

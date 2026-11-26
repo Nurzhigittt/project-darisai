@@ -78,9 +78,15 @@ class OpenAICompatibleLLMClient:
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": 0.2,
-            "max_tokens": self._settings.axiom_llm_max_output_tokens,
+            "max_tokens": (
+                self._settings.axiom_local_llm_max_tokens
+                if local
+                else self._settings.axiom_llm_max_output_tokens
+            ),
             "response_format": {"type": "json_object"},
         }
+        if local:
+            body["keep_alive"] = self._settings.axiom_local_llm_keep_alive
         if (
             self._settings.axiom_llm_disable_thinking
             and "deepseek" in self._settings.axiom_llm_base_url.lower()

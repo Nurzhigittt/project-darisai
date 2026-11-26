@@ -10,8 +10,27 @@ template fallback. The realtime Signal → Ripple loop never calls an LLM.
   strictly lecture-scoped.
 - **LLM:** Ollama through its OpenAI-compatible endpoint. This path does not need
   a cloud API key and does not silently fall back to a cloud provider.
-- **STT:** cloud Groq Whisper remains supported. Local Faster-Whisper is **not
-  installed/provisioned** in this environment and is not claimed as verified.
+- **STT:** Faster-Whisper `small`, CPU INT8, is now installed and verified through
+  the real audio-chunk API. Cloud Groq Whisper remains optional.
+
+## Verified local speech-to-text
+
+`faster-whisper==1.2.1` with `av==16.0.1`, model `small`, CPU `int8`, four CPU
+threads. The model loaded in 4.26 s after download. Through the integrated
+`POST /api/v1/lectures/{id}/audio-chunks` endpoint:
+
+| Language | API duration | Transcript | Embedded |
+| --- | ---: | --- | --- |
+| English | 13.91 s | "When the pipe narrows, the flow speed increases." | yes |
+| Russian | 10.35 s | "Когда труба сужается, скорость потока увеличивается." | yes |
+| Kazakh | 9.13 s | "Кубортарылғанда ағын жылдандыға артат." (imperfect, recognizable) | yes |
+
+Evidence: [`artifacts/evals/local/local-stt-api.json`](../artifacts/evals/local/local-stt-api.json)
+and [`faster-whisper-smoke.json`](../artifacts/evals/local/faster-whisper-smoke.json).
+The audio fixtures are synthetic; they were generated for testing, not lecture
+content. No cloud provider or API key was configured for the local run, and the
+adapter has no HTTP client. The host remained network-enabled, so this is a
+code-path privacy check, not a firewall-enforced offline proof.
 
 ## Verified local generation
 
@@ -78,7 +97,7 @@ used by CI and the local screenshot verification.
 - `qwen2.5:1.5b` is roughly 1 GB on disk and ran on CPU in this environment.
 - Generation is intentionally slower than cloud; the UI keeps the request
   bounded and displays an honest pending/error state.
-- Local STT would require `faster-whisper`, a downloaded Whisper model and
-  audio-device/container provisioning. That work is **not done**.
+- Local STT uses CPU INT8 and is slower than Groq; it is suitable for uploaded
+  chunks, not live streaming. The Kazakh small-model transcript is imperfect.
 - No claim of complete offline operation is made: the transcript-grounded
   retrieval path is local, but the optional cloud STT path is external.

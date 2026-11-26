@@ -168,7 +168,7 @@ The realtime path is deterministic and browser-free. No LLM sits in the Signal �
 
 | Check | Actual local result |
 | --- | --- |
-| Backend | **126 tests passed** · Ruff and mypy clean |
+| Backend | **127 tests passed** · Ruff and mypy clean |
 | Frontend | **188 unit tests passed** in 17 files |
 | Browser | **16/16 Playwright E2E** including real API Signal → Ripple and axe |
 | Signal acknowledgement | p95 **14.71 ms** |
@@ -245,11 +245,16 @@ artifacts/  raw synthetic load and evaluation evidence
 - [Performance report](docs/PERFORMANCE_REPORT.md) — 300-client methodology
 - [Retrieval benchmark](docs/RETRIEVAL_BENCHMARK.md) — dense vs lexical vs hybrid
 - [Developer onboarding](docs/ONBOARDING.md) — setup, tests and contribution path
+- [Judge demo](docs/JUDGE_DEMO.md) — real 40-student backend orchestration
 - [Deployment](docs/DEPLOYMENT.md) — Docker, environment and current infrastructure blocker
 - [Smartphone acceptance](docs/SMARTPHONE_ACCEPTANCE.md) — manual device checklist
 - [Brand guide](docs/BRAND.md) — palette, logo, typography and asset rules
 - [Build log](docs/BUILD_LOG.md) — actual commands and results
 - [Русский README](README.ru.md) · [Қазақша README](README.kk.md)
+
+## Judge demo
+
+The real 40-student orchestration is reproducible with [`scripts/judge_demo.py`](scripts/judge_demo.py): 40 synthetic WebSocket clients, real Ripple, Replay/GapCards, template BriefNext/Handoff, Cohort Memory and a reset. Actual 90-second evidence: 40/40 students, 40 accepted signals, 41 Ripple updates, 87.53 s. See [`docs/JUDGE_DEMO.md`](docs/JUDGE_DEMO.md).
 
 ## Privacy in one paragraph
 
@@ -267,7 +272,7 @@ The official mark is the stylized lowercase **ä** in Vintage Berry on Mint Crea
 
 - ✅ Core lecture loop, anonymous join, Signal/Ripple, transcript, Replay, GapCards, BriefNext/Handoff, Cohort and autonomy are implemented and tested.
 - ✅ Live DeepSeek and Groq provider smoke checks passed; local Ollama `qwen2.5:1.5b` generation was verified through the integrated API (33.69 s, `source=live`); template fallback remains deterministic.
-- ⚠️ Local Faster-Whisper STT is not provisioned; cloud Groq STT remains separately verified.
+- ✅ Local Faster-Whisper `small` CPU INT8 transcription was verified for EN/RU/KK through the real audio-chunk API; cloud Groq remains optional.
 - ⚠️ Broad live adversarial safety evaluation and human learning-outcome studies are not established.
 - ⚠️ No deployment, cloud hosting, multi-worker evaluator coordination or real-device screen-reader audit is claimed.
 - ⚠️ P4 owns the 40-student judge simulator and 90-second orchestration.

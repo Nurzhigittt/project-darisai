@@ -1,0 +1,68 @@
+{
+  "en": {
+    "status": 201,
+    "seconds": 13.91,
+    "response": {
+      "lecture_id": "18d58301-e8b8-45fc-8bfd-2c0fbcfe03bf",
+      "chunk_index": 0,
+      "status": "completed",
+      "run_id": "619c2b6c-8f07-49bc-ba0e-2f065ff926a7",
+      "segments": 1,
+      "embedded": 1,
+      "degraded": false,
+      "error_code": null
+    },
+    "segments": [
+      {
+        "start_ms": 0,
+        "end_ms": 3300,
+        "text": "When the pipe narrows, the flow speed increases.",
+        "embedded": true
+      }
+    ]
+  },
+  "ru": {
+    "status": 201,
+    "seconds": 10.35,
+    "response": {
+      "lecture_id": "b2d1bae6-1861-4879-8769-36ae802e2cbf",
+      "chunk_index": 0,
+      "status": "completed",
+      "run_id": "1115135c-8e82-4f7a-bb0a-ff3378da55d7",
+      "segments": 1,
+      "embedded": 1,
+      "degraded": false,
+      "error_code": null
+    },
+    "segments": [
+      {
+        "start_ms": 0,
+        "end_ms": 4000,
+        "text": "Когда труба сужается, скорость потока увеличивается.",
+        "embedded": true
+      }
+    ]
+  },
+  "kk": {
+    "status": 201,
+    "seconds": 9.13,
+    "response": {
+      "lecture_id": "bec0fabb-d408-4467-8dc7-05dbf9c8a974",
+      "chunk_index": 0,
+      "status": "completed",
+      "run_id": "7a6bc1b4-b08a-4570-9154-4b2b3132713b",
+      "segments": 1,
+      "embedded": 1,
+      "degraded": false,
+      "error_code": null
+    },
+    "segments": [
+      {
+        "start_ms": 0,
+        "end_ms": 2560,
+        "text": "Кубортарылғанда ағын жылдандыға артат.",
+        "embedded": true
+      }
+    ]
+  }
+}

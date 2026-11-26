@@ -105,6 +105,8 @@ class Settings(BaseSettings):
     axiom_llm_model: str = "deepseek-flash"
     axiom_local_llm_base_url: str = "http://127.0.0.1:11434/v1"
     axiom_local_llm_model: str = "qwen2.5:1.5b"
+    axiom_local_llm_max_tokens: int = Field(default=800, ge=256, le=4096)
+    axiom_local_llm_keep_alive: str = "5m"
     axiom_llm_timeout_seconds: float = Field(default=20.0, ge=0.5, le=60)
     axiom_llm_max_retries: int = Field(default=1, ge=0, le=2)
     axiom_llm_max_output_tokens: int = Field(default=2_400, ge=64, le=4_000)
@@ -121,10 +123,13 @@ class Settings(BaseSettings):
     axiom_state_ttl_minutes: int = Field(default=30, ge=1, le=180)
     axiom_moment_ttl_minutes: int = Field(default=120, ge=1, le=720)
 
-    axiom_stt_provider: Literal["disabled", "openai_compatible"] = "disabled"
+    axiom_stt_provider: Literal["disabled", "openai_compatible", "faster_whisper"] = "disabled"
     axiom_stt_base_url: str = "https://api.openai.com/v1"
     axiom_stt_api_key: str = ""
     axiom_stt_model: str = "whisper-1"
+    axiom_local_stt_model: str = "small"
+    axiom_local_stt_compute_type: Literal["int8", "float32"] = "int8"
+    axiom_local_stt_download_root: str = ".model_cache/faster-whisper"
     axiom_stt_timeout_seconds: float = Field(default=90.0, ge=5, le=300)
     axiom_stt_max_file_bytes: int = Field(default=26_214_400, ge=1_000_000)
     axiom_max_transcript_segments: int = Field(default=400, ge=1, le=2_000)

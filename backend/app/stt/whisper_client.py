@@ -127,4 +127,8 @@ class OpenAICompatibleWhisperClient:
 def build_stt_provider(settings: Settings) -> SttProvider | None:
     if settings.axiom_stt_provider == "disabled":
         return None
+    if settings.axiom_stt_provider == "faster_whisper":
+        from app.stt.faster_whisper_client import FasterWhisperClient
+
+        return FasterWhisperClient(settings)
     return OpenAICompatibleWhisperClient(settings)
