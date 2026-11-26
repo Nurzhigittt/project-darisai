@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report
+    url: https://github.com/Nurzhigittt/project-darisai/blob/main/SECURITY.md
+    about: Report vulnerabilities privately; do not open a public issue.
+  - name: Architecture and privacy
+    url: https://github.com/Nurzhigittt/project-darisai/blob/main/docs/SECURITY_PRIVACY.md
+    about: Read the data boundary before proposing a schema or credential change.
+  - name: Developer onboarding
+    url: https://github.com/Nurzhigittt/project-darisai/blob/main/docs/ONBOARDING.md
+    about: Local setup, tests, contracts and demo data.

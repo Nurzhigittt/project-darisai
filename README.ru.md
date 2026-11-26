@@ -1,83 +1,93 @@
 <div align="center">
 
-<img src="docs/assets/app-icon.png" width="82" alt="Иконка DärisAI" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="brand/readme/hero-dark.png">
+  <img src="brand/readme/hero-light.png" alt="DärisAI — сделать понимание видимым" width="100%">
+</picture>
 
-# DärisAI
+### Не всё понятно? Это нормально.
 
-### Сделайте понимание видимым.
+[English](README.md) · **Русский** · [Қазақша](README.kk.md)
 
-Тихий способ для студентов сказать о непонимании — и для преподавателя увидеть момент, когда аудитория теряет нить.
+[![CI](https://img.shields.io/github/actions/workflow/status/Nurzhigittt/project-darisai/ci.yml?branch=main&label=CI&style=flat-square&labelColor=122C34&color=912F56)](https://github.com/Nurzhigittt/project-darisai/actions)
+[![E2E](https://img.shields.io/github/actions/workflow/status/Nurzhigittt/project-darisai/e2e.yml?branch=main&label=E2E&style=flat-square&labelColor=122C34&color=912F56)](https://github.com/Nurzhigittt/project-darisai/actions)
+![Лицензия](https://img.shields.io/badge/license-MIT-912F56?style=flat-square&labelColor=122C34)
 
-**Без аккаунтов студентов · Без прерывания лекции · Ripple в реальном времени**
-
-[English](README.md) · **Русский**
-
-[![CI](https://img.shields.io/github/actions/workflow/status/Nurzhigittt/project-darisai/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/Nurzhigittt/project-darisai/actions)
-![Python](https://img.shields.io/badge/Python-3.12%2B-26233A?style=flat-square)
-![Next.js](https://img.shields.io/badge/Next.js-16-26233A?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-82B69A?style=flat-square)
+**Локальный интеллект. Образование для людей.**
 
 </div>
 
-<img src="docs/assets/hero-imac.png" alt="Экран преподавателя DärisAI" width="100%" />
+---
 
-## Что это
+## Спокойнее понимать аудиторию
 
-DärisAI — рабочая вертикаль **Signal & Ripple** для лекций:
+DärisAI — слой Classroom Intelligence для момента, когда студент теряет нить объяснения.
 
-- студент открывает ссылку и вводит шестизначный код;
-- аккаунт не создаётся;
-- на экране одна большая кнопка **«Я не понимаю»**;
-- преподаватель видит спокойную рябь, а не рейтинг или чат;
-- после лекции остаётся фактическая сводка сигналов и кластеров.
+Студент открывает ссылку, вводит шесть символов и нажимает **«Я не понимаю»**, когда нуждается в пояснении. Преподаватель видит спокойный агрегированный Ripple, а не чат, рейтинг или профиль студента.
 
-Низкая активность **не** означает, что все всё поняли. Интерфейс так и говорит: «мало сигналов» или «недостаточно участия».
+Без аккаунтов студентов. Без микрофона. Без индивидуальной истории сигналов.
 
-## Экраны
+| Для студентов | Для преподавателей | Для приватности |
+| --- | --- | --- |
+| Одна ссылка. Одно нажатие. Без регистрации и установки. | Понятный сигнал аудитории. Пауза, продолжение и возврат к моменту без выхода из лекции. | Только агрегаты. Подтверждённые моменты остаются в браузере студента. Постоянно хранится только личность преподавателя. |
 
-<table>
-<tr>
-<td width="58%"><img src="docs/screenshots/professor-live.png" alt="Экран преподавателя" /><br /><sub><strong>Преподаватель:</strong> тёплая рябь и понятный статус</sub></td>
-<td width="42%"><img src="docs/screenshots/student-signal-mobile.png" alt="Экран студента" /><br /><sub><strong>Студент:</strong> одна кнопка, без аккаунта</sub></td>
-</tr>
-</table>
+## Как это выглядит
+
+Это реальные скриншоты production-сборки из локального синтетического демо-прогона. Имена, названия лекций и числа — тестовые данные.
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/summary.png" alt="Итоги лекции" /><br /><sub><strong>После лекции:</strong> только измеренные события</sub></td>
-<td width="50%"><img src="docs/screenshots/presentation.png" alt="QR для проектора" /><br /><sub><strong>QR-режим:</strong> для проектора и аудитории</sub></td>
+<td width="60%"><img src="brand/screenshots/landing-light.png" alt="Лендинг DärisAI" /><br /><sub>Студенческий лендинг: вход по коду без аккаунта.</sub></td>
+<td width="40%"><img src="brand/screenshots/student-signal-mobile.png" alt="Экран Signal на телефоне" /><br /><sub>Одно тихое действие и локальное подтверждение.</sub></td>
+</tr>
+<tr>
+<td><img src="brand/screenshots/professor-live.png" alt="Экран преподавателя во время лекции" /><br /><sub>QR, код и агрегированный Ripple.</sub></td>
+<td><img src="brand/screenshots/summary.png" alt="Итоги лекции" /><br /><sub>Фактические агрегаты, а не оценка понимания.</sub></td>
 </tr>
 </table>
+
+## Цикл продукта
+
+<img src="brand/diagrams/workflow.png" alt="Цикл: вход, сигнал, 20-секундное окно, Ripple, ясность" width="100%" />
+
+Реальный путь детерминирован: **20-секундное окно Redis → EWMA α = 0.4 → гистерезис → не более 2 трансляций в секунду**. LLM не находится в горячем пути Signal → Ripple.
+
+## Локальная архитектура
+
+<img src="brand/diagrams/axiom-architecture.png" alt="Локальная архитектура Axiom" width="100%" />
+
+- **Axiom** — реальные ONNX-эмбеддинги `multilingual-e5-small`, 384 измерения, CPU; гибридный поиск dense + BM25 + RRF + temporal.
+- **Обоснованная генерация** — цитаты, groundedness, защита от утечки ответа и prompt injection.
+- **Провайдеры** — DeepSeek и Groq опциональны; шаблонный fallback честно помечается `source=template`.
+- **Приватность** — нет таблицы студентов, постоянных диалогов и сырого аудио.
+
+## Проверено
+
+<img src="brand/diagrams/metrics.png" alt="Проверенные инженерные метрики" width="100%" />
+
+| Проверка | Фактический локальный результат |
+| --- | --- |
+| Backend | **125 тестов** · Ruff и mypy чистые |
+| Frontend | **187 unit-тестов** в 17 файлах |
+| Playwright | **16/16 E2E**, включая реальный Signal → Ripple и axe |
+| Signal acknowledgement | p95 **14.71 мс** |
+| Signal → Ripple | p95 **396.84 мс**, p99 468.60 мс |
+| Нагрузка | 300/300 клиентов · **0 ошибок** |
+| Production build | Успешно |
+
+Это измерения одной локальной среды, не SLA. Docker и облако локально не запускались.
 
 ## Быстрый старт
-
-### Docker
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-- Web: <http://localhost:3000>
-- API: <http://localhost:8000>
-- API docs: <http://localhost:8000/docs>
-
-> Docker не был доступен в среде, где проверялась эта версия. Compose-файлы есть в репозитории, но Docker-путь **не заявлен как локально проверенный**.
-
-### Локально — проверено
-
-Нужны Python 3.12+, Node 24, pnpm, PostgreSQL 16+ с `pgvector`, Redis 5+.
 
 ```bash
 cp .env.example .env
 
 cd backend
 python -m venv .venv
-# Windows:
-.\.venv\Scripts\python -m pip install -e ".[dev]"
-.\.venv\Scripts\python -m app.migrate
-.\.venv\Scripts\python -m app.seed
-.\.venv\Scripts\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+python -m pip install -e ".[dev]"
+python -m app.migrate
+python -m app.seed
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 ```bash
@@ -86,69 +96,30 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-## Как создать лекцию
-
-1. Откройте **`/login`**.
-2. Введите dev-инвайт **`DARIS-TEACH-2026`**  
-   (значение `SEED_PROFESSOR_INVITE_CODE`; только для разработки).
-3. Выберите курс, название и язык лекции.
-4. Нажмите **Create lecture**.
-5. DärisAI сам создаст **шестизначный код лекции** и QR-ссылку.
-6. Студенты открывают ссылку или вводят код — без регистрации.
-
-Преподаватель **не придумывает** код лекции. Если вход не работает, выполните `python -m app.migrate` и `python -m app.seed` заново.
-
-QR строится из `APP_BASE_URL`. Перед созданием лекции для реального домена укажите его в `.env` и перезапустите backend.
-
-## Что проверено
-
-| Проверка | Результат |
-| --- | --- |
-| Backend | **37 тестов** на реальных PostgreSQL + Redis |
-| Frontend | **11 тестов** |
-| End-to-end | **7 тестов** Playwright, включая полный сценарий и axe |
-| Сборка | Production build Next.js успешен |
-| Нагрузка | 300/300 клиентов, 0 ошибок, Ripple p95 **493 ms** |
-| Секреты | gitleaks — чисто локально |
-| Docker / remote CI | настроены, но **не запускались здесь** |
-
-Ripple p95 ниже цели 500 ms всего на 6,75 ms, а p99 выше 500 ms. Это измерение, а не гарантия SLA. Подробности — в [PERFORMANCE_REPORT.md](docs/PERFORMANCE_REPORT.md).
-
-## Что реально реализовано
-
-- Авторизация преподавателя по инвайту, жизненный цикл лекции, пауза/продолжение.
-- Анонимный вход и раздельные **Signal Token** / **Replay Token**.
-- Аутентифицированный WebSocket: hello timeout, проверка роли, лекции, Origin, лимиты.
-- Атомарная обработка сигналов в Redis: идемпотентность, cooldown, окно.
-- Детерминированный Ripple: EWMA, гистерезис, малые группы, не более 2 обновлений/с.
-- Сохранение кластеров, 10-секундные бакеты и минутная аналитика.
-- Локальная история подтверждённых сигналов в IndexedDB.
-- QR-режим, итоги лекции, privacy manifest, статус, PWA.
-- EN / RU / KK, светлая и тёмная темы, доступные состояния кнопки.
-
-## Что не выдаётся за готовое
-
-STT, Temporal RAG, Socratic Replay, GapCards, BriefNext, Handoff, Cohort Memory и полный demo-сценарий на 90 секунд **не реализованы**. LLM в этой фазе не вызывается.
+Откройте <http://localhost:3000>, используйте dev-код **`DARIS-TEACH-2026`** и создайте лекцию. Полный путь — в [онбординге](docs/ONBOARDING.md).
 
 ## Документация
 
-- [Аудит спецификации](docs/SPEC_AUDIT.md)
-- [Архитектура](ARCHITECTURE.md)
-- [API-контракты](docs/API_CONTRACTS.md)
-- [Схема БД](docs/DB_SCHEMA.md)
+- [Архитектура](ARCHITECTURE.md) · [API](docs/API_CONTRACTS.md) · [База данных](docs/DB_SCHEMA.md)
 - [Безопасность и приватность](docs/SECURITY_PRIVACY.md)
-- [ADR](docs/adr/)
-- [Roadmap](docs/ROADMAP.md)
-- [Handover](docs/HANDOVER.md)
+- [P1 frontend](docs/handover/P1.md) · [P2 backend](docs/P2_HANDOVER.md) · [P3 Axiom](docs/P3_HANDOVER.md)
+- [Онбординг](docs/ONBOARDING.md) · [Локальный AI](docs/AI_PROVIDER_SETUP.md)
+- [Бренд](docs/BRAND.md) · [Build log](docs/BUILD_LOG.md)
 
 ## Приватность
 
-Нет таблицы студентов, имени, email, телефона или истории отдельных сигналов в PostgreSQL. Signal Token — псевдонимный временный ключ, а не доказательство абсолютной анонимности: тот, у кого он есть, может действовать от имени участника до истечения срока. Очистка данных браузера удаляет локальную историю.
+Signal Token псевдонимный, но это не абсолютная анонимность: им может воспользоваться любой, у кого он есть, до истечения срока. Сервер хранит только хэши токенов в Redis, не в PostgreSQL. Нет аккаунтов, имён, email, телефонов, device ID или индивидуальной истории сигналов. Подтверждённые моменты хранятся в IndexedDB студента и удаляются локально.
 
-## Лицензия
+## Бренд
 
-MIT — [LICENSE](LICENSE).
+Официальная палитра: **Mint Cream `#EAF2EF`**, **Vintage Berry `#912F56`**, **Jet Black `#122C34`**, **Yale Blue `#224870`**, **Rose Kiss `#FF70A6`**. Официальный знак — строчная **ä** в Vintage Berry на Mint Cream. Не заменяйте его на generic AI-иконку.
 
-<div align="center">
-  <sub>Venture Startup Battle 2026 · Signal & Ripple foundation</sub>
-</div>
+## Статус и ограничения
+
+- ✅ Основной цикл лекции, Replay, GapCards, BriefNext/Handoff, Cohort и автономность реализованы и проверены.
+- ✅ Live-проверки DeepSeek/Groq пройдены; шаблонный fallback сохранён.
+- ⚠️ Широкая live-проверка adversarial-безопасности и исследования учебных результатов не заявляются.
+- ⚠️ Нет деплоя, облака, multi-worker и аудита со screen reader на реальных устройствах.
+- ⚠️ P4 отвечает за симулятор 40 студентов и 90-секундную демонстрацию.
+
+<div align="center"><sub>DärisAI · Локальный интеллект. Образование для людей.</sub></div>

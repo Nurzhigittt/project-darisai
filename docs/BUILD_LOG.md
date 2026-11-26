@@ -299,3 +299,21 @@ Actual verification:
 Raw live acceptance: `artifacts/p1/live-p2.json`. Provider calls were disabled; AI source was `template`, not `live`. No deployment or paid provider request was performed.
 
 
+
+## Official brand identity — 2026-11-26
+
+Reworked the repository presentation around the supplied stylized **ä** mark and official palette (Mint Cream, Vintage Berry, Jet Black, Yale Blue, Rose Kiss). The high-resolution supplied icon was traced into a transparent SVG/PNG mark; the wordmark uses the bundled Geologica variable font. Replaced the JPEG icons with real PNG PWA/favicon/Apple icons and regenerated the social preview.
+
+Added:
+- light/dark hero banners and 1280×640 social previews;
+- workflow, Signal → Ripple, Axiom architecture and verified-metrics diagrams;
+- an illustrative Signal → Ripple GIF;
+- actual production-build screenshots from a local synthetic run;
+- English, Russian and Kazakh READMEs plus brand/onboarding guides;
+- issue templates and a revised PR template.
+
+Replaced the orange danger/attention tokens with Vintage Berry/Rose Kiss so the product UI stays inside the official palette.
+
+Verification after the change: frontend ESLint, TypeScript, **187 unit tests**, production build and **16/16 Playwright E2E** passed, including axe light/dark and the real API Signal → Ripple workflow. Backend regression remained 125 tests. The screenshot run used synthetic lecture/student data and the template AI path.
+
+Repository description/topics/social-preview settings were prepared but the authenticated API token returned 404 for repository administration, so remote metadata was not changed. The social preview asset is committed at `brand/social/social-preview-light.png` (1280×640); it still needs to be uploaded in GitHub repository settings by a maintainer with admin access. No deployment was performed.

@@ -1,0 +1,53 @@
+name: Feature request
+description: Propose a change that fits the student-first, privacy-first product.
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        DärisAI is a calm classroom signal layer, not a generic AI dashboard. Proposals should preserve the privacy boundary and the existing visual identity.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Student or professor problem
+      description: Describe the real moment this change improves. Avoid vanity metrics.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: What should the user see or do? Include EN/RU/KK implications.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Signal / Ripple realtime
+        - Lecture lifecycle
+        - Transcript / Axiom / Replay
+        - BriefNext / Handoff
+        - Cohort / autonomy
+        - Accessibility / design system
+        - Demo backend
+        - Documentation / tooling
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Product constraints
+      options:
+        - label: This does not add a persistent student account or individual signal history.
+          required: true
+        - label: This preserves the official mint, berry, teal-black, blue and rose identity.
+          required: true
+        - label: This can be done without automatic AI publication or unverified AI claims.
+          required: true
