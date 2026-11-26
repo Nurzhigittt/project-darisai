@@ -111,7 +111,7 @@ idempotent.
 - Load-test CPU estimate: ~13.8% of 4 cores; API working set ~164 MB during the
   run. These are single-sample observations, not capacity guarantees.
 - Docker/cloud: not run.
-- GitHub CI: run `45780053520` success; End-to-end `45780053331` success.
+- GitHub CI: run `45781063448` success; End-to-end `45781063634` success.
 
 ## P1 integration
 
@@ -251,6 +251,6 @@ Authorization: Bearer <professor-jwt>
 | `c21446a` | P3 base integrated into this branch |
 | `775cd96` | P2 backend completion: migration, cohort/autonomy/Handoff/demo, tests |
 | `1d9e4b9` | P2 handover, verification matrix, load evidence |
+| `ca8b1e3` | Final secret-scan allowlist for a synthetic frontend test fixture |
 
-The branch is pushed at `1d9e4b9` (plus this documentation update); CI was green on
-the code commit and is re-run on the documentation commit.
+The P2 pull request head is `ca8b1e3`; all CI and E2E checks are green.
