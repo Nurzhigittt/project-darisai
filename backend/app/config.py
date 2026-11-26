@@ -75,6 +75,58 @@ class Settings(BaseSettings):
     embedding_dimension: int = Field(default=384, ge=1)
     metrics_enabled: bool = True
 
+    # Phase 2/3 Axiom. All AI features are optional and default to deterministic
+    # template mode when no provider is configured.
+    axiom_embedding_provider: Literal["onnx_e5", "fake"] = "onnx_e5"
+    axiom_embedding_model: str = "intfloat/multilingual-e5-small"
+    axiom_embedding_onnx_file: str = "onnx/model_O4.onnx"
+    axiom_embedding_cache_dir: str = ".model_cache"
+    axiom_embedding_batch_size: int = Field(default=16, ge=1, le=128)
+    axiom_embedding_concurrency: int = Field(default=2, ge=1, le=16)
+    axiom_embedding_max_tokens: int = Field(default=512, ge=32, le=512)
+    axiom_embedding_prewarm: bool = False
+    axiom_retrieval_mode: Literal["hybrid", "dense"] = "hybrid"
+    axiom_retrieval_top_k: int = Field(default=4, ge=1, le=8)
+    axiom_dense_candidates: int = Field(default=16, ge=4, le=64)
+    axiom_lexical_candidates: int = Field(default=16, ge=4, le=64)
+    axiom_rrf_k: int = Field(default=60, ge=1, le=200)
+    axiom_dense_weight: float = Field(default=1.0, ge=0, le=5)
+    axiom_lexical_weight: float = Field(default=1.0, ge=0, le=5)
+    axiom_temporal_weight: float = Field(default=0.35, ge=0, le=5)
+    axiom_query_expansion: bool = True
+    axiom_before_ms: int = Field(default=90_000, ge=0)
+    axiom_after_ms: int = Field(default=10_000, ge=0)
+    axiom_similarity_floor: float = Field(default=0.78, ge=-1, le=1)
+    axiom_max_context_chars: int = Field(default=12_000, ge=1_000, le=50_000)
+
+    axiom_llm_provider: Literal["disabled", "openai_compatible", "fake"] = "disabled"
+    axiom_llm_base_url: str = "https://api.deepseek.com"
+    axiom_llm_api_key: str = ""
+    axiom_llm_model: str = "deepseek-flash"
+    axiom_llm_timeout_seconds: float = Field(default=20.0, ge=0.5, le=60)
+    axiom_llm_max_retries: int = Field(default=1, ge=0, le=2)
+    axiom_llm_max_output_tokens: int = Field(default=2_400, ge=64, le=4_000)
+    axiom_llm_disable_thinking: bool = True
+    axiom_llm_concurrency: int = Field(default=2, ge=1, le=16)
+    axiom_use_llm_judges: bool = False
+    axiom_daily_generation_budget: int = Field(default=100, ge=0, le=100_000)
+
+    axiom_replay_max_turns: int = Field(default=6, ge=1, le=12)
+    axiom_replay_requests_per_token: int = Field(default=40, ge=1, le=1_000)
+    axiom_state_single_use: bool = True
+    axiom_replay_max_history: int = Field(default=12, ge=0, le=30)
+    axiom_replay_max_history_chars: int = Field(default=4_000, ge=0, le=20_000)
+    axiom_state_ttl_minutes: int = Field(default=30, ge=1, le=180)
+    axiom_moment_ttl_minutes: int = Field(default=120, ge=1, le=720)
+
+    axiom_stt_provider: Literal["disabled", "openai_compatible"] = "disabled"
+    axiom_stt_base_url: str = "https://api.openai.com/v1"
+    axiom_stt_api_key: str = ""
+    axiom_stt_model: str = "whisper-1"
+    axiom_stt_timeout_seconds: float = Field(default=90.0, ge=5, le=300)
+    axiom_stt_max_file_bytes: int = Field(default=26_214_400, ge=1_000_000)
+    axiom_max_transcript_segments: int = Field(default=400, ge=1, le=2_000)
+
     @model_validator(mode="after")
     def validate_production_safety(self) -> Settings:
         if self.environment != "production":
@@ -89,6 +141,10 @@ class Settings(BaseSettings):
             raise ValueError("AUTO_SEED must be false in production")
         if not self.ws_require_origin_in_production:
             raise ValueError("WS_REQUIRE_ORIGIN_IN_PRODUCTION must be true in production")
+        if self.axiom_llm_provider == "openai_compatible" and not self.axiom_llm_api_key:
+            raise ValueError("AXIOM_LLM_API_KEY is required for the configured LLM provider")
+        if self.axiom_stt_provider == "openai_compatible" and not self.axiom_stt_api_key:
+            raise ValueError("AXIOM_STT_API_KEY is required for the configured STT provider")
         for setting_name, origins in (
             ("CORS_ORIGINS", self.cors_origin_list),
             ("WS_ALLOWED_ORIGINS", self.ws_allowed_origin_list),

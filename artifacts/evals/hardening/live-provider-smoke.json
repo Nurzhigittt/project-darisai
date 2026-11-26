@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-11-26T00:20:00Z",
+  "llm": {
+    "provider": "openai_compatible",
+    "model": "deepseek-flash",
+    "base": "https://api.deepseek.com"
+  },
+  "stt": {
+    "provider": "openai_compatible",
+    "model": "whisper-large-v3-turbo"
+  },
+  "checks": [
+    {
+      "name": "structured_json",
+      "ok": true,
+      "latency_ms": 4099.6
+    },
+    {
+      "name": "socratic_ru",
+      "source": "live",
+      "kind": "question",
+      "citations": 2,
+      "grounded": 1.0,
+      "leak": false,
+      "latency_ms": 2286.2
+    },
+    {
+      "name": "socratic_kk",
+      "source": "live",
+      "kind": "question",
+      "citations": 2,
+      "grounded": 0.8,
+      "leak": false,
+      "latency_ms": 3072.1
+    },
+    {
+      "name": "socratic_en",
+      "source": "live",
+      "kind": "question",
+      "citations": 2,
+      "grounded": 0.8,
+      "leak": false,
+      "latency_ms": 3234.3
+    },
+    {
+      "name": "mcq",
+      "source": "live",
+      "kind": "mcq",
+      "options": 4,
+      "citations": 2,
+      "latency_ms": 3221.2
+    },
+    {
+      "name": "gapcards",
+      "cards": 3,
+      "source": "live",
+      "citations": true,
+      "latency_ms": 2444.0
+    },
+    {
+      "name": "brief_next",
+      "source": "live",
+      "ok": true,
+      "concepts": 2,
+      "has_task": false,
+      "grounded": 1.0,
+      "latency_ms": 3376.5
+    },
+    {
+      "name": "handoff",
+      "source": "live",
+      "ok": true,
+      "concepts": 2,
+      "has_task": true,
+      "grounded": 1.0,
+      "latency_ms": 6094.0
+    },
+    {
+      "name": "groundedness",
+      "score": 1.0,
+      "details": [],
+      "latency_ms": 1904.0
+    },
+    {
+      "name": "stt",
+      "provider": "openai_compatible",
+      "model": "whisper-large-v3-turbo",
+      "language": "English",
+      "segments": 1,
+      "duration_ms": 4933,
+      "latency_ms": 1735.2,
+      "text_preview": "The press refalls when the flow speeds up in a neuro pipe."
+    }
+  ],
+  "usage": {
+    "calls": 10,
+    "input_tokens": 12246,
+    "output_tokens": 3265,
+    "timeouts": 0,
+    "failures": 1
+  }
+}

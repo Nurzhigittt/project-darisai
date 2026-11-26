@@ -201,3 +201,27 @@ Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), an
 Replaced Manrope with locally bundled Fontsource packages: Source Serif 4 600 for headings and IBM Plex Sans 400 for body copy, with 500/600 for controls and navigation. Normalized the old 700/800 utility weights to 600, preserved monospace codes/timers, and loosened the landing hero's tracking and line height. Concept, lecture-card and student-history titles now use heading elements. Font imports include Latin, Cyrillic and Cyrillic-ext subsets with `font-display: swap`; no runtime Google Fonts requests are introduced. The lockfile changes only the font dependencies.
 
 Verification: `pnpm lint`, `pnpm typecheck`, all 31 frontend tests (7 files), and `pnpm build --webpack` passed. Checked computed heading/body/button/navigation families and weights in the built-in browser. Visually inspected Russian/Kazakh login copy at 390×844 and the landing page at mobile and 1280×800 desktop widths, including English copy and both themes; observed no horizontal overflow. The browser check caught an unquoted numeric family name, corrected to `"Source Serif 4"` in Tailwind before the successful build. Saved light/dark landing screenshots as session deliverables. Real-backend/E2E limitations above are unchanged; no push or deployment was performed.
+
+## P3 Axiom milestone (`feat/p3-axiom-engine`)
+
+- Added `200_p3_axiom_transcript.sql` and applied it to the local PostgreSQL instance.
+- Downloaded and ran `intfloat/multilingual-e5-small` ONNX (384-d); 40/40 demonstration segments embedded, L2-normalized, finite.
+- Imported the synthetic 40-segment Russian Bernoulli fixture through the real API; run status `completed`, `embedded=40`.
+- Exercised Replay start/turn, GapCards and BriefNext/Handoff against the local API. Template source was returned because no LLM/STT credentials were available.
+- `pytest -q`: **108 passed**; Ruff and mypy clean.
+- Frontend: ESLint, TypeScript, Vitest 11/11 and production build passed; contracts regenerated and stable.
+- AI evaluation: 30 retrieval cases, Recall@4 **0.600**, MRR **0.4819**; 10/10 deterministic guardrails. Raw result `artifacts/evals/eval-20261125T180048Z.json`.
+- The earlier baseline made no live LLM/Whisper call; the hardening pass later verified live DeepSeek and Groq calls. No deployment or Docker run was performed.
+- PR #2 GitHub Actions at `e19ffef`: backend, frontend, contract drift, secret scanning and E2E all passed.
+
+## P3 AI hardening (commit `a8eeac2`)
+
+- Hybrid retrieval added: exact filtered cosine + BM25 + weighted RRF + temporal RRF; dense-only mode retained.
+- Corrected off-by-one relevance labels in the 30-case suite before reporting the new benchmark.
+- Retrieval: overall Recall@4 **0.8667**, MRR **0.7000**; RU 0.90, EN 0.80, KK 0.90; held-out Recall@4 **0.90**.
+- Adversarial suite: **32/32** constructed cases (29 deterministic, 1 fake LLM, 2 template). Live adversarial sample size: **0**.
+- Live provider smoke: **10/10 functional checks** with DeepSeek `deepseek-flash`; Groq `whisper-large-v3-turbo` returned a timestamped transcription. Live P2 API BriefNext returned `source=live` and `pending_approval`. Raw artifacts `artifacts/evals/hardening/live-provider-smoke.json`, `provider-smoke.json` and `live-api-insight.json`.
+- Added per-Replay-Token request cap, single-use state nonce, model prewarm and status readiness.
+- Verification: **114 backend tests passed**, Ruff/mypy clean; frontend lint/typecheck/build/tests still run in the PR.
+- Cold Replay turn 3.87 s; warm p50/p95 26.0/106.9 ms; 30-client Signal-to-Ripple p95 491.84 ms under AI load; 0 errors.
+- No Docker or cloud deployment was performed. Live provider functional checks passed, but no live adversarial safety benchmark was run.

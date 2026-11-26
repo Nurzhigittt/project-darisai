@@ -15,7 +15,7 @@ Base URL: `http://<api-host>:8000/api/v1` locally. JSON UTF-8. IDs are UUID v4. 
 
 ### Authentication
 
-Professor endpoints use `Authorization: Bearer <JWT>`. Student replay endpoints are future work and must use a Replay Token in a header, not a URL. Temporary credentials are never placed in query strings.
+Professor endpoints use `Authorization: Bearer <JWT>`. Replay and GapCards use `X-Replay-Token`; a Signal Token must not authorize them. Temporary credentials are never placed in query strings.
 
 ### Endpoints
 
@@ -37,6 +37,13 @@ Professor endpoints use `Authorization: Bearer <JWT>`. Student replay endpoints 
 | GET | `/api/v1/lectures/{id}/summary` | professor | Factual post-lecture aggregate summary |
 | GET | `/api/v1/join/{code}/preview` | public | Validate a code and preview a lecture |
 | POST | `/api/v1/join` | public | Anonymous join; Signal + Replay tokens |
+| POST | `/api/v1/lectures/{id}/transcript/import` | professor | Timestamped JSON transcript import; idempotent segments |
+| POST | `/api/v1/lectures/{id}/audio-chunks` | professor | Multipart audio chunk → Whisper-compatible STT |
+| GET | `/api/v1/lectures/{id}/transcript` | professor | Owned transcript, embedding counts and latest run |
+| POST | `/api/v1/replay/start` | Replay Token | Signed replay moments from flagged offsets |
+| POST | `/api/v1/replay/turn` | Replay Token | Stateless Socratic turn with signed state |
+| POST | `/api/v1/gapcards/generate` | Replay Token | Grounded review cards from signed moments |
+| POST | `/api/v1/lectures/{id}/insights/generate` | professor | BriefNext/Handoff → P2 `pending_approval` |
 
 ### Key request/response shapes
 
@@ -187,6 +194,20 @@ The server computes a SHA-256 Signal Token hash and atomically checks `(token_ha
 | `rest-*.json` | auth, lecture, join, heatmap examples |
 
 Fixtures contain placeholder credentials, not usable secrets.
+
+## Axiom (P3)
+
+- Full source of truth: `backend/app/schemas/axiom.py`, plus `InsightOut` from P2.
+- Examples: [`contracts/fixtures/axiom/`](contracts/fixtures/axiom/).
+- Transcript import: professor-only, 1..400 segments by runtime config, max 8,000 chars each, `end_ms >= start_ms`.
+- Audio: multipart `file`, `chunk_index`, `start_ms`, `mime_type`; max 25 MiB; `completed` means transcription and persistence finished.
+- Replay start: 1..20 offsets, 20 s dedupe, lecture must be ended with a transcript.
+- Replay turn: `state_token` is required after the first turn; request `history` is bounded and untrusted.
+- GapCards: 1..20 signed moments; max 10 unique cards returned.
+- Intelligence: professor-only, ended lecture with a persisted cluster; result enters `pending_approval`.
+- AI errors use the normal error envelope: `TRANSCRIPT_REQUIRED`, `LECTURE_NOT_ENDED`, `REPLAY_STATE_INVALID`, `REPLAY_STATE_EXPIRED`, `REPLAY_COMPLETE`, `AI_BUDGET_EXHAUSTED`, `STT_NOT_CONFIGURED`.
+
+Replay/GapCards require `X-Replay-Token`. No AI endpoint accepts a Signal Token.
 
 ## Change policy
 

@@ -1,0 +1,32 @@
+{
+  "lecture_id": "2dd678be-81cd-4235-8d56-2cada98f014b",
+  "cards": [
+    {
+      "card_id": "4ca2381f-8122-4d08-8ad1-abfbe196d594",
+      "moment_id": "mom1.example-moment-token",
+      "concept_title": "Давление и скорость потока",
+      "front": "Что означает «Давление и скорость потока» в этом фрагменте?",
+      "back": {
+        "type": "transcript_quote",
+        "quote": "Сейчас важный переход. Когда мы говорим «давление падает», мы не имеем в виду, что среда начинает притягивать предмет. Мы сравниваем две области с разной частотой и силой ударов",
+        "citation": {
+          "segment_id": "077ce231-9828-4514-9676-08deeb07ed7b",
+          "start_ms": 252000,
+          "end_ms": 261000,
+          "quote": "Сейчас важный переход. Когда мы говорим «давление падает», мы не имеем в виду, что среда начинает притягивать предмет. Мы сравниваем две области с разной частотой и силой ударов"
+        }
+      },
+      "difficulty": 2,
+      "source": "template",
+      "validation": {
+        "schema_ok": true,
+        "citations_ok": true,
+        "answer_leak": false,
+        "grounded_score": 1.0,
+        "attempts": 1,
+        "fallback_used": true,
+        "details": []
+      }
+    }
+  ]
+}

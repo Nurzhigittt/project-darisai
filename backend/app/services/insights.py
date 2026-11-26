@@ -94,7 +94,40 @@ class InsightService:
             professor_id,
             request.kind,
             audience,
-            request.content.model_dump(mode="json"),
+            request.content.model_dump(mode="json", exclude_defaults=True),
+        )
+        if row is None:
+            raise self._not_found()
+        return self._to_out(row)
+
+    async def create_generated(
+        self,
+        *,
+        lecture_id: UUID,
+        professor_id: UUID,
+        kind: str,
+        content: InsightContent,
+        source: str,
+        validation: dict[str, object],
+    ) -> InsightOut:
+        if source not in {"live", "prebaked", "template"}:
+            raise AppError(422, "INVALID_SOURCE", "Generated insight source is invalid.")
+        audience = "professor" if kind == "brief_next" else "seminar_leader"
+        row = await self._db.fetchrow(
+            """
+            INSERT INTO insights (lecture_id, kind, audience, status, payload, source, validation)
+            SELECT $1, $3, $4, 'pending_approval', $5, $6, $7
+            FROM lectures l
+            WHERE l.id = $1 AND l.professor_id = $2
+            RETURNING *
+            """,
+            lecture_id,
+            professor_id,
+            kind,
+            audience,
+            content.model_dump(mode="json", exclude_defaults=True),
+            source,
+            validation,
         )
         if row is None:
             raise self._not_found()
@@ -141,7 +174,7 @@ class InsightService:
                 RETURNING *
                 """,
                 insight_id,
-                request.content.model_dump(mode="json"),
+                request.content.model_dump(mode="json", exclude_defaults=True),
                 request.reason,
                 professor_id,
             )

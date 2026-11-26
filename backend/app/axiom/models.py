@@ -36,6 +36,9 @@ class RetrievalContext(AxiomModel):
     temporal_segments: list[TranscriptSegment]
     semantic_segments: list[TranscriptSegment] = Field(default_factory=list)
     retrieval_similarity: float | None = Field(default=None, ge=0, le=1)
+    raw_similarity: float | None = None
+    evidence_sufficient: bool = True
+    degraded: bool = False
 
 
 class ValidationResult(AxiomModel):

@@ -60,6 +60,10 @@ services:
       WS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
       RUN_MIGRATIONS: "false"
       AUTO_SEED: "true"
+      AXIOM_EMBEDDING_CACHE_DIR: /home/daris/.cache/daris
+      AXIOM_EMBEDDING_PREWARM: ${AXIOM_EMBEDDING_PREWARM:-true}
+    volumes:
+      - daris_model_cache:/home/daris/.cache/daris
     ports:
       - "8000:8000"
     depends_on:
@@ -89,4 +93,5 @@ services:
 volumes:
   daris_pgdata:
   daris_redisdata:
+  daris_model_cache:
 

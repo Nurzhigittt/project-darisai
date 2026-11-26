@@ -4,7 +4,7 @@ title = "DärisAI secret scanning"
 useDefault = true
 
 [allowlist]
-description = "Ignore local build output, dependency trees, virtualenvs and test artifacts. These are never committed and may contain framework-generated local keys."
+description = "Ignore local build output, dependency trees, virtualenvs, test artifacts and synthetic API fixtures. Axiom fixture tokens are placeholders; no credentials are stored there."
 paths = [
   '''node_modules''',
   '''\.next''',
@@ -16,4 +16,6 @@ paths = [
   '''\.ruff_cache''',
   '''\.hypothesis''',
   '''\.pip-tools-cache''',
+  '''docs/contracts/fixtures/axiom''',
+  '''artifacts/evals/hardening''',
 ]

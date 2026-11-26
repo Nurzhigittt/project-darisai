@@ -6,6 +6,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
+from app.axiom.models import Citation
 from app.schemas.common import ApiModel, Language
 
 InsightKind = Literal["brief_next", "handoff"]
@@ -17,6 +18,10 @@ InsightSource = Literal["live", "prebaked", "template", "manual"]
 class InsightConcept(ApiModel):
     title: str = Field(min_length=1, max_length=160)
     detail: str = Field(min_length=1, max_length=1_000)
+    citations: list[Citation] = Field(default_factory=list, max_length=8)
+    window_start_ms: int | None = Field(default=None, ge=0)
+    window_end_ms: int | None = Field(default=None, ge=0)
+    unique_signals: int | None = Field(default=None, ge=0)
 
     @field_validator("title", "detail")
     @classmethod
@@ -31,6 +36,7 @@ class InsightTask(ApiModel):
     title: str = Field(min_length=1, max_length=160)
     instructions: str = Field(min_length=1, max_length=4_000)
     duration_minutes: int | None = Field(default=None, ge=1, le=180)
+    grounded_in: list[Citation] = Field(default_factory=list, max_length=8)
 
     @field_validator("title", "instructions")
     @classmethod

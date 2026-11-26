@@ -1,0 +1,57 @@
+{
+  "_comment": "P3 adapter target: P2 insight workflow. Generated content is always pending_approval and never auto-published.",
+  "request": {
+    "kind": "handoff",
+    "max_concepts": 3
+  },
+  "response_200": {
+    "insight": {
+      "insight_id": "55555555-5555-4555-8555-555555555555",
+      "lecture_id": "11111111-1111-4111-8111-111111111111",
+      "kind": "handoff",
+      "audience": "seminar_leader",
+      "status": "pending_approval",
+      "source": "template",
+      "content": {
+        "headline": "Есть 1 момент(а), к которым стоит вернуться",
+        "read_time_sec": 30,
+        "concepts": [
+          {
+            "title": "Давление и скорость потока",
+            "detail": "Сигналы участия в окне 04:02–04:14: 6 уникальных. Это наблюдение, не измерение понимания. Подтверждающий фрагмент: «...».",
+            "citations": [
+              {
+                "segment_id": "33333333-3333-4333-8333-333333333333",
+                "start_ms": 153000,
+                "end_ms": 162000,
+                "quote": "Пониженное давление — это не «всасывание» в бытовом смысле."
+              }
+            ],
+            "window_start_ms": 242000,
+            "window_end_ms": 262000,
+            "unique_signals": 6
+          }
+        ],
+        "task": {
+          "title": "Семинар: Давление и скорость потока",
+          "instructions": "1. Покажите фрагмент...",
+          "duration_minutes": 15,
+          "grounded_in": [
+            {
+              "segment_id": "33333333-3333-4333-8333-333333333333",
+              "start_ms": 153000,
+              "end_ms": 162000,
+              "quote": "Пониженное давление — это не «всасывание» в бытовом смысле."
+            }
+          ]
+        }
+      },
+      "decision_reason": null,
+      "created_at": "2026-11-25T18:00:00Z",
+      "updated_at": "2026-11-25T18:00:00Z",
+      "decided_at": null
+    },
+    "selection": "persisted_clusters=1; selected=1",
+    "source": "template"
+  }
+}
